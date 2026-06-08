@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Solis Estates — Where extraordinary becomes home. Boutique luxury real estate with Isabella Torres.">
+<title>Solis Estates | Luxury Real Estate</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏡</text></svg>">
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ==================== RESET / BASE ==================== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:'Inter',sans-serif;font-weight:300;background:#0d0d0d;color:#f5f0eb;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:hidden}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+ul{list-style:none}
+::selection{background:#c9a96e;color:#0d0d0d}
+
+/* ==================== CUSTOM SCROLLBAR ==================== */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:#0d0d0d}
+::-webkit-scrollbar-thumb{background:#c9a96e;border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#a88c4b}
+
+/* ==================== UTILITY ==================== */
+.container{width:100%;max-width:1280px;margin:0 auto;padding:0 24px}
+.gold{color:#c9a96e}
+.gold-divider{height:1px;background:linear-gradient(90deg,transparent,#c9a96e,transparent);width:0;margin:0 auto;transition:width 1.2s cubic-bezier(.25,.46,.45,.94)}
+.gold-divider.visible{width:120px}
+.gold-divider.lg.visible{width:220px}
+.section-padding{padding:120px 0}
+.section-title{font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(2rem,5vw,3.5rem);text-align:center;margin-bottom:16px;color:#f5f0eb}
+.section-subtitle{text-align:center;font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(1rem,2vw,1.35rem);color:rgba(245,240,235,.6);margin-bottom:60px;font-style:italic}
+.btn{display:inline-block;padding:14px 36px;font-family:'Inter',sans-serif;font-weight:400;font-size:.85rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .4s ease;position:relative;overflow:hidden;border:none}
+.btn-primary{background:#c9a96e;color:#0d0d0d}
+.btn-primary:hover{background:#a88c4b;transform:translateY(-2px);box-shadow:0 8px 32px rgba(201,169,110,.25)}
+.btn-outline{border:1px solid #c9a96e;color:#c9a96e;background:transparent}
+.btn-outline:hover{background:#c9a96e;color:#0d0d0d;transform:translateY(-2px)}
+.fade-up{opacity:0;transform:translateY(40px);transition:opacity .8s ease,transform .8s cubic-bezier(.25,.46,.45,.94)}
+.fade-up.visible{opacity:1;transform:translateY(0)}
+
+/* ==================== NAVIGATION ==================== */
+.nav{position:fixed;top:0;left:0;width:100%;z-index:1000;padding:20px 0;transition:all .5s cubic-bezier(.25,.46,.45,.94)}
+.nav.scrolled{background:rgba(13,13,13,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:12px 0;box-shadow:0 1px 0 rgba(201,169,110,.1)}
+.nav .container{display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:500;color:#c9a96e;letter-spacing:3px}
+.nav-logo span{color:#f5f0eb;font-weight:400}
+.nav-links{display:flex;gap:32px;align-items:center}
+.nav-links a{font-size:.78rem;letter-spacing:2px;text-transform:uppercase;color:rgba(245,240,235,.7);transition:color .3s ease;position:relative}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:#c9a96e;transition:width .3s ease}
+.nav-links a:hover{color:#c9a96e}
+.nav-links a:hover::after{width:100%}
+.nav-contact{font-size:.78rem;letter-spacing:2px;text-transform:uppercase;color:#c9a96e;border:1px solid rgba(201,169,110,.3);padding:8px 20px;transition:all .3s ease}
+.nav-contact:hover{background:#c9a96e;color:#0d0d0d}
+.nav-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:5px;background:none;border:none}
+.nav-toggle span{display:block;width:24px;height:1.5px;background:#c9a96e;transition:all .3s ease}
+.nav-toggle.active span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.nav-toggle.active span:nth-child(2){opacity:0}
+.nav-toggle.active span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+@media(max-width:768px){
+  .nav-toggle{display:flex}
+  .nav-links{position:fixed;top:0;right:-100%;width:280px;height:100vh;background:rgba(26,26,26,.98);backdrop-filter:blur(20px);flex-direction:column;justify-content:center;padding:60px 40px;transition:right .5s cubic-bezier(.25,.46,.45,.94);gap:28px;z-index:999}
+  .nav-links.open{right:0}
+  .nav-links a{font-size:.85rem}
+  .nav-contact{display:none}
+  .nav-links .nav-contact-mobile{display:block;margin-top:16px}
+}
+
+/* ==================== HERO ==================== */
+.hero{position:relative;height:100vh;min-height:600px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.hero-bg{position:absolute;top:0;left:0;width:100%;height:120%;background:url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600&q=80') center/cover no-repeat;will-change:transform;transform:translateZ(0)}
+.hero-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,rgba(0,0,0,.7) 0%,rgba(0,0,0,.5) 50%,rgba(0,0,0,.75) 100%)}
+.hero-content{position:relative;z-index:2;text-align:center;padding:0 24px;max-width:900px}
+.hero-badge{font-size:.7rem;letter-spacing:4px;text-transform:uppercase;color:#c9a96e;margin-bottom:24px;font-weight:400;font-family:'Inter',sans-serif}
+.hero-title{font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(2.8rem,8vw,5.5rem);color:#f5f0eb;line-height:1.08;margin-bottom:20px}
+.hero-title .gold{display:block}
+.hero-tagline{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(1.1rem,2.5vw,1.6rem);color:rgba(245,240,235,.65);font-style:italic;margin-bottom:40px}
+.hero-cta{display:flex;gap:20px;justify-content:center;flex-wrap:wrap}
+.hero-chevron{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:8px;color:rgba(245,240,235,.4);font-size:.7rem;letter-spacing:2px;text-transform:uppercase;animation:chevronBounce 2.5s ease-in-out infinite}
+.hero-chevron .chevron-arrow{width:20px;height:20px;border-right:1.5px solid rgba(245,240,235,.4);border-bottom:1.5px solid rgba(245,240,235,.4);transform:rotate(45deg);animation:chevronPulse 2.5s ease-in-out infinite}
+@keyframes chevronBounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+@keyframes chevronPulse{0%,100%{opacity:.4}50%{opacity:.8}}
+
+/* ==================== PROPERTY SHOWCASE ==================== */
+.property-section{position:relative;height:100vh;min-height:600px;overflow:hidden;display:flex;align-items:center}
+.property-bg{position:absolute;top:0;left:0;width:100%;height:120%;background-size:cover;background-position:center;will-change:transform;transform:translateZ(0)}
+.property-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,rgba(0,0,0,.75) 0%,rgba(0,0,0,.3) 60%,rgba(0,0,0,.5) 100%)}
+.property-content{position:relative;z-index:2;max-width:650px;padding:0 24px}
+.property-label{font-size:.7rem;letter-spacing:4px;text-transform:uppercase;color:#c9a96e;margin-bottom:16px;font-weight:400}
+.property-name{font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(2.2rem,5vw,3.8rem);color:#f5f0eb;margin-bottom:8px;line-height:1.1}
+.property-price{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(1.3rem,2.5vw,2rem);color:#c9a96e;margin-bottom:20px;font-style:italic}
+.property-details{display:flex;gap:28px;margin-bottom:28px;font-size:.85rem;color:rgba(245,240,235,.7);font-weight:300}
+.property-details span{display:flex;align-items:center;gap:6px}
+.property-details span::before{content:'—';color:#c9a96e;font-weight:300}
+.property-desc{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:1.1rem;line-height:1.7;color:rgba(245,240,235,.6);margin-bottom:32px;font-style:italic;max-width:480px}
+
+/* ==================== SERVICES ==================== */
+.services{background:#1a1a1a;position:relative}
+.services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:2px;background:rgba(201,169,110,.08)}
+.service-card{background:#1a1a1a;padding:60px 32px;text-align:center;transition:all .5s ease;position:relative;overflow:hidden;cursor:default}
+.service-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:0;background:linear-gradient(180deg,rgba(201,169,110,.04),transparent);transition:height .5s ease}
+.service-card:hover::before{height:100%}
+.service-card:hover{background:#222}
+.service-icon{font-size:2.8rem;margin-bottom:24px;display:block;color:#c9a96e}
+.service-card h3{font-family:'Playfair Display',serif;font-weight:500;font-size:1.3rem;margin-bottom:14px;color:#f5f0eb}
+.service-card p{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:1rem;line-height:1.7;color:rgba(245,240,235,.55);font-style:italic}
+@media(min-width:768px){
+  .services-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(min-width:1024px){
+  .services-grid{grid-template-columns:repeat(4,1fr)}
+}
+
+/* ==================== AGENT ==================== */
+.agent-section{background:#0d0d0d}
+.agent-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;min-height:600px}
+.agent-image{position:relative;overflow:hidden;min-height:500px}
+.agent-image img{width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;transition:transform 1.2s cubic-bezier(.25,.46,.45,.94)}
+.agent-image:hover img{transform:scale(1.03)}
+.agent-info{display:flex;flex-direction:column;justify-content:center;padding:80px 60px}
+.agent-label{font-size:.7rem;letter-spacing:4px;text-transform:uppercase;color:#c9a96e;margin-bottom:16px}
+.agent-name{font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(1.8rem,3vw,2.8rem);color:#f5f0eb;margin-bottom:6px}
+.agent-title{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:1.2rem;color:#c9a96e;margin-bottom:24px;font-style:italic}
+.agent-bio{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:1.05rem;line-height:1.8;color:rgba(245,240,235,.6);margin-bottom:24px}
+.agent-stat{font-size:1.8rem;font-weight:600;color:#c9a96e;font-family:'Playfair Display',serif}
+.agent-stat-label{font-size:.8rem;color:rgba(245,240,235,.5);letter-spacing:1px;text-transform:uppercase}
+.agent-cta{margin-top:32px}
+@media(max-width:900px){
+  .agent-grid{grid-template-columns:1fr}
+  .agent-image{min-height:400px}
+  .agent-info{padding:60px 32px}
+}
+
+/* ==================== TESTIMONIALS ==================== */
+.testimonials{background:#1a1a1a;position:relative}
+.testimonials-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:48px;max-width:1100px;margin:0 auto}
+.testimonial-card{position:relative;padding:40px 32px 32px}
+.testimonial-quote{font-family:'Playfair Display',serif;font-weight:500;font-size:4rem;color:#c9a96e;line-height:1;margin-bottom:-12px;opacity:.5}
+.testimonial-text{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:1.15rem;line-height:1.8;color:rgba(245,240,235,.7);font-style:italic;margin-bottom:20px}
+.testimonial-author{font-family:'Inter',sans-serif;font-size:.8rem;font-weight:400;color:#c9a96e;letter-spacing:1px;text-transform:uppercase}
+.testimonial-property{font-size:.75rem;color:rgba(245,240,235,.35);margin-top:4px}
+.testimonial-card::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:60px;height:1px;background:linear-gradient(90deg,transparent,#c9a96e,transparent)}
+
+/* ==================== LISTINGS GRID ==================== */
+.listings{background:#0d0d0d}
+.listings-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(201,169,110,.08);max-width:1000px;margin:0 auto}
+.listing-card{position:relative;overflow:hidden;aspect-ratio:4/3;cursor:pointer;background:#1a1a1a}
+.listing-card img{width:100%;height:100%;object-fit:cover;transition:transform 1s cubic-bezier(.25,.46,.45,.94)}
+.listing-card:hover img{transform:scale(1.08)}
+.listing-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);transition:background .5s ease}
+.listing-card:hover .listing-overlay{background:rgba(0,0,0,.55)}
+.listing-info{position:absolute;bottom:0;left:0;right:0;padding:24px;background:linear-gradient(0deg,rgba(0,0,0,.8),transparent)}
+.listing-info .listing-address{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:400;color:#f5f0eb;margin-bottom:4px}
+.listing-info .listing-price{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:500;color:#c9a96e}
+.listing-info .listing-stats{font-size:.78rem;color:rgba(245,240,235,.5);margin-top:6px;display:flex;gap:12px}
+.listing-view{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(.8);opacity:0;transition:all .4s ease;z-index:2;pointer-events:none}
+.listing-card:hover .listing-view{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.listing-view .btn{pointer-events:auto}
+@media(max-width:600px){
+  .listings-grid{grid-template-columns:1fr}
+}
+
+/* ==================== CTA ==================== */
+.cta-section{position:relative;padding:140px 0;overflow:hidden;background:#1a1a1a}
+.cta-bg{position:absolute;top:0;left:0;width:100%;height:100%;background:url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600&q=80') center/cover no-repeat;opacity:.06;transform:scale(1.1)}
+.cta-content{position:relative;z-index:2;text-align:center;max-width:700px;margin:0 auto;padding:0 24px}
+.cta-title{font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(2rem,4vw,3.2rem);color:#f5f0eb;margin-bottom:16px}
+.cta-subtitle{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:1.2rem;color:rgba(245,240,235,.5);margin-bottom:40px;font-style:italic}
+.cta-buttons{display:flex;gap:20px;justify-content:center;flex-wrap:wrap}
+
+/* ==================== FOOTER ==================== */
+.footer{background:#0d0d0d;border-top:1px solid rgba(201,169,110,.08);padding:80px 0 32px}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px}
+.footer-brand .nav-logo{margin-bottom:12px;display:inline-block}
+.footer-brand p{font-family:'Cormorant Garamond',serif;font-size:.95rem;color:rgba(245,240,235,.4);line-height:1.7;font-style:italic;max-width:300px}
+.footer h4{font-family:'Inter',sans-serif;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;color:#c9a96e;margin-bottom:16px;font-weight:400}
+.footer ul li{margin-bottom:10px}
+.footer ul li a{font-size:.88rem;color:rgba(245,240,235,.45);transition:color .3s ease;font-family:'Cormorant Garamond',serif}
+.footer ul li a:hover{color:#c9a96e}
+.footer-bottom{border-top:1px solid rgba(201,169,110,.06);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;font-size:.8rem;color:rgba(245,240,235,.25)}
+.footer-bottom .mls{font-size:.7rem;color:rgba(245,240,235,.15);max-width:600px}
+@media(max-width:768px){
+  .footer-grid{grid-template-columns:1fr 1fr;gap:32px}
+  .footer-bottom{flex-direction:column;text-align:center}
+}
+@media(max-width:480px){
+  .footer-grid{grid-template-columns:1fr}
+}
+
+/* ==================== LIGHTBOX ==================== */
+.lightbox{position:fixed;top:0;left:0;width:100%;height:100%;z-index:2000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);cursor:zoom-out}
+.lightbox.active{display:flex}
+.lightbox img{max-width:90vw;max-height:90vh;object-fit:contain;opacity:0;transform:scale(.92);transition:all .5s cubic-bezier(.25,.46,.45,.94)}
+.lightbox.active img{opacity:1;transform:scale(1)}
+.lightbox-close{position:absolute;top:24px;right:32px;color:#f5f0eb;font-size:2rem;cursor:pointer;opacity:.6;transition:opacity .3s;background:none;border:none;font-family:'Inter',sans-serif;z-index:2001}
+.lightbox-close:hover{opacity:1}
+
+/* ==================== STICKY MOBILE CTA ==================== */
+.sticky-cta{position:fixed;bottom:0;left:0;width:100%;z-index:999;display:none;background:rgba(13,13,13,.95);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid rgba(201,169,110,.15);padding:12px 16px}
+.sticky-cta .btn{width:100%;text-align:center;display:block;padding:14px}
+@media(max-width:768px){
+  .sticky-cta{display:block}
+  body{padding-bottom:70px}
+}
+
+/* ==================== RESPONSIVE TWEAKS ==================== */
+@media(max-width:600px){
+  .section-padding{padding:80px 0}
+  .property-content{padding:0 20px}
+  .hero-cta .btn,.cta-buttons .btn{width:100%;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== NAVIGATION ==================== -->
+<nav class="nav" id="nav">
+  <div class="container">
+    <a href="#" class="nav-logo">Solis <span>Estates</span></a>
+    <div class="nav-links" id="navLinks">
+      <a href="#properties">Properties</a>
+      <a href="#services">Services</a>
+      <a href="#agent">Agent</a>
+      <a href="#listings">Listings</a>
+      <a href="#testimonials">Testimonials</a>
+      <a href="#contact" class="nav-contact-mobile" style="display:none">Contact</a>
+    </div>
+    <a href="#contact" class="nav-contact">Schedule Viewing</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ==================== HERO ==================== -->
+<section class="hero" id="hero">
+  <div class="hero-bg" id="heroBg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content fade-up">
+    <div class="hero-badge">Boutique Luxury Real Estate</div>
+    <h1 class="hero-title">
+      Where extraordinary<br><span class="gold">becomes home</span>
+    </h1>
+    <p class="hero-tagline">Solis Estates — curating the world's most exceptional properties for those who demand the finest.</p>
+    <div class="hero-cta">
+      <a href="#properties" class="btn btn-primary">Explore Properties</a>
+      <a href="#contact" class="btn btn-outline">Meet Isabella</a>
+    </div>
+  </div>
+  <div class="hero-chevron">
+    <span>Scroll</span>
+    <div class="chevron-arrow"></div>
+  </div>
+</section>
+
+<!-- ==================== PROPERTY 1: VILLA SERENITY ==================== -->
+<section class="property-section" id="properties" data-speed=".4">
+  <div class="property-bg" style="background-image:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&q=80')"></div>
+  <div class="property-overlay"></div>
+  <div class="container" style="position:relative;z-index:2;width:100%">
+    <div class="property-content fade-up">
+      <div class="property-label">Featured Estate</div>
+      <h2 class="property-name">Villa Serenity</h2>
+      <div class="property-price">$12,500,000</div>
+      <div class="property-details">
+        <span>6 Bed</span>
+        <span>8 Bath</span>
+        <span>7,200 sq. ft.</span>
+        <span>Oceanfront</span>
+      </div>
+      <p class="property-desc">Perched on the iconic Malibu coastline, Villa Serenity offers uninterrupted Pacific panoramas, private beach access, and architectural brilliance crafted for the discerning.</p>
+      <button class="btn btn-primary schedule-btn" data-property="Villa Serenity">Schedule a Private Viewing</button>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== PROPERTY 2: PENTHOUSE NOCTURNE ==================== -->
+<section class="property-section" data-speed=".5">
+  <div class="property-bg" style="background-image:url('https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=1600&q=80')"></div>
+  <div class="property-overlay"></div>
+  <div class="container" style="position:relative;z-index:2;width:100%">
+    <div class="property-content fade-up" style="margin-left:auto;text-align:right">
+      <div class="property-label" style="text-align:right">Beverly Hills Icon</div>
+      <h2 class="property-name">Penthouse Nocturne</h2>
+      <div class="property-price">$8,900,000</div>
+      <div class="property-details" style="justify-content:flex-end">
+        <span>4 Bed</span>
+        <span>5 Bath</span>
+        <span>4,800 sq. ft.</span>
+        <span>Panoramic View</span>
+      </div>
+      <p class="property-desc" style="margin-left:auto">A sublime fusion of art and architecture, this Beverly Hills penthouse commands sweeping city-to-ocean views from every room, with private rooftop terrace.</p>
+      <button class="btn btn-primary schedule-btn" data-property="Penthouse Nocturne">Schedule a Private Viewing</button>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== PROPERTY 3: CHÂTEAU D'OR ==================== -->
+<section class="property-section" data-speed=".35">
+  <div class="property-bg" style="background-image:url('https://images.unsplash.com/photo-1600566753086-00f18b491ad1?w=1600&q=80')"></div>
+  <div class="property-overlay"></div>
+  <div class="container" style="position:relative;z-index:2;width:100%">
+    <div class="property-content fade-up">
+      <div class="property-label">Monaco Grandeur</div>
+      <h2 class="property-name">Château D'Or</h2>
+      <div class="property-price">$22,000,000</div>
+      <div class="property-details">
+        <span>10 Bed</span>
+        <span>12 Bath</span>
+        <span>14,500 sq. ft.</span>
+        <span>Private Marina</span>
+      </div>
+      <p class="property-desc">A palatial estate overlooking the Mediterranean, Château D'Or features a private marina, helipad, infinity pool, and interiors inspired by the Riviera's golden age.</p>
+      <button class="btn btn-primary schedule-btn" data-property="Château D'Or">Schedule a Private Viewing</button>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== BESPOKE SERVICES ==================== -->
+<section class="services section-padding" id="services">
+  <div class="container">
+    <h2 class="section-title fade-up">Bespoke <span class="gold">Services</span></h2>
+    <div class="gold-divider lg fade-up"></div>
+    <p class="section-subtitle fade-up">Every detail curated. Every expectation exceeded.</p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card fade-up">
+      <span class="service-icon">&#x1F3E0;</span>
+      <h3>Private Showings</h3>
+      <p>Discreet, personalized tours of the world's most extraordinary properties, tailored to your schedule and preferences.</p>
+    </div>
+    <div class="service-card fade-up">
+      <span class="service-icon">&#x1F481;</span>
+      <h3>Concierge Services</h3>
+      <p>From private jet charters to Michelin-starred dining, our concierge team ensures every aspect of your journey is seamless.</p>
+    </div>
+    <div class="service-card fade-up">
+      <span class="service-icon">&#x2728;</span>
+      <h3>Interior Design</h3>
+      <p>World-renowned designers collaborate to transform your new estate into a personal sanctuary that reflects your vision.</p>
+    </div>
+    <div class="service-card fade-up">
+      <span class="service-icon">&#x1F4CA;</span>
+      <h3>Investment Advisory</h3>
+      <p>Data-driven market intelligence and portfolio strategy from a team with over $500M in luxury real estate transactions.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== AGENT PROFILE ==================== -->
+<section class="agent-section" id="agent">
+  <div class="agent-grid">
+    <div class="agent-image fade-up">
+      <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&q=80" alt="Isabella Torres — Solis Estates" loading="lazy">
+    </div>
+    <div class="agent-info fade-up">
+      <div class="agent-label">Your Trusted Advisor</div>
+      <h2 class="agent-name">Isabella Torres</h2>
+      <div class="agent-title">Platinum Circle Agent &middot; 15+ Years</div>
+      <p class="agent-bio">With a decade and a half of curating the world's finest properties, Isabella Torres has built a reputation for discretion, market mastery, and an unwavering commitment to her clients. Her portfolio spans the most coveted addresses across Malibu, Beverly Hills, Monaco, and Dubai — each transaction a bespoke journey into extraordinary living.</p>
+      <div class="agent-stat">$500M+</div>
+      <div class="agent-stat-label">In Career Sales</div>
+      <div class="agent-cta">
+        <a href="#contact" class="btn btn-primary">Schedule a Consultation</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CLIENT TESTIMONIALS ==================== -->
+<section class="testimonials section-padding" id="testimonials">
+  <div class="container">
+    <h2 class="section-title fade-up">What Our <span class="gold">Clients Say</span></h2>
+    <div class="gold-divider lg fade-up"></div>
+    <p class="section-subtitle fade-up">Trust built through exceptional results.</p>
+    <div class="testimonials-grid">
+      <div class="testimonial-card fade-up">
+        <div class="testimonial-quote">&ldquo;</div>
+        <p class="testimonial-text">Isabella didn't just find us a home — she understood our vision before we could articulate it. The entire process was seamless, private, and utterly refined. Villa Serenity exceeded our every expectation.</p>
+        <div class="testimonial-author">Catherine &amp; James Whitfield</div>
+        <div class="testimonial-property">Villa Serenity, Malibu</div>
+      </div>
+      <div class="testimonial-card fade-up">
+        <div class="testimonial-quote">&ldquo;</div>
+        <p class="testimonial-text">After searching for months with other agencies, one showing with Isabella was all it took. Her network, her negotiation expertise, and her eye for true value are unmatched in Beverly Hills.</p>
+        <div class="testimonial-author">Marcus Delacroix</div>
+        <div class="testimonial-property">Penthouse Nocturne, Beverly Hills</div>
+      </div>
+      <div class="testimonial-card fade-up">
+        <div class="testimonial-quote">&ldquo;</div>
+        <p class="testimonial-text">Cross-continental luxury acquisition is complex. Isabella navigated Monaco's market with the same grace and precision she brings to every client relationship. Absolute professional.</p>
+        <div class="testimonial-author">The Al-Farsi Family</div>
+        <div class="testimonial-property">Château D'Or, Monaco</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FEATURED LISTINGS ==================== -->
+<section class="listings section-padding" id="listings">
+  <div class="container">
+    <h2 class="section-title fade-up">Featured <span class="gold">Listings</span></h2>
+    <div class="gold-divider lg fade-up"></div>
+    <p class="section-subtitle fade-up">Exclusive properties, hand-selected for the discerning.</p>
+  </div>
+  <div class="listings-grid fade-up">
+    <div class="listing-card" data-img="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80">
+      <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=60" alt="Oceanfront Villa" loading="lazy">
+      <div class="listing-overlay"></div>
+      <div class="listing-info">
+        <div class="listing-address">2852 Pacific Coast Hwy, Malibu</div>
+        <div class="listing-price">$12,500,000</div>
+        <div class="listing-stats"><span>6 bed</span><span>8 bath</span><span>7,200 sq.ft</span></div>
+      </div>
+      <div class="listing-view">
+        <button class="btn btn-primary view-listing-btn" data-img="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80">View Listing</button>
+      </div>
+    </div>
+    <div class="listing-card" data-img="https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800&q=80">
+      <img src="https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=600&q=60" alt="Beverly Hills Penthouse" loading="lazy">
+      <div class="listing-overlay"></div>
+      <div class="listing-info">
+        <div class="listing-address">1000 Sunset Blvd, Penthouse 7, Beverly Hills</div>
+        <div class="listing-price">$8,900,000</div>
+        <div class="listing-stats"><span>4 bed</span><span>5 bath</span><span>4,800 sq.ft</span></div>
+      </div>
+      <div class="listing-view">
+        <button class="btn btn-primary view-listing-btn" data-img="https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=1200&q=80">View Listing</button>
+      </div>
+    </div>
+    <div class="listing-card" data-img="https://images.unsplash.com/photo-1600566753086-00f18b491ad1?w=800&q=80">
+      <img src="https://images.unsplash.com/photo-1600566753086-00f18b491ad1?w=600&q=60" alt="Monaco Chateau" loading="lazy">
+      <div class="listing-overlay"></div>
+      <div class="listing-info">
+        <div class="listing-address">7 Avenue d'Ostende, Monaco</div>
+        <div class="listing-price">$22,000,000</div>
+        <div class="listing-stats"><span>10 bed</span><span>12 bath</span><span>14,500 sq.ft</span></div>
+      </div>
+      <div class="listing-view">
+        <button class="btn btn-primary view-listing-btn" data-img="https://images.unsplash.com/photo-1600566753086-00f18b491ad1?w=1200&q=80">View Listing</button>
+      </div>
+    </div>
+    <div class="listing-card" data-img="https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?w=800&q=80">
+      <img src="https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?w=600&q=60" alt="Dubai Penthouse" loading="lazy">
+      <div class="listing-overlay"></div>
+      <div class="listing-info">
+        <div class="listing-address">Burj Residences, Tower 1, Dubai</div>
+        <div class="listing-price">$15,200,000</div>
+        <div class="listing-stats"><span>5 bed</span><span>7 bath</span><span>6,100 sq.ft</span></div>
+      </div>
+      <div class="listing-view">
+        <button class="btn btn-primary view-listing-btn" data-img="https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?w=1200&q=80">View Listing</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CTA ==================== -->
+<section class="cta-section" id="contact">
+  <div class="cta-bg"></div>
+  <div class="cta-content fade-up">
+    <h2 class="cta-title">Your extraordinary home <span class="gold">is waiting.</span></h2>
+    <p class="cta-subtitle">Let Isabella and the Solis Estates team guide you to a property beyond compare.</p>
+    <div class="cta-buttons">
+      <a href="#" class="btn btn-primary schedule-btn" data-property="your extraordinary home">Schedule a Consultation</a>
+      <a href="#listings" class="btn btn-outline">Browse Listings</a>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FOOTER ==================== -->
+<footer class="footer" id="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo">Solis <span>Estates</span></a>
+        <p>Boutique luxury real estate, curating the world's most exceptional addresses for those who demand extraordinary.</p>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="tel:+13105551234">+1 (310) 555-1234</a></li>
+          <li><a href="mailto:isabella@solisestates.com">isabella@solisestates.com</a></li>
+          <li><a href="#">444 N Camden Dr, Beverly Hills, CA 90210</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Regions</h4>
+        <ul>
+          <li><a href="#">Malibu</a></li>
+          <li><a href="#">Beverly Hills</a></li>
+          <li><a href="#">Monaco</a></li>
+          <li><a href="#">Dubai</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Connect</h4>
+        <ul>
+          <li><a href="#" target="_blank">Instagram</a></li>
+          <li><a href="#" target="_blank">LinkedIn</a></li>
+          <li><a href="#" target="_blank">YouTube</a></li>
+          <li><a href="#" target="_blank">WeChat</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Solis Estates. All rights reserved.</span>
+      <p class="mls">MLS&reg; Disclaimer: All information is deemed reliable but not guaranteed. Solis Estates is an equal opportunity provider. All properties subject to prior sale or withdrawal.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ==================== LIGHTBOX ==================== -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose">&times;</button>
+  <img id="lightboxImg" src="" alt="Property Image">
+</div>
+
+<!-- ==================== STICKY MOBILE CTA ==================== -->
+<div class="sticky-cta">
+  <button class="btn btn-primary schedule-btn" data-property="a featured property">Schedule a Private Viewing</button>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  // ==================== NAV SCROLL EFFECT ====================
+  const nav = document.getElementById('nav');
+  let lastScroll = 0;
+
+  function updateNav(){
+    const y = window.scrollY;
+    if(y > 80){
+      nav.classList.add('scrolled');
+    } else {
+      nav.classList.remove('scrolled');
+    }
+    lastScroll = y;
+  }
+
+  window.addEventListener('scroll', updateNav, {passive:true});
+  updateNav();
+
+  // ==================== MOBILE NAV TOGGLE ====================
+  const navToggle = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
+
+  navToggle.addEventListener('click', function(){
+    navLinks.classList.toggle('open');
+    navToggle.classList.toggle('active');
+  });
+
+  // Close nav on link click (mobile)
+  navLinks.querySelectorAll('a').forEach(function(link){
+    link.addEventListener('click', function(){
+      navLinks.classList.remove('open');
+      navToggle.classList.remove('active');
+    });
+  });
+
+  // ==================== PARALLAX ====================
+  const heroBg = document.getElementById('heroBg');
+  const propertyBgs = document.querySelectorAll('.property-bg');
+
+  function updateParallax(){
+    const sy = window.scrollY;
+    const vh = window.innerHeight;
+
+    // Hero parallax
+    if(heroBg){
+      const heroOffset = sy * 0.35;
+      heroBg.style.transform = 'translate3d(0,' + heroOffset + 'px,0)';
+    }
+
+    // Property section parallax
+    propertyBgs.forEach(function(bg){
+      const section = bg.closest('.property-section');
+      if(!section) return;
+      const rect = section.getBoundingClientRect();
+      const sectionTop = rect.top + sy;
+      const relativeY = sy - sectionTop;
+      const speed = parseFloat(section.getAttribute('data-speed')) || 0.4;
+      const offset = relativeY * speed;
+      bg.style.transform = 'translate3d(0,' + offset + 'px,0)';
+    });
+  }
+
+  window.addEventListener('scroll', updateParallax, {passive:true});
+  updateParallax();
+
+  // ==================== SCROLL-TRIGGERED FADE-UP (IntersectionObserver) ====================
+  const fadeEls = document.querySelectorAll('.fade-up');
+
+  if('IntersectionObserver' in window){
+    const observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('visible');
+
+          // Also trigger gold dividers inside
+          const dividers = entry.target.querySelectorAll('.gold-divider');
+          dividers.forEach(function(d){ d.classList.add('visible'); });
+        }
+      });
+    }, {threshold:0.12, rootMargin:'0px 0px -30px 0px'});
+
+    fadeEls.forEach(function(el){ observer.observe(el); });
+
+    // Also observe gold dividers directly if not inside a fade-up
+    document.querySelectorAll('.gold-divider').forEach(function(d){
+      // If not already inside a fade-up being observed
+      if(!d.closest('.fade-up')){
+        observer.observe(d);
+      }
+    });
+  } else {
+    // Fallback: show everything
+    fadeEls.forEach(function(el){ el.classList.add('visible'); });
+    document.querySelectorAll('.gold-divider').forEach(function(d){ d.classList.add('visible'); });
+  }
+
+  // ==================== LIGHTBOX ====================
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightboxImg');
+  const lightboxClose = document.getElementById('lightboxClose');
+
+  // From listing "View Listing" buttons
+  document.querySelectorAll('.view-listing-btn').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
+      const imgUrl = btn.getAttribute('data-img');
+      openLightbox(imgUrl);
+    });
+  });
+
+  // From listing card click (whole card)
+  document.querySelectorAll('.listing-card').forEach(function(card){
+    card.addEventListener('click', function(e){
+      // Don't open if click was on the button (already handled above)
+      if(e.target.closest('.view-listing-btn')) return;
+      const imgUrl = card.getAttribute('data-img') || card.querySelector('img')?.src;
+      if(imgUrl) openLightbox(imgUrl.replace('w=600&q=60','w=1200&q=80'));
+    });
+  });
+
+  function openLightbox(src){
+    if(!src) return;
+    lightboxImg.src = src;
+    lightbox.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox(){
+    lightbox.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  lightboxClose.addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', function(e){
+    if(e.target === lightbox) closeLightbox();
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closeLightbox();
+  });
+
+  // ==================== SCHEDULE VIEWING BUTTONS ====================
+  document.querySelectorAll('.schedule-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      const property = btn.getAttribute('data-property') || 'a property';
+      const name = prompt('Thank you for your interest in ' + property + '. Please enter your name:');
+      if(name && name.trim()){
+        alert('Thank you, ' + name.trim() + '! A member of the Solis Estates concierge team will contact you within 24 hours to arrange your private viewing of ' + property + '.');
+      }
+    });
+  });
+
+  // ==================== SMOOTH SCROLL FOR NAV ANCHORS ====================
+  document.querySelectorAll('a[href^="#"]').forEach(function(anchor){
+    anchor.addEventListener('click', function(e){
+      const href = anchor.getAttribute('href');
+      if(href === '#') return;
+      const target = document.querySelector(href);
+      if(target){
+        e.preventDefault();
+        const offset = 80;
+        const top = target.getBoundingClientRect().top + window.scrollY - offset;
+        window.scrollTo({top:top, behavior:'smooth'});
+      }
+    });
+  });
+
+})();
+</script>
+</body>
+</html>

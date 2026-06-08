@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlowMind — AI Project Intelligence for Modern Teams</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+<style>
+/* ===== RESET & BASE ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:#0b0d17;color:#f1f5f9;line-height:1.6;overflow-x:hidden;min-height:100vh}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+ul{list-style:none}
+
+/* ===== UTILITY ===== */
+.container{width:100%;max-width:1200px;margin:0 auto;padding:0 1.25rem}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* ===== ANIMATED GRID BACKGROUND ===== */
+.hero-grid{position:relative;overflow:hidden}
+.hero-grid::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(99,102,241,.06) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(99,102,241,.06) 1px,transparent 1px);
+  background-size:60px 60px;
+  pointer-events:none;z-index:0
+}
+.hero-grid::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 40%,rgba(99,102,241,.12),transparent 60%);
+  pointer-events:none;z-index:0
+}
+
+/* ===== NAV ===== */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:.75rem 0;transition:background .3s,backdrop-filter .3s}
+nav.scrolled{background:rgba(11,13,23,.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(99,102,241,.15)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between}
+.nav-logo{display:flex;align-items:center;gap:.5rem;font-family:'Space Grotesk',sans-serif;font-size:1.35rem;font-weight:700;color:#f1f5f9}
+.nav-logo-icon{width:2rem;height:2rem;background:linear-gradient(135deg,#6366f1,#06b6d4);border-radius:8px;display:grid;place-items:center;font-size:1.1rem;flex-shrink:0}
+.nav-links{display:none;gap:2rem;align-items:center}
+.nav-links a{font-size:.875rem;font-weight:500;color:#94a3b8;transition:color .2s}
+.nav-links a:hover{color:#f1f5f9}
+.nav-cta{display:none}
+.nav-cta a{display:inline-block;padding:.5rem 1.25rem;background:linear-gradient(135deg,#6366f1,#4f46e5);border-radius:8px;font-size:.875rem;font-weight:600;color:#fff;transition:transform .2s,box-shadow .2s}
+.nav-cta a:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(99,102,241,.4)}
+.hamburger{display:flex;flex-direction:column;gap:5px;cursor:pointer;padding:.25rem;background:none;border:none;z-index:1001}
+.hamburger span{display:block;width:24px;height:2px;background:#f1f5f9;border-radius:2px;transition:transform .3s,opacity .3s}
+.hamburger.active span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.hamburger.active span:nth-child(2){opacity:0}
+.hamburger.active span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+
+/* Mobile menu overlay */
+.mobile-menu{position:fixed;top:0;right:-100%;width:75%;max-width:320px;height:100vh;background:#131627;z-index:999;padding:5rem 2rem 2rem;transition:right .35s cubic-bezier(.4,0,.2,1);border-left:1px solid rgba(99,102,241,.15)}
+.mobile-menu.open{right:0}
+.mobile-menu a{display:block;padding:.75rem 0;color:#94a3b8;font-size:1rem;font-weight:500;border-bottom:1px solid rgba(148,163,184,.08);transition:color .2s}
+.mobile-menu a:hover{color:#f1f5f9}
+.mobile-menu .nav-cta-mobile{margin-top:1.5rem;display:inline-block;padding:.75rem 2rem;background:linear-gradient(135deg,#6366f1,#4f46e5);border-radius:10px;font-weight:600;color:#fff;text-align:center;border-bottom:none}
+.mobile-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:998;opacity:0;pointer-events:none;transition:opacity .35s}
+.mobile-overlay.open{opacity:1;pointer-events:auto}
+
+@media(min-width:768px){
+  .nav-links{display:flex}
+  .nav-cta{display:block}
+  .hamburger{display:none}
+  .mobile-menu,.mobile-overlay{display:none}
+}
+
+/* ===== HERO ===== */
+.hero{padding:6rem 0 4rem;position:relative;z-index:1;min-height:100vh;display:flex;align-items:center}
+.hero-content{position:relative;z-index:2;width:100%}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;padding:.4rem 1rem;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.25);border-radius:100px;font-size:.8rem;color:#a5b4fc;margin-bottom:1.5rem;font-weight:500}
+.hero-badge span{width:6px;height:6px;background:#22c55e;border-radius:50%;display:inline-block;animation:pulse-dot 2s infinite}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.4}}
+.hero h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(2.5rem,7vw,4.5rem);line-height:1.08;letter-spacing:-.02em;color:#f1f5f9;margin-bottom:1.25rem}
+.hero h1 .gradient-text{background:linear-gradient(135deg,#6366f1,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{font-size:clamp(1rem,2vw,1.2rem);color:#94a3b8;max-width:540px;margin-bottom:2rem;line-height:1.7}
+.hero-btns{display:flex;flex-wrap:wrap;gap:1rem;margin-bottom:3rem}
+.btn-primary{display:inline-flex;align-items:center;gap:.5rem;padding:.85rem 2rem;background:linear-gradient(135deg,#6366f1,#4f46e5);border-radius:10px;font-weight:600;font-size:1rem;color:#fff;transition:transform .25s,box-shadow .25s;border:none;cursor:pointer}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(99,102,241,.45)}
+.btn-ghost{display:inline-flex;align-items:center;gap:.5rem;padding:.85rem 2rem;border:1px solid rgba(148,163,184,.25);border-radius:10px;font-weight:600;font-size:1rem;color:#f1f5f9;background:transparent;transition:border-color .25s,background .25s;cursor:pointer}
+.btn-ghost:hover{border-color:#6366f1;background:rgba(99,102,241,.08)}
+
+/* Floating hero dashboard mockup */
+.hero-dashboard{position:relative;z-index:1;margin-top:2.5rem}
+@media(min-width:1024px){
+  .hero .container{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+  .hero-dashboard{margin-top:0}
+}
+.dash-mockup{background:#131627;border-radius:16px;border:1px solid rgba(99,102,241,.15);overflow:hidden;box-shadow:0 20px 80px rgba(0,0,0,.5),0 0 0 1px rgba(99,102,241,.08) inset;animation:float 6s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.dash-mockup-header{display:flex;align-items:center;gap:.5rem;padding:.85rem 1rem;border-bottom:1px solid rgba(148,163,184,.1)}
+.dash-dot{width:10px;height:10px;border-radius:50%}
+.dash-dot.r{background:#ef4444}
+.dash-dot.y{background:#eab308}
+.dash-dot.g{background:#22c55e}
+.dash-mockup-body{display:grid;grid-template-columns:auto 1fr;min-height:240px}
+.dash-sidebar{width:52px;background:rgba(99,102,241,.06);padding:.75rem .5rem;display:flex;flex-direction:column;gap:.6rem;align-items:center;border-right:1px solid rgba(148,163,184,.08)}
+.dash-sidebar span{width:24px;height:24px;border-radius:6px;background:rgba(148,163,184,.08);display:block;animation:sidebar-pulse 3s infinite}
+.dash-sidebar span:nth-child(1){background:rgba(99,102,241,.25)}
+.dash-sidebar span:nth-child(3){animation-delay:.5s}
+.dash-sidebar span:nth-child(4){animation-delay:1s}
+.dash-sidebar span:nth-child(5){animation-delay:1.5s}
+@keyframes sidebar-pulse{0%,100%{opacity:.4}50%{opacity:1}}
+.dash-main{padding:1rem 1rem 1rem 1.25rem;display:flex;flex-direction:column;gap:.75rem;overflow:hidden}
+.dash-row{display:flex;align-items:center;gap:.6rem}
+.dash-avatar{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:.6rem;font-weight:600;color:#fff;flex-shrink:0}
+.dash-bar{height:8px;border-radius:4px;background:rgba(148,163,184,.08);flex:1;overflow:hidden;position:relative}
+.dash-bar-fill{height:100%;border-radius:4px;transition:width 1s ease;position:relative}
+.dash-bar-fill::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);animation:shimmer 2s infinite}
+@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.dash-label{font-size:.65rem;color:#94a3b8;font-weight:500;min-width:60px;flex-shrink:0}
+.dash-status{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dash-card-mini{background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.1);border-radius:8px;padding:.5rem .65rem;display:flex;align-items:center;gap:.5rem}
+.dash-card-mini .dash-label{min-width:auto;font-size:.6rem}
+.dash-progress{width:100%;height:4px;background:rgba(148,163,184,.08);border-radius:2px;overflow:hidden;margin-top:2px}
+.dash-progress-fill{height:100%;border-radius:2px;animation:progress-grow 2s ease-out forwards}
+@keyframes progress-grow{from{width:0}}
+
+/* ===== LOGO CLOUD ===== */
+.logo-cloud{position:relative;z-index:1;padding:3rem 0 4rem}
+.logo-cloud h3{text-align:center;font-size:.8rem;text-transform:uppercase;letter-spacing:.12em;color:#64748b;margin-bottom:2rem;font-weight:500}
+.logo-grid{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:1.5rem 2.5rem}
+.logo-item{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;color:rgba(148,163,184,.45);transition:color .3s,opacity .3s;letter-spacing:-.02em;opacity:.55}
+.logo-item:hover{color:rgba(148,163,184,.8);opacity:1}
+
+/* ===== SECTIONS GENERAL ===== */
+.section{padding:5rem 0;position:relative}
+.section-label{font-size:.75rem;text-transform:uppercase;letter-spacing:.12em;color:#6366f1;font-weight:600;margin-bottom:.5rem}
+.section-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.75rem,4vw,2.75rem);line-height:1.15;letter-spacing:-.02em;margin-bottom:1rem;color:#f1f5f9}
+.section-sub{color:#94a3b8;max-width:580px;font-size:1.05rem;line-height:1.7;margin-bottom:3rem}
+
+/* ===== FEATURES ===== */
+.features-grid{display:grid;grid-template-columns:1fr;gap:1.25rem}
+@media(min-width:640px){.features-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1024px){.features-grid{grid-template-columns:repeat(3,1fr)}}
+.feature-card{background:#1a1d2e;border:1px solid rgba(148,163,184,.08);border-radius:16px;padding:1.75rem;transition:transform .3s,border-color .3s,box-shadow .3s;position:relative;overflow:hidden}
+.feature-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#6366f1,#06b6d4);opacity:0;transition:opacity .3s}
+.feature-card:hover{transform:translateY(-4px);border-color:rgba(99,102,241,.2);box-shadow:0 12px 40px rgba(0,0,0,.3)}
+.feature-card:hover::before{opacity:1}
+.feature-icon{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:1.25rem;margin-bottom:1rem;background:rgba(99,102,241,.1);color:#a5b4fc}
+.feature-card h3{font-size:1.1rem;font-weight:600;margin-bottom:.4rem;color:#f1f5f9}
+.feature-card p{font-size:.88rem;color:#94a3b8;line-height:1.6;margin-bottom:1.25rem}
+.feature-viz{display:flex;align-items:flex-end;gap:4px;height:40px;padding:.25rem 0}
+.feature-viz-bar{flex:1;border-radius:3px 3px 0 0;min-height:4px;transition:height .6s ease}
+.feature-viz-bar.high{background:linear-gradient(to top,#6366f1,#818cf8)}
+.feature-viz-bar.med{background:linear-gradient(to top,#06b6d4,#22d3ee)}
+.feature-viz-bar.low{background:rgba(148,163,184,.2)}
+/* Status indicators */
+.status-indicators{display:flex;gap:.5rem;flex-wrap:wrap}
+.status-chip{display:inline-flex;align-items:center;gap:.35rem;padding:.2rem .65rem;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.12);border-radius:100px;font-size:.7rem;color:#a5b4fc}
+.status-chip.green{background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.15);color:#4ade80}
+.status-chip.cyan{background:rgba(6,182,212,.08);border-color:rgba(6,182,212,.15);color:#22d3ee}
+.progress-mini{height:6px;background:rgba(148,163,184,.08);border-radius:3px;overflow:hidden;margin-top:.5rem}
+.progress-mini-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#6366f1,#06b6d4);animation:progress-grow 1.5s ease-out forwards}
+
+/* ===== DASHBOARD PREVIEW ===== */
+.dashboard-preview{background:linear-gradient(180deg,#0b0d17,#1a1d2e);border-radius:20px;border:1px solid rgba(99,102,241,.12);overflow:hidden;box-shadow:0 25px 80px rgba(0,0,0,.5)}
+.dash-preview-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;border-bottom:1px solid rgba(148,163,184,.08)}
+.dash-preview-header h4{font-size:.9rem;font-weight:600;color:#f1f5f9}
+.dash-preview-header span{font-size:.75rem;color:#6366f1;font-family:'JetBrains Mono',monospace}
+.dash-preview-body{display:grid;grid-template-columns:1fr;gap:0}
+@media(min-width:768px){.dash-preview-body{grid-template-columns:180px 1fr}}
+.dash-preview-sidebar{background:rgba(99,102,241,.04);padding:1rem;border-bottom:1px solid rgba(148,163,184,.08)}
+@media(min-width:768px){.dash-preview-sidebar{border-bottom:none;border-right:1px solid rgba(148,163,184,.08)}}
+.dash-preview-nav-item{display:flex;align-items:center;gap:.6rem;padding:.55rem .7rem;border-radius:8px;font-size:.8rem;color:#94a3b8;transition:background .2s,color .2s;cursor:default}
+.dash-preview-nav-item.active{background:rgba(99,102,241,.1);color:#a5b4fc}
+.dash-preview-nav-item:hover{background:rgba(99,102,241,.06)}
+.dash-preview-main{padding:1.25rem}
+.activity-feed{display:flex;flex-direction:column;gap:.85rem}
+.activity-item{display:flex;align-items:flex-start;gap:.75rem;padding:.65rem .75rem;background:rgba(255,255,255,.02);border-radius:10px;border:1px solid rgba(148,163,184,.04);transition:background .2s,border-color .2s}
+.activity-item:hover{background:rgba(99,102,241,.04);border-color:rgba(99,102,241,.1)}
+.activity-avatar{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:.65rem;font-weight:600;color:#fff;flex-shrink:0}
+.activity-text{flex:1;min-width:0}
+.activity-text p{font-size:.82rem;color:#cbd5e1;line-height:1.4}
+.activity-text p strong{color:#f1f5f9;font-weight:600}
+.activity-text .time{font-size:.7rem;color:#64748b;margin-top:2px}
+.chart-area{display:flex;align-items:flex-end;gap:6px;height:80px;margin-top:.75rem;padding:.5rem 0}
+.chart-bar{flex:1;border-radius:4px 4px 0 0;min-height:6px;transition:height .8s ease;position:relative}
+.chart-bar.indigo{background:linear-gradient(to top,#6366f1,#818cf8)}
+.chart-bar.cyan{background:linear-gradient(to top,#06b6d4,#22d3ee)}
+.chart-bar:hover{opacity:.8}
+.glowing{animation:glow-pulse 2s ease-in-out infinite}
+@keyframes glow-pulse{0%,100%{box-shadow:0 0 8px rgba(99,102,241,.2)}50%{box-shadow:0 0 20px rgba(99,102,241,.5)}}
+
+/* ===== PRICING ===== */
+.pricing-toggle{display:flex;align-items:center;justify-content:center;gap:1rem;margin-bottom:2.5rem}
+.pricing-toggle span{font-size:.9rem;color:#94a3b8;font-weight:500}
+.pricing-toggle .toggle-label.active{color:#f1f5f9}
+.toggle-switch{width:48px;height:26px;background:rgba(148,163,184,.15);border-radius:13px;position:relative;cursor:pointer;transition:background .3s;flex-shrink:0}
+.toggle-switch.active{background:#6366f1}
+.toggle-switch .toggle-knob{width:20px;height:20px;background:#fff;border-radius:50%;position:absolute;top:3px;left:3px;transition:transform .3s;box-shadow:0 2px 4px rgba(0,0,0,.3)}
+.toggle-switch.active .toggle-knob{transform:translateX(22px)}
+.save-badge{display:inline-block;padding:.15rem .5rem;background:rgba(34,197,94,.12);color:#4ade80;border-radius:100px;font-size:.7rem;font-weight:600;margin-left:.35rem}
+.pricing-grid{display:grid;grid-template-columns:1fr;gap:1.5rem;align-items:start}
+@media(min-width:640px){.pricing-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1024px){.pricing-grid{grid-template-columns:repeat(3,1fr)}}
+.pricing-card{background:#1a1d2e;border:1px solid rgba(148,163,184,.08);border-radius:16px;padding:2rem;position:relative;transition:border-color .3s,transform .3s}
+.pricing-card:hover{transform:translateY(-4px)}
+.pricing-card.featured{border-color:#6366f1;box-shadow:0 0 30px rgba(99,102,241,.15),0 0 0 1px rgba(99,102,241,.25);background:linear-gradient(135deg,#1a1d2e,#1e2038)}
+.pricing-card.featured .btn-primary{background:linear-gradient(135deg,#6366f1,#4f46e5)}
+.pricing-popular{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#6366f1,#06b6d4);color:#fff;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:.3rem 1rem;border-radius:100px}
+.pricing-name{font-size:1.1rem;font-weight:600;color:#f1f5f9;margin-bottom:.25rem}
+.pricing-desc{font-size:.82rem;color:#94a3b8;margin-bottom:1.25rem}
+.pricing-amount{font-size:2.75rem;font-weight:700;color:#f1f5f9;font-family:'Space Grotesk',sans-serif;line-height:1}
+.pricing-amount .period{font-size:1rem;font-weight:400;color:#64748b;font-family:'Inter',sans-serif}
+.pricing-features{margin:1.5rem 0;display:flex;flex-direction:column;gap:.7rem}
+.pricing-features li{display:flex;align-items:center;gap:.6rem;font-size:.85rem;color:#cbd5e1}
+.pricing-features li .check{width:18px;height:18px;background:rgba(34,197,94,.12);border-radius:50%;display:grid;place-items:center;color:#22c55e;font-size:.65rem;flex-shrink:0}
+.pricing-features li .muted{color:#64748b}
+.pricing-card .btn-primary,.pricing-card .btn-ghost{width:100%;justify-content:center;margin-top:.5rem}
+.pricing-card .btn-ghost{border-color:rgba(148,163,184,.15)}
+
+/* ===== STATS COUNTER ===== */
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem}
+@media(min-width:768px){.stats-grid{grid-template-columns:repeat(4,1fr)}}
+.stat-item{text-align:center}
+.stat-number{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.75rem,3vw,2.5rem);font-weight:700;color:#f1f5f9;line-height:1.2;margin-bottom:.25rem}
+.stat-number .plus{color:#6366f1}
+.stat-label{font-size:.85rem;color:#64748b}
+
+/* ===== INTEGRATIONS ===== */
+.integrations-scroll-wrap{position:relative}
+.integrations-scroll{display:flex;gap:.75rem;overflow-x:auto;padding:.5rem 0 1rem;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.integrations-scroll::-webkit-scrollbar{display:none}
+.integration-pill{display:inline-flex;align-items:center;gap:.5rem;padding:.55rem 1.1rem;background:#1a1d2e;border:1px solid rgba(148,163,184,.08);border-radius:100px;font-size:.85rem;color:#cbd5e1;white-space:nowrap;transition:border-color .2s,background .2s,transform .2s;flex-shrink:0;cursor:default}
+.integration-pill:hover{border-color:rgba(99,102,241,.25);background:rgba(99,102,241,.06);transform:translateY(-2px)}
+.scroll-btn{position:absolute;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:50%;background:#1a1d2e;border:1px solid rgba(148,163,184,.12);color:#f1f5f9;display:none;place-items:center;cursor:pointer;z-index:2;transition:background .2s}
+.scroll-btn:hover{background:#131627}
+.scroll-btn.left{left:-6px}
+.scroll-btn.right{right:-6px}
+@media(min-width:768px){.scroll-btn{display:grid}}
+
+/* ===== CTA BAND ===== */
+.cta-band{background:linear-gradient(135deg,#0b0d17,#1a1d2e);border:1px solid rgba(99,102,241,.1);border-radius:20px;padding:3rem 2rem;text-align:center;position:relative;overflow:hidden}
+.cta-band::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent,rgba(99,102,241,.04),transparent,rgba(6,182,212,.04),transparent);animation:spin-slow 20s linear infinite;pointer-events:none}
+@keyframes spin-slow{to{transform:rotate(360deg)}}
+.cta-band>*{position:relative;z-index:1}
+.cta-quote{font-size:1.1rem;font-style:italic;color:#cbd5e1;max-width:600px;margin:0 auto 1.5rem;line-height:1.7}
+.cta-author{display:flex;align-items:center;justify-content:center;gap:.75rem;margin-bottom:2rem}
+.cta-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#06b6d4);display:grid;place-items:center;color:#fff;font-weight:700;font-size:.85rem}
+.cta-author-info{text-align:left}
+.cta-author-info .name{font-size:.9rem;font-weight:600;color:#f1f5f9}
+.cta-author-info .role{font-size:.75rem;color:#64748b}
+.cta-band h2{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.5rem,3vw,2rem);margin-bottom:1.5rem;color:#f1f5f9}
+.cta-form{display:flex;flex-wrap:wrap;gap:.75rem;justify-content:center;max-width:480px;margin:0 auto}
+.cta-form input{flex:1;min-width:200px;padding:.8rem 1.2rem;background:rgba(255,255,255,.04);border:1px solid rgba(148,163,184,.15);border-radius:10px;color:#f1f5f9;font-size:.95rem;outline:none;transition:border-color .2s}
+.cta-form input::placeholder{color:#64748b}
+.cta-form input:focus{border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.12)}
+.cta-form .btn-primary{padding:.8rem 1.75rem}
+
+/* ===== FOOTER ===== */
+footer{background:#131627;border-top:1px solid rgba(148,163,184,.06);padding:4rem 0 2rem;margin-top:5rem}
+.footer-grid{display:grid;grid-template-columns:1fr;gap:2rem}
+@media(min-width:640px){.footer-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1024px){.footer-grid{grid-template-columns:2fr 1fr 1fr 1.5fr;gap:3rem}}
+.footer-brand .nav-logo{margin-bottom:.75rem}
+.footer-brand p{font-size:.85rem;color:#64748b;max-width:300px;line-height:1.6}
+.footer-col h4{font-size:.8rem;text-transform:uppercase;letter-spacing:.1em;color:#94a3b8;font-weight:600;margin-bottom:1.25rem}
+.footer-col a{display:block;font-size:.88rem;color:#64748b;padding:.3rem 0;transition:color .2s}
+.footer-col a:hover{color:#f1f5f9}
+.footer-newsletter p{font-size:.85rem;color:#64748b;margin-bottom:1rem;line-height:1.6}
+.footer-newsletter form{display:flex;gap:.5rem}
+.footer-newsletter input{flex:1;padding:.6rem .9rem;background:rgba(255,255,255,.03);border:1px solid rgba(148,163,184,.12);border-radius:8px;color:#f1f5f9;font-size:.85rem;outline:none;min-width:0}
+.footer-newsletter input:focus{border-color:#6366f1}
+.footer-newsletter button{padding:.6rem 1rem;background:#6366f1;border:none;border-radius:8px;color:#fff;font-weight:600;font-size:.85rem;cursor:pointer;transition:background .2s;flex-shrink:0}
+.footer-newsletter button:hover{background:#4f46e5}
+.footer-bottom{display:flex;flex-direction:column;align-items:center;gap:1rem;padding-top:2rem;margin-top:2rem;border-top:1px solid rgba(148,163,184,.06)}
+@media(min-width:640px){.footer-bottom{flex-direction:row;justify-content:space-between}}
+.footer-socials{display:flex;gap:.75rem}
+.footer-socials a{width:36px;height:36px;border-radius:50%;background:rgba(148,163,184,.06);border:1px solid rgba(148,163,184,.08);display:grid;place-items:center;color:#64748b;font-size:.85rem;transition:background .2s,color .2s,border-color .2s}
+.footer-socials a:hover{background:rgba(99,102,241,.12);color:#a5b4fc;border-color:rgba(99,102,241,.2)}
+.footer-bottom p{font-size:.8rem;color:#475569}
+
+/* ===== INTERSECTION OBSERVER ANIMATIONS ===== */
+.fade-up{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
+.fade-up.visible{opacity:1;transform:translateY(0)}
+.fade-up-delay-1{transition-delay:0s}
+.fade-up-delay-2{transition-delay:.1s}
+.fade-up-delay-3{transition-delay:.2s}
+.fade-up-delay-4{transition-delay:.3s}
+
+/* ===== SECTION DIVIDER ===== */
+.section-divider{width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(99,102,241,.15),transparent)}
+</style>
+</head>
+<body>
+
+<!-- ===== NAV ===== -->
+<nav id="navbar">
+  <div class="container nav-inner">
+    <a href="#" class="nav-logo">
+      <span class="nav-logo-icon">⚡</span>
+      FlowMind
+    </a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#integrations">Integrations</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div class="nav-cta">
+      <a href="#">Start Free Trial</a>
+    </div>
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-overlay" id="mobileOverlay"></div>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#features">Features</a>
+  <a href="#pricing">Pricing</a>
+  <a href="#integrations">Integrations</a>
+  <a href="#contact">Contact</a>
+  <a href="#" class="nav-cta-mobile">Start Free Trial</a>
+</div>
+
+<!-- ===== HERO ===== -->
+<section class="hero hero-grid">
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge"><span></span> Now in Public Beta</div>
+      <h1>Your team's<br><span class="gradient-text">chaos, organized.</span></h1>
+      <p>FlowMind uses AI to automatically categorize tasks, predict bottlenecks, and generate standup reports — saving your team an average of <strong style="color:#f1f5f9">47 hours per month</strong>.</p>
+      <div class="hero-btns">
+        <a href="#" class="btn-primary">Start Free Trial →</a>
+        <a href="#" class="btn-ghost">▶ See How It Works</a>
+      </div>
+    </div>
+    <div class="hero-dashboard">
+      <div class="dash-mockup">
+        <div class="dash-mockup-header">
+          <span class="dash-dot r"></span><span class="dash-dot y"></span><span class="dash-dot g"></span>
+          <span style="margin-left:.5rem;font-size:.65rem;color:#64748b;font-family:'JetBrains Mono',monospace">flowmind.ai</span>
+        </div>
+        <div class="dash-mockup-body">
+          <div class="dash-sidebar">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <div class="dash-main">
+            <div class="dash-row">
+              <span class="dash-avatar" style="background:#6366f1">AN</span>
+              <div class="dash-bar"><div class="dash-bar-fill" style="width:78%;background:linear-gradient(90deg,#6366f1,#818cf8)"></div></div>
+              <span class="dash-status" style="background:#22c55e"></span>
+            </div>
+            <div class="dash-row">
+              <span class="dash-avatar" style="background:#06b6d4">SK</span>
+              <div class="dash-bar"><div class="dash-bar-fill" style="width:45%;background:linear-gradient(90deg,#06b6d4,#22d3ee)"></div></div>
+              <span class="dash-status" style="background:#eab308"></span>
+            </div>
+            <div class="dash-row">
+              <span class="dash-avatar" style="background:#f59e0b">ML</span>
+              <div class="dash-bar"><div class="dash-bar-fill" style="width:92%;background:linear-gradient(90deg,#6366f1,#818cf8)"></div></div>
+              <span class="dash-status" style="background:#22c55e"></span>
+            </div>
+            <div class="dash-row">
+              <span class="dash-avatar" style="background:#ef4444">JR</span>
+              <div class="dash-bar"><div class="dash-bar-fill" style="width:60%;background:linear-gradient(90deg,#06b6d4,#22d3ee)"></div></div>
+              <span class="dash-status" style="background:#64748b"></span>
+            </div>
+            <div class="dash-card-mini" style="margin-top:.25rem">
+              <span style="font-size:.7rem;color:#a5b4fc">📊</span>
+              <span class="dash-label">Sprint velocity</span>
+              <span style="font-size:.7rem;color:#22c55e;font-weight:600;margin-left:auto">+24%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== LOGO CLOUD ===== -->
+<section class="logo-cloud">
+  <div class="container">
+    <h3>Trusted by innovative teams</h3>
+    <div class="logo-grid">
+      <span class="logo-item">Acme</span>
+      <span class="logo-item">TechCo</span>
+      <span class="logo-item">BuildRight</span>
+      <span class="logo-item">DataSync</span>
+      <span class="logo-item">CloudNine</span>
+      <span class="logo-item">Peak</span>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ===== FEATURES ===== -->
+<section class="section" id="features">
+  <div class="container">
+    <div class="fade-up">
+      <div class="section-label">Features</div>
+      <h2 class="section-title">Everything your team needs to ship faster</h2>
+      <p class="section-sub">FlowMind connects to your existing tools and uses AI to surface what matters — so you spend less time in meetings and more time building.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card fade-up fade-up-delay-1">
+        <div class="feature-icon">🏷️</div>
+        <h3>Smart Categorization</h3>
+        <p>AI auto-tags tasks, PRs, and issues by priority, team, and sprint — no manual labels needed.</p>
+        <div class="status-indicators">
+          <span class="status-chip">● Design</span>
+          <span class="status-chip green">● Engineering</span>
+          <span class="status-chip cyan">● DevOps</span>
+        </div>
+      </div>
+      <div class="feature-card fade-up fade-up-delay-2">
+        <div class="feature-icon">🔮</div>
+        <h3>Bottleneck Prediction</h3>
+        <p>ML models analyze your workflow and flag likely blockers <em>before</em> they happen.</p>
+        <div class="feature-viz">
+          <div class="feature-viz-bar high" style="height:32px"></div>
+          <div class="feature-viz-bar med" style="height:18px"></div>
+          <div class="feature-viz-bar high" style="height:28px"></div>
+          <div class="feature-viz-bar low" style="height:8px"></div>
+          <div class="feature-viz-bar med" style="height:22px"></div>
+          <div class="feature-viz-bar high" style="height:36px"></div>
+          <div class="feature-viz-bar low" style="height:6px"></div>
+          <div class="feature-viz-bar med" style="height:14px"></div>
+        </div>
+      </div>
+      <div class="feature-card fade-up fade-up-delay-3">
+        <div class="feature-icon">📝</div>
+        <h3>Auto Standups</h3>
+        <p>Generate daily standup summaries from git commits, Slack messages, and ticket updates.</p>
+        <div class="status-indicators">
+          <span class="status-chip green">● 4 updated</span>
+          <span class="status-chip">⏱ 2m saved</span>
+        </div>
+      </div>
+      <div class="feature-card fade-up fade-up-delay-1">
+        <div class="feature-icon">🔗</div>
+        <h3>Cross-Tool Sync</h3>
+        <p>Bi-directional sync across GitHub, Jira, Linear, Notion, and Slack — zero config.</p>
+        <div class="progress-mini"><div class="progress-mini-fill" style="width:100%"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:.65rem;color:#64748b;margin-top:.3rem"><span>97% sync accuracy</span><span>↻</span></div>
+      </div>
+      <div class="feature-card fade-up fade-up-delay-2">
+        <div class="feature-icon">📈</div>
+        <h3>Performance Analytics</h3>
+        <p>Real-time dashboards for cycle time, throughput, burndown, and team health metrics.</p>
+        <div class="feature-viz">
+          <div class="feature-viz-bar med" style="height:14px"></div>
+          <div class="feature-viz-bar high" style="height:26px"></div>
+          <div class="feature-viz-bar med" style="height:18px"></div>
+          <div class="feature-viz-bar high" style="height:34px"></div>
+          <div class="feature-viz-bar med" style="height:22px"></div>
+          <div class="feature-viz-bar high" style="height:30px"></div>
+          <div class="feature-viz-bar med" style="height:16px"></div>
+          <div class="feature-viz-bar high" style="height:38px"></div>
+        </div>
+      </div>
+      <div class="feature-card fade-up fade-up-delay-3">
+        <div class="feature-icon">🎯</div>
+        <h3>Priority Engine</h3>
+        <p>AI ranks your backlog by business impact, dependencies, and team capacity in real time.</p>
+        <div class="status-indicators">
+          <span class="status-chip">P0 Critical</span>
+          <span class="status-chip green">P1 High</span>
+          <span class="status-chip cyan">P2 Medium</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ===== DASHBOARD PREVIEW ===== -->
+<section class="section">
+  <div class="container">
+    <div class="fade-up" style="text-align:center">
+      <div class="section-label">Live Dashboard</div>
+      <h2 class="section-title">See your project in real time</h2>
+      <p class="section-sub" style="margin:0 auto 3rem">Everything you need to stay aligned — from sprint tracking to team velocity.</p>
+    </div>
+    <div class="dashboard-preview fade-up">
+      <div class="dash-preview-header">
+        <h4>📊 Project Nebula — Sprint 14</h4>
+        <span>● Live</span>
+      </div>
+      <div class="dash-preview-body">
+        <div class="dash-preview-sidebar">
+          <div class="dash-preview-nav-item active">📋 Overview</div>
+          <div class="dash-preview-nav-item">📝 Backlog</div>
+          <div class="dash-preview-nav-item">👥 Team</div>
+          <div class="dash-preview-nav-item">📈 Reports</div>
+          <div class="dash-preview-nav-item">⚙️ Settings</div>
+        </div>
+        <div class="dash-preview-main">
+          <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;margin-bottom:1rem">
+            <span style="font-size:.8rem;font-weight:600;color:#f1f5f9">Activity Feed</span>
+            <div style="display:flex;gap:.5rem;align-items:center">
+              <span class="dash-avatar" style="width:26px;height:26px;font-size:.55rem;background:#6366f1">AN</span>
+              <span class="dash-avatar" style="width:26px;height:26px;font-size:.55rem;background:#06b6d4">SK</span>
+              <span class="dash-avatar" style="width:26px;height:26px;font-size:.55rem;background:#f59e0b">ML</span>
+              <span class="dash-avatar" style="width:26px;height:26px;font-size:.55rem;background:#22c55e">+3</span>
+            </div>
+          </div>
+          <div class="activity-feed">
+            <div class="activity-item">
+              <span class="activity-avatar" style="background:#6366f1">AN</span>
+              <div class="activity-text">
+                <p><strong>Alex N.</strong> merged <strong>feat/api-v2</strong> into main</p>
+                <div class="time">2 minutes ago</div>
+              </div>
+              <span class="dash-status" style="background:#22c55e;align-self:center"></span>
+            </div>
+            <div class="activity-item">
+              <span class="activity-avatar" style="background:#06b6d4">SK</span>
+              <div class="activity-text">
+                <p><strong>Sarah K.</strong> moved <strong>Auth refactor</strong> to In Review</p>
+                <div class="time">14 minutes ago</div>
+              </div>
+              <span class="dash-status" style="background:#eab308;align-self:center"></span>
+            </div>
+            <div class="activity-item">
+              <span class="activity-avatar" style="background:#f59e0b">ML</span>
+              <div class="activity-text">
+                <p><strong>Marcus L.</strong> opened <strong>#237</strong> — Fix pagination bug</p>
+                <div class="time">32 minutes ago</div>
+              </div>
+              <span class="dash-status" style="background:#22c55e;align-self:center"></span>
+            </div>
+            <div class="activity-item">
+              <span class="activity-avatar" style="background:#ef4444">JR</span>
+              <div class="activity-text">
+                <p><strong>Jordan R.</strong> commented on <strong>Design system audit</strong></p>
+                <div class="time">1 hour ago</div>
+              </div>
+              <span class="dash-status" style="background:#64748b;align-self:center"></span>
+            </div>
+          </div>
+          <div style="margin-top:1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem">
+            <span style="font-size:.8rem;font-weight:600;color:#f1f5f9">Weekly Velocity</span>
+            <div style="display:flex;gap:.35rem;align-items:center">
+              <span style="width:8px;height:8px;border-radius:2px;background:#6366f1"></span>
+              <span style="font-size:.65rem;color:#64748b">Planned</span>
+              <span style="width:8px;height:8px;border-radius:2px;background:#06b6d4;margin-left:.25rem"></span>
+              <span style="font-size:.65rem;color:#64748b">Completed</span>
+            </div>
+          </div>
+          <div class="chart-area">
+            <div class="chart-bar indigo" style="height:28px"></div>
+            <div class="chart-bar cyan" style="height:22px"></div>
+            <div class="chart-bar indigo" style="height:42px"></div>
+            <div class="chart-bar cyan" style="height:38px"></div>
+            <div class="chart-bar indigo" style="height:34px"></div>
+            <div class="chart-bar cyan" style="height:30px"></div>
+            <div class="chart-bar indigo glowing" style="height:48px"></div>
+            <div class="chart-bar cyan" style="height:44px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ===== STATS ===== -->
+<section class="section">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item fade-up fade-up-delay-1">
+        <div class="stat-number"><span class="counter" data-target="10000">0</span><span class="plus">+</span></div>
+        <div class="stat-label">Teams using FlowMind</div>
+      </div>
+      <div class="stat-item fade-up fade-up-delay-2">
+        <div class="stat-number"><span class="counter" data-target="99.9">0</span>%</div>
+        <div class="stat-label">Uptime Guarantee</div>
+      </div>
+      <div class="stat-item fade-up fade-up-delay-3">
+        <div class="stat-number"><span class="counter" data-target="47">0</span></div>
+        <div class="stat-label">Hours Saved / Month</div>
+      </div>
+      <div class="stat-item fade-up fade-up-delay-4">
+        <div class="stat-number"><span class="counter" data-target="4.9">0</span>/5</div>
+        <div class="stat-label">G2 Rating</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ===== PRICING ===== -->
+<section class="section" id="pricing">
+  <div class="container">
+    <div class="fade-up" style="text-align:center">
+      <div class="section-label">Pricing</div>
+      <h2 class="section-title">Plans that scale with your team</h2>
+      <p class="section-sub" style="margin:0 auto 1.5rem">Start free, upgrade when you need more power. No hidden fees, no surprises.</p>
+    </div>
+    <div class="pricing-toggle fade-up">
+      <span class="toggle-label active" data-period="monthly">Monthly</span>
+      <div class="toggle-switch active" id="pricingToggle" role="button" tabindex="0" aria-label="Toggle billing period">
+        <span class="toggle-knob"></span>
+      </div>
+      <span class="toggle-label" data-period="annual">Annual <span class="save-badge">Save 20%</span></span>
+    </div>
+    <div class="pricing-grid" id="pricingGrid">
+      <div class="pricing-card fade-up fade-up-delay-1">
+        <div class="pricing-name">Starter</div>
+        <div class="pricing-desc">For small teams getting started</div>
+        <div class="pricing-amount"><span class="price" data-monthly="$19" data-annual="$15">$19</span><span class="period">/mo</span></div>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span> Up to 10 team members</li>
+          <li><span class="check">✓</span> Smart categorization</li>
+          <li><span class="check">✓</span> Auto standup summaries</li>
+          <li><span class="check">✓</span> 3 integrations</li>
+          <li><span class="check">✓</span> Basic analytics</li>
+          <li><span class="check" style="background:rgba(100,116,139,.12);color:#64748b">✓</span> <span class="muted">Priority support</span></li>
+        </ul>
+        <a href="#" class="btn-ghost">Get Started</a>
+      </div>
+      <div class="pricing-card featured fade-up fade-up-delay-2">
+        <span class="pricing-popular">Most Popular</span>
+        <div class="pricing-name">Professional</div>
+        <div class="pricing-desc">For growing teams that ship fast</div>
+        <div class="pricing-amount"><span class="price" data-monthly="$49" data-annual="$39">$49</span><span class="period">/mo</span></div>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span> Up to 50 team members</li>
+          <li><span class="check">✓</span> Everything in Starter</li>
+          <li><span class="check">✓</span> Bottleneck prediction</li>
+          <li><span class="check">✓</span> Unlimited integrations</li>
+          <li><span class="check">✓</span> Performance analytics</li>
+          <li><span class="check">✓</span> Priority support</li>
+        </ul>
+        <a href="#" class="btn-primary">Start Free Trial →</a>
+      </div>
+      <div class="pricing-card fade-up fade-up-delay-3">
+        <div class="pricing-name">Enterprise</div>
+        <div class="pricing-desc">For organizations with advanced needs</div>
+        <div class="pricing-amount" style="font-size:2.25rem">Custom<span class="period"></span></div>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span> Unlimited team members</li>
+          <li><span class="check">✓</span> Everything in Professional</li>
+          <li><span class="check">✓</span> Custom AI training</li>
+          <li><span class="check">✓</span> SSO & SAML</li>
+          <li><span class="check">✓</span> Dedicated support</li>
+          <li><span class="check">✓</span> On-premise option</li>
+        </ul>
+        <a href="#" class="btn-ghost">Contact Sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ===== INTEGRATIONS ===== -->
+<section class="section" id="integrations">
+  <div class="container">
+    <div class="fade-up" style="text-align:center">
+      <div class="section-label">Integrations</div>
+      <h2 class="section-title">Works with your stack</h2>
+      <p class="section-sub" style="margin:0 auto 3rem">Connect FlowMind to the tools your team already uses. No complex setup — just click and go.</p>
+    </div>
+    <div class="integrations-scroll-wrap fade-up">
+      <button class="scroll-btn left" id="scrollLeft" aria-label="Scroll left">‹</button>
+      <div class="integrations-scroll" id="integrationsScroll">
+        <span class="integration-pill">💬 Slack</span>
+        <span class="integration-pill">🐙 GitHub</span>
+        <span class="integration-pill">🔵 Jira</span>
+        <span class="integration-pill">📓 Notion</span>
+        <span class="integration-pill">⬡ Linear</span>
+        <span class="integration-pill">🦊 GitLab</span>
+        <span class="integration-pill">📋 Trello</span>
+        <span class="integration-pill">🟢 Asana</span>
+      </div>
+      <button class="scroll-btn right" id="scrollRight" aria-label="Scroll right">›</button>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ===== CTA BAND ===== -->
+<section class="section" id="contact">
+  <div class="container">
+    <div class="cta-band fade-up">
+      <div class="cta-quote">"FlowMind cut our sprint planning time by 60% and caught three production blockers before they hit. It's like having a PM who never sleeps."</div>
+      <div class="cta-author">
+        <div class="cta-avatar">JD</div>
+        <div class="cta-author-info">
+          <div class="name">Jamie Delgado</div>
+          <div class="role">VP of Engineering, BuildRight</div>
+        </div>
+      </div>
+      <h2>Join 10,000+ teams using FlowMind</h2>
+      <form class="cta-form" onsubmit="event.preventDefault();alert('Thanks! We\'ll be in touch.');">
+        <input type="email" placeholder="Enter your work email" required>
+        <button type="submit" class="btn-primary">Get Started →</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo">
+          <span class="nav-logo-icon">⚡</span>
+          FlowMind
+        </a>
+        <p>AI-powered project intelligence for modern teams. Work doesn't have to feel like work.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Product</h4>
+        <a href="#">Features</a>
+        <a href="#">Pricing</a>
+        <a href="#">Integrations</a>
+        <a href="#">Changelog</a>
+        <a href="#">API Docs</a>
+      </div>
+      <div class="footer-col">
+        <h4>Resources</h4>
+        <a href="#">Documentation</a>
+        <a href="#">Blog</a>
+        <a href="#">Community</a>
+        <a href="#">Support</a>
+        <a href="#">Status</a>
+      </div>
+      <div class="footer-col footer-newsletter">
+        <h4>Company</h4>
+        <a href="#">About</a>
+        <a href="#">Careers</a>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <p style="margin-top:1rem;font-size:.85rem;color:#94a3b8;font-weight:600">Stay updated</p>
+        <form onsubmit="event.preventDefault();alert('Subscribed!');">
+          <input type="email" placeholder="Your email">
+          <button type="submit">→</button>
+        </form>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 FlowMind. All rights reserved.</p>
+      <div class="footer-socials">
+        <a href="#" aria-label="Twitter">𝕏</a>
+        <a href="#" aria-label="GitHub">◆</a>
+        <a href="#" aria-label="LinkedIn">◈</a>
+        <a href="#" aria-label="YouTube">▶</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+
+  // ===== NAV SCROLL =====
+  const nav = document.getElementById('navbar');
+  let lastScroll = 0;
+  window.addEventListener('scroll', function(){
+    const y = window.scrollY;
+    if(y > 40){
+      nav.classList.add('scrolled');
+    } else {
+      nav.classList.remove('scrolled');
+    }
+    lastScroll = y;
+  }, {passive:true});
+
+  // ===== MOBILE MENU =====
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const mobileOverlay = document.getElementById('mobileOverlay');
+  function toggleMobile(open){
+    const isOpen = open !== undefined ? open : !mobileMenu.classList.contains('open');
+    mobileMenu.classList.toggle('open', isOpen);
+    mobileOverlay.classList.toggle('open', isOpen);
+    hamburger.classList.toggle('active', isOpen);
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+  }
+  hamburger.addEventListener('click', function(){toggleMobile()});
+  mobileOverlay.addEventListener('click', function(){toggleMobile(false)});
+  mobileMenu.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){toggleMobile(false)});
+  });
+
+  // ===== INTERSECTION OBSERVER =====
+  if('IntersectionObserver' in window){
+    const observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {threshold:0.1, rootMargin:'0px 0px -40px 0px'});
+    document.querySelectorAll('.fade-up').forEach(function(el){observer.observe(el)});
+  } else {
+    document.querySelectorAll('.fade-up').forEach(function(el){el.classList.add('visible')});
+  }
+
+  // ===== COUNTER ANIMATION =====
+  const counters = document.querySelectorAll('.counter');
+  const counterObserver = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        const el = entry.target;
+        const target = parseFloat(el.dataset.target);
+        const isDecimal = target % 1 !== 0;
+        const duration = 2000;
+        const start = performance.now();
+        function update(now){
+          const elapsed = now - start;
+          const progress = Math.min(elapsed / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const current = eased * target;
+          el.textContent = isDecimal ? current.toFixed(1) : Math.floor(current).toLocaleString();
+          if(progress < 1) requestAnimationFrame(update);
+          else el.textContent = isDecimal ? target.toFixed(1) : Math.floor(target).toLocaleString();
+        }
+        requestAnimationFrame(update);
+        counterObserver.unobserve(el);
+      }
+    });
+  }, {threshold:0.3});
+  counters.forEach(function(el){counterObserver.observe(el)});
+
+  // ===== PRICING TOGGLE =====
+  const toggle = document.getElementById('pricingToggle');
+  const labels = document.querySelectorAll('.toggle-label');
+  let isAnnual = true; // default active = monthly visible, but toggle starts active meaning annual... Let me fix:
+  // toggle starts as active, which means "annual" is selected. Let me make default monthly.
+  // Actually the toggle starts with class 'active' (monthly is the default label with class active).
+  // We'll set isAnnual = false initially since monthly is shown.
+  isAnnual = false;
+
+  function updatePricing(annual){
+    document.querySelectorAll('.price').forEach(function(priceEl){
+      priceEl.textContent = annual ? priceEl.dataset.annual : priceEl.dataset.monthly;
+    });
+    labels.forEach(function(lbl){
+      lbl.classList.toggle('active', lbl.dataset.period === (annual ? 'annual' : 'monthly'));
+    });
+    toggle.classList.toggle('active', annual);
+  }
+
+  toggle.addEventListener('click', function(){
+    isAnnual = !isAnnual;
+    updatePricing(isAnnual);
+  });
+  toggle.addEventListener('keydown', function(e){
+    if(e.key === 'Enter' || e.key === ' '){
+      e.preventDefault();
+      isAnnual = !isAnnual;
+      updatePricing(isAnnual);
+    }
+  });
+
+  // ===== INTEGRATIONS SCROLL =====
+  const scrollContainer = document.getElementById('integrationsScroll');
+  const scrollLeftBtn = document.getElementById('scrollLeft');
+  const scrollRightBtn = document.getElementById('scrollRight');
+  if(scrollContainer && scrollLeftBtn && scrollRightBtn){
+    scrollLeftBtn.addEventListener('click', function(){
+      scrollContainer.scrollBy({left:-200, behavior:'smooth'});
+    });
+    scrollRightBtn.addEventListener('click', function(){
+      scrollContainer.scrollBy({left:200, behavior:'smooth'});
+    });
+    // Enable/disable buttons based on scroll position
+    function updateScrollBtns(){
+      const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
+      scrollLeftBtn.style.opacity = scrollContainer.scrollLeft <= 0 ? '0.3' : '1';
+      scrollRightBtn.style.opacity = scrollContainer.scrollLeft >= maxScroll - 1 ? '0.3' : '1';
+    }
+    scrollContainer.addEventListener('scroll', updateScrollBtns);
+    updateScrollBtns();
+    // Also support drag-to-scroll on touch devices
+    let isDown = false, startX, scrollLeft;
+    scrollContainer.addEventListener('mousedown', function(e){
+      isDown = true;
+      startX = e.pageX - scrollContainer.offsetLeft;
+      scrollLeft = scrollContainer.scrollLeft;
+    });
+    scrollContainer.addEventListener('mouseleave', function(){isDown=false});
+    scrollContainer.addEventListener('mouseup', function(){isDown=false});
+    scrollContainer.addEventListener('mousemove', function(e){
+      if(!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - scrollContainer.offsetLeft;
+      const walk = (x - startX) * 1.5;
+      scrollContainer.scrollLeft = scrollLeft - walk;
+    });
+  }
+
+})();
+</script>
+</body>
+</html>

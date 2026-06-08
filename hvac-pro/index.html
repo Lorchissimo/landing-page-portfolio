@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SwiftFix Pro — 24/7 Emergency HVAC &amp; Plumbing Service</title>
+    <meta name="description" content="SwiftFix Pro: 24/7 emergency HVAC and plumbing service. We'll be there in 60 minutes or it's free. Licensed, insured, same-day service. Call (555) 911-FIX.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔧</text></svg>">
+    <style>
+        /* ===== RESET & BASE ===== */
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        html{scroll-behavior:smooth}
+        body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;font-weight:400;color:#1a1a2e;background:#f8f9fa;line-height:1.6;-webkit-font-smoothing:antialiased}
+        img{max-width:100%;display:block;height:auto}
+        a{text-decoration:none;color:inherit}
+        ul{list-style:none}
+        .container{width:100%;max-width:1200px;margin:0 auto;padding:0 20px}
+
+        /* ===== TYPOGRAPHY ===== */
+        h1,h2,h3,h4{font-weight:700;line-height:1.2;color:#1a3a5c}
+        h1{font-size:clamp(2rem,5vw,3.5rem)}
+        h2{font-size:clamp(1.6rem,3.5vw,2.5rem);text-align:center;margin-bottom:0.5em}
+        h2 span{color:#e85d2c}
+        p{font-size:1.05rem;color:#333}
+
+        .section-pad{padding:clamp(3rem,6vw,5rem) 0}
+        .section-subtitle{text-align:center;font-size:1.1rem;color:#555;max-width:650px;margin:0 auto 3rem auto}
+
+        /* ===== TOP EMERGENCY BANNER ===== */
+        .emergency-banner{
+            position:fixed;top:0;left:0;width:100%;z-index:1000;
+            background:#cc0000;color:#fff;
+            padding:10px 16px;
+            display:flex;align-items:center;justify-content:center;gap:12px;
+            font-size:clamp(0.85rem,2vw,1.1rem);font-weight:700;
+            box-shadow:0 2px 12px rgba(0,0,0,.25)
+        }
+        .emergency-banner .pulse-icon{
+            display:inline-flex;align-items:center;justify-content:center;
+            width:28px;height:28px;
+            background:rgba(255,255,255,.2);border-radius:50%;
+            animation:pulse 1.5s ease-in-out infinite
+        }
+        .emergency-banner .pulse-icon svg{width:16px;height:16px;fill:#fff}
+        @keyframes pulse{
+            0%,100%{transform:scale(1);opacity:1}
+            50%{transform:scale(1.15);opacity:.8}
+        }
+        .emergency-banner a{color:#fff;text-decoration:underline;text-underline-offset:3px}
+        .emergency-banner a:hover{color:#ffd6d6}
+
+        /* ===== STICKY NAV ===== */
+        .nav-bar{
+            position:sticky;top:0;z-index:999;
+            background:#fff;border-bottom:1px solid #e0e0e0;
+            padding:0 20px;height:70px;
+            display:flex;align-items:center;justify-content:space-between;
+            transition:box-shadow .2s
+        }
+        .nav-bar.scrolled{box-shadow:0 4px 20px rgba(0,0,0,.08)}
+        .nav-bar .logo{
+            display:flex;align-items:center;gap:10px;
+            font-size:1.35rem;font-weight:800;color:#1a3a5c
+        }
+        .nav-bar .logo svg{width:32px;height:32px;flex-shrink:0}
+        .nav-links{display:flex;align-items:center;gap:8px}
+        .nav-links a{
+            padding:8px 14px;font-size:0.9rem;font-weight:600;color:#1a3a5c;
+            border-radius:6px;transition:background .2s
+        }
+        .nav-links a:hover{background:#eef2f7}
+        .nav-cta{
+            background:#e85d2c;color:#fff !important;padding:10px 22px !important;
+            border-radius:8px !important;font-weight:700 !important;
+            transition:background .2s,transform .15s !important
+        }
+        .nav-cta:hover{background:#d14d20 !important;transform:translateY(-1px)}
+        .nav-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;border:none;background:none}
+        .nav-toggle span{display:block;width:26px;height:3px;background:#1a3a5c;border-radius:2px;transition:all .3s}
+        .nav-toggle.active span:nth-child(1){transform:rotate(45deg) translate(5px,6px)}
+        .nav-toggle.active span:nth-child(2){opacity:0}
+        .nav-toggle.active span:nth-child(3){transform:rotate(-45deg) translate(5px,-6px)}
+
+        /* ===== HERO ===== */
+        .hero{
+            position:relative;min-height:100vh;
+            display:flex;align-items:center;justify-content:center;text-align:center;
+            background:linear-gradient(rgba(26,58,92,.85),rgba(26,58,92,.7)),url('https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=1600&q=80') center/cover no-repeat;
+            overflow:hidden
+        }
+        .hero-content{position:relative;z-index:2;max-width:820px;padding:120px 20px 60px}
+        .hero-badge{
+            display:inline-block;background:rgba(232,93,44,.2);border:1px solid rgba(232,93,44,.4);
+            color:#f8b195;font-weight:700;font-size:0.85rem;padding:6px 18px;border-radius:50px;
+            margin-bottom:1.5rem;letter-spacing:.5px;text-transform:uppercase
+        }
+        .hero h1{color:#fff;margin-bottom:.4em}
+        .hero h1 .highlight{color:#e85d2c}
+        .hero .guarantee{
+            font-size:clamp(1.05rem,2.5vw,1.4rem);font-weight:600;color:#f8b195;
+            margin-bottom:2rem
+        }
+        .hero-ctas{display:flex;flex-wrap:wrap;gap:16px;justify-content:center}
+        .btn{
+            display:inline-flex;align-items:center;gap:10px;
+            padding:16px 36px;font-size:1.1rem;font-weight:700;border-radius:10px;
+            border:none;cursor:pointer;transition:all .2s;
+            text-decoration:none
+        }
+        .btn-primary{background:#e85d2c;color:#fff;box-shadow:0 4px 16px rgba(232,93,44,.35)}
+        .btn-primary:hover{background:#d14d20;transform:translateY(-2px);box-shadow:0 6px 24px rgba(232,93,44,.45)}
+        .btn-primary:active{transform:translateY(0)}
+        .btn-primary svg{fill:#fff;width:20px;height:20px;flex-shrink:0}
+        .btn-secondary{background:rgba(255,255,255,.15);color:#fff;border:2px solid rgba(255,255,255,.4);backdrop-filter:blur(4px)}
+        .btn-secondary:hover{background:rgba(255,255,255,.25);border-color:#fff}
+        .btn-lg{font-size:clamp(1.1rem,2vw,1.35rem);padding:18px 44px}
+        .hero-ctas .btn-sm{font-size:0.95rem;padding:12px 28px}
+
+        /* ===== TRUST BAR ===== */
+        .trust-bar{
+            background:#1a3a5c;color:#fff;
+            padding:clamp(1.5rem,3vw,2.5rem) 0
+        }
+        .trust-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+        .trust-item{
+            text-align:center;padding:10px
+        }
+        .trust-item .trust-icon{font-size:2rem;margin-bottom:6px}
+        .trust-item .trust-label{font-size:0.8rem;text-transform:uppercase;letter-spacing:.8px;opacity:.75;margin-bottom:2px}
+        .trust-item .trust-value{font-size:1rem;font-weight:700}
+
+        /* ===== SERVICES ===== */
+        .services-grid{
+            display:grid;grid-template-columns:repeat(4,1fr);gap:24px
+        }
+        .service-card{
+            background:#fff;border-radius:12px;padding:30px 24px;text-align:center;
+            box-shadow:0 2px 12px rgba(0,0,0,.06);border:1px solid #eee;
+            transition:transform .25s,box-shadow .25s
+        }
+        .service-card:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,0,0,.1)}
+        .service-card .icon-wrap{
+            width:64px;height:64px;margin:0 auto 16px;
+            background:rgba(232,93,44,.1);border-radius:50%;
+            display:flex;align-items:center;justify-content:center
+        }
+        .service-card .icon-wrap svg{width:30px;height:30px;fill:#e85d2c}
+        .service-card h3{font-size:1.15rem;margin-bottom:8px;color:#1a3a5c}
+        .service-card p{font-size:0.92rem;color:#555;line-height:1.5}
+
+        /* ===== BEFORE / AFTER ===== */
+        .ba-section{background:#f0f2f5}
+        .ba-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+        .ba-card{
+            background:#fff;border-radius:12px;overflow:hidden;
+            box-shadow:0 2px 12px rgba(0,0,0,.06);border:1px solid #eee
+        }
+        .ba-card .ba-compare{position:relative;width:100%;aspect-ratio:4/3;overflow:hidden;cursor:ew-resize;user-select:none}
+        .ba-card .ba-compare img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
+        .ba-card .ba-after{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;clip-path:inset(0 50% 0 0)}
+        .ba-card .ba-slider{
+            position:absolute;top:0;left:50%;width:4px;height:100%;
+            background:#fff;transform:translateX(-50%);z-index:5;
+            pointer-events:none;box-shadow:0 0 8px rgba(0,0,0,.3)
+        }
+        .ba-card .ba-slider::before{
+            content:'⟷';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+            background:#fff;color:#1a3a5c;font-size:1.2rem;font-weight:700;
+            width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+            box-shadow:0 2px 8px rgba(0,0,0,.2)
+        }
+        .ba-card .ba-labels{
+            display:flex;justify-content:space-between;padding:12px 16px 14px;
+            font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px
+        }
+        .ba-card .ba-labels .before{color:#1a3a5c}
+        .ba-card .ba-labels .after{color:#e85d2c}
+
+        /* ===== WHY CHOOSE US ===== */
+        .why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+        .why-card{
+            background:#fff;border-radius:12px;padding:36px 28px;text-align:center;
+            box-shadow:0 2px 12px rgba(0,0,0,.06);border:1px solid #eee;
+            transition:transform .25s
+        }
+        .why-card:hover{transform:translateY(-3px)}
+        .why-card .why-icon{font-size:2.8rem;margin-bottom:14px}
+        .why-card h3{font-size:1.15rem;margin-bottom:10px;color:#1a3a5c}
+        .why-card p{font-size:0.92rem;color:#555;line-height:1.5}
+
+        /* ===== REVIEWS ===== */
+        .reviews-section{background:#1a3a5c;color:#fff}
+        .reviews-section h2{color:#fff}
+        .reviews-section .section-subtitle{color:rgba(255,255,255,.7)}
+        .reviews-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+        .review-card{
+            background:rgba(255,255,255,.08);backdrop-filter:blur(4px);
+            border-radius:12px;padding:28px 24px;border:1px solid rgba(255,255,255,.12)
+        }
+        .review-card .stars{color:#ffb83b;font-size:1.3rem;letter-spacing:2px;margin-bottom:10px}
+        .review-card blockquote{font-size:0.95rem;line-height:1.6;color:rgba(255,255,255,.9);font-style:italic;margin-bottom:14px}
+        .review-card .reviewer{display:flex;align-items:center;gap:12px}
+        .review-card .reviewer .avatar{
+            width:42px;height:42px;border-radius:50%;
+            background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;
+            font-weight:700;font-size:1.1rem;color:#f8b195
+        }
+        .review-card .reviewer .name{font-weight:600;font-size:0.9rem}
+        .review-card .reviewer .title{font-size:0.78rem;opacity:.6}
+        .review-rating-badge{
+            display:inline-flex;align-items:center;gap:8px;
+            background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+            padding:8px 20px;border-radius:50px;font-size:0.9rem;font-weight:600;margin-top:2.5rem
+        }
+        .review-rating-badge svg{fill:#ffb83b;width:18px;height:18px}
+
+        /* ===== CTA BAND ===== */
+        .cta-band{
+            background:linear-gradient(135deg,#1a3a5c 0%,#0f2640 100%);
+            color:#fff;text-align:center;padding:clamp(3.5rem,7vw,5.5rem) 0
+        }
+        .cta-band h2{color:#fff;margin-bottom:.3em}
+        .cta-band p{font-size:1.15rem;color:rgba(255,255,255,.7);margin-bottom:2rem}
+        .cta-band .btn-primary{font-size:clamp(1.15rem,2vw,1.4rem);padding:20px 50px}
+        .cta-band .cta-phone{font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:800;color:#e85d2c;display:block;margin-bottom:1rem}
+
+        /* ===== FOOTER ===== */
+        .footer{
+            background:#0f1a2b;color:rgba(255,255,255,.7);padding:clamp(2.5rem,4vw,3.5rem) 0 0
+        }
+        .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:30px;padding-bottom:2rem}
+        .footer h4{color:#fff;font-size:1rem;margin-bottom:1rem}
+        .footer p{font-size:0.9rem;color:rgba(255,255,255,.6);line-height:1.6}
+        .footer a{color:rgba(255,255,255,.65);font-size:0.9rem;transition:color .2s;display:inline-block;margin-bottom:6px}
+        .footer a:hover{color:#e85d2c}
+        .footer .footer-logo{display:flex;align-items:center;gap:8px;font-size:1.2rem;font-weight:800;color:#fff;margin-bottom:12px}
+        .footer .footer-logo svg{width:28px;height:28px;fill:#e85d2c}
+        .footer-bottom{
+            border-top:1px solid rgba(255,255,255,.1);
+            padding:1.5rem 0;text-align:center;font-size:0.82rem;color:rgba(255,255,255,.45)
+        }
+
+        /* ===== STICKY MOBILE BOTTOM CTA ===== */
+        .mobile-sticky-cta{
+            display:none;position:fixed;bottom:0;left:0;width:100%;z-index:999;
+            background:#1a3a5c;padding:12px 16px;
+            box-shadow:0 -4px 20px rgba(0,0,0,.15)
+        }
+        .mobile-sticky-cta a{
+            display:flex;align-items:center;justify-content:center;gap:10px;
+            background:#e85d2c;color:#fff;font-weight:700;font-size:1.1rem;
+            padding:14px;border-radius:10px;text-decoration:none;
+            transition:background .2s
+        }
+        .mobile-sticky-cta a:hover{background:#d14d20}
+        .mobile-sticky-cta a svg{fill:#fff;width:20px;height:20px}
+
+        /* ===== RESPONSIVE ===== */
+        @media(max-width:992px){
+            .trust-grid{grid-template-columns:repeat(2,1fr);gap:16px}
+            .services-grid{grid-template-columns:repeat(2,1fr)}
+            .ba-grid{grid-template-columns:repeat(2,1fr)}
+            .reviews-grid{grid-template-columns:repeat(2,1fr)}
+            .footer-grid{grid-template-columns:1fr 1fr}
+            .why-grid{grid-template-columns:repeat(2,1fr)}
+        }
+        @media(max-width:768px){
+            .nav-links{display:none;position:absolute;top:70px;left:0;width:100%;
+                background:#fff;flex-direction:column;padding:16px 20px;gap:4px;
+                box-shadow:0 8px 24px rgba(0,0,0,.1);border-bottom:1px solid #eee
+            }
+            .nav-links.open{display:flex}
+            .nav-links a{padding:10px 14px;width:100%}
+            .nav-toggle{display:flex}
+            .nav-bar .nav-cta{display:none}
+            .nav-links .nav-cta-mobile{display:block !important;background:#e85d2c;color:#fff !important;text-align:center;margin-top:6px}
+            .services-grid{grid-template-columns:1fr 1fr;gap:16px}
+            .ba-grid{grid-template-columns:1fr}
+            .reviews-grid{grid-template-columns:1fr}
+            .why-grid{grid-template-columns:1fr}
+            .trust-grid{grid-template-columns:repeat(2,1fr)}
+            .footer-grid{grid-template-columns:1fr}
+            .mobile-sticky-cta{display:block}
+            .hero{min-height:90vh}
+            .hero-content{padding-top:100px}
+            .nav-bar .logo{font-size:1.15rem}
+            .nav-bar .logo svg{width:26px;height:26px}
+        }
+        @media(max-width:480px){
+            .services-grid{grid-template-columns:1fr}
+            .trust-grid{grid-template-columns:1fr 1fr;gap:12px}
+            .trust-item .trust-icon{font-size:1.6rem}
+            .btn-lg{padding:14px 30px;font-size:1rem}
+            .section-pad{padding:2.5rem 0}
+        }
+
+        /* ===== LOADING FALLBACK ===== */
+        .hero-loading .hero{background:linear-gradient(rgba(26,58,92,.85),rgba(26,58,92,.7)),#1a3a5c}
+    </style>
+</head>
+<body>
+
+    <!-- ===== TOP EMERGENCY BANNER ===== -->
+    <div class="emergency-banner" role="alert" aria-label="Emergency service banner">
+        <span class="pulse-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.57.57a1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.57a1 1 0 01-.25 1.02l-2.2 2.2z"/></svg>
+        </span>
+        <span><strong>24/7 Emergency Service</strong> — <a href="tel:+1555911FIX">Call (555) 911-FIX</a></span>
+    </div>
+
+    <!-- ===== STICKY NAV ===== -->
+    <nav class="nav-bar" role="navigation" aria-label="Main navigation">
+        <a href="#" class="logo" aria-label="SwiftFix Pro home">
+            <svg viewBox="0 0 24 24" fill="#e85d2c"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/></svg>
+            SwiftFix Pro
+        </a>
+        <div class="nav-links" id="navLinks">
+            <a href="#services">Services</a>
+            <a href="#before-after">Before/After</a>
+            <a href="#reviews">Reviews</a>
+            <a href="#contact">Contact</a>
+            <a href="tel:+1555911FIX" class="nav-cta nav-cta-mobile" style="display:none">📞 Call Now</a>
+        </div>
+        <a href="tel:+1555911FIX" class="nav-cta" aria-label="Call SwiftFix Pro">📞 Call Now</a>
+        <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation menu" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero" id="hero" aria-label="Emergency HVAC and Plumbing hero">
+        <div class="hero-content">
+            <div class="hero-badge">🔧 Licensed &amp; Insured</div>
+            <h1>Emergency <span class="highlight">HVAC &amp; Plumbing</span><br>When You Need It Most</h1>
+            <p class="guarantee">⏱ We'll be there in <strong>60 minutes</strong> or it's <strong>free</strong>. Guaranteed.</p>
+            <div class="hero-ctas">
+                <a href="tel:+1555911FIX" class="btn btn-primary btn-lg" aria-label="Call now for emergency service">
+                    <svg viewBox="0 0 24 24"><path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.57.57a1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.57a1 1 0 01-.25 1.02l-2.2 2.2z"/></svg>
+                    Call (555) 911-FIX
+                </a>
+                <a href="#contact" class="btn btn-secondary btn-lg">Book Online</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== TRUST BAR ===== -->
+    <section class="trust-bar" aria-label="Trust indicators">
+        <div class="container">
+            <div class="trust-grid">
+                <div class="trust-item">
+                    <div class="trust-icon">🛡️</div>
+                    <div class="trust-label">Licensed &amp; Insured</div>
+                    <div class="trust-value">Full Coverage</div>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon">⭐</div>
+                    <div class="trust-label">5-Star Reviews</div>
+                    <div class="trust-value">1,500+ Happy Customers</div>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon">🏆</div>
+                    <div class="trust-label">Experience</div>
+                    <div class="trust-value">40+ Years Combined</div>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon">✅</div>
+                    <div class="trust-label">BBB Rating</div>
+                    <div class="trust-value">A+ Accredited</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SERVICES ===== -->
+    <section class="section-pad" id="services" aria-label="Our services">
+        <div class="container">
+            <h2>Our <span>Services</span></h2>
+            <p class="section-subtitle">From burst pipes to broken AC, our certified technicians handle every emergency with speed and professionalism.</p>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="icon-wrap">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                    </div>
+                    <h3>Emergency Plumbing</h3>
+                    <p>Burst pipes, sewer backups, slab leaks — we respond 24/7 with fully stocked trucks ready for any plumbing emergency.</p>
+                </div>
+                <div class="service-card">
+                    <div class="icon-wrap">
+                        <svg viewBox="0 0 24 24"><path d="M17.66 11.2C17.43 10.9 17.15 10.64 16.89 10.38C16.22 9.78 15.46 9.35 14.82 8.72C13.33 7.26 13 4.85 13.95 3C13 3.23 12.17 3.75 11.46 4.32C8.87 6.4 7.85 10.07 9.07 13.22C9.11 13.32 9.15 13.42 9.15 13.55C9.15 13.77 9 13.97 8.8 14.05C8.57 14.15 8.33 14.09 8.14 13.93C8.08 13.88 8.04 13.83 8 13.76C6.87 12.33 6.69 10.28 7.45 8.64C5.78 10 4.87 12.3 5 14.47C5.06 14.97 5.12 15.47 5.29 15.97C5.43 16.57 5.7 17.17 6 17.7C7.08 19.43 8.95 20.67 10.96 20.92C13.1 21.19 15.39 20.8 16.89 19.32C18.55 17.68 19.2 15.26 17.66 11.2z"/></svg>
+                    </div>
+                    <h3>HVAC Repair</h3>
+                    <p>No heat in winter? AC down in a heatwave? Our NATE-certified techs restore your comfort fast — often same-day.</p>
+                </div>
+                <div class="service-card">
+                    <div class="icon-wrap">
+                        <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+                    </div>
+                    <h3>Drain Cleaning</h3>
+                    <p>Clogged drains, slow sinks, foul odors. We use hydro-jetting and camera inspection to clear and diagnose fast.</p>
+                </div>
+                <div class="service-card">
+                    <div class="icon-wrap">
+                        <svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-1 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+                    </div>
+                    <h3>Water Heaters</h3>
+                    <p>No hot water? We repair and replace all makes — tank, tankless, hybrid. Same-day service on most water heaters.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== BEFORE / AFTER ===== -->
+    <section class="section-pad ba-section" id="before-after" aria-label="Before and after comparisons">
+        <div class="container">
+            <h2>Before <span>&amp;</span> After</h2>
+            <p class="section-subtitle">See the quality of our work. Every job is backed by our satisfaction guarantee and attention to detail.</p>
+            <div class="ba-grid" id="baGrid">
+                <!-- Card 1 -->
+                <div class="ba-card">
+                    <div class="ba-compare" data-slider>
+                        <img src="https://placehold.co/400x300/1a3a5c/fff?text=Before" alt="Before: old HVAC unit" loading="lazy">
+                        <img class="ba-after" src="https://placehold.co/400x300/e85d2c/fff?text=After" alt="After: new HVAC unit" loading="lazy">
+                        <div class="ba-slider"></div>
+                    </div>
+                    <div class="ba-labels">
+                        <span class="before">Before</span>
+                        <span class="after">After</span>
+                    </div>
+                </div>
+                <!-- Card 2 -->
+                <div class="ba-card">
+                    <div class="ba-compare" data-slider>
+                        <img src="https://placehold.co/400x300/1a3a5c/fff?text=Before" alt="Before: old plumbing" loading="lazy">
+                        <img class="ba-after" src="https://placehold.co/400x300/e85d2c/fff?text=After" alt="After: new plumbing" loading="lazy">
+                        <div class="ba-slider"></div>
+                    </div>
+                    <div class="ba-labels">
+                        <span class="before">Before</span>
+                        <span class="after">After</span>
+                    </div>
+                </div>
+                <!-- Card 3 -->
+                <div class="ba-card">
+                    <div class="ba-compare" data-slider>
+                        <img src="https://placehold.co/400x300/1a3a5c/fff?text=Before" alt="Before: old water heater" loading="lazy">
+                        <img class="ba-after" src="https://placehold.co/400x300/e85d2c/fff?text=After" alt="After: new water heater" loading="lazy">
+                        <div class="ba-slider"></div>
+                    </div>
+                    <div class="ba-labels">
+                        <span class="before">Before</span>
+                        <span class="after">After</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== WHY CHOOSE US ===== -->
+    <section class="section-pad" id="why-us" aria-label="Why choose SwiftFix Pro">
+        <div class="container">
+            <h2>Why Choose <span>SwiftFix Pro</span></h2>
+            <p class="section-subtitle">We don't just fix problems — we earn your trust. Here's what sets us apart from every other service.</p>
+            <div class="why-grid">
+                <div class="why-card">
+                    <div class="why-icon">⏱️</div>
+                    <h3>60-Minute Guarantee</h3>
+                    <p>We arrive on time or the service is free. Our dispatch team keeps every tech GPS-tracked and routed for the fastest response in town.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-icon">💰</div>
+                    <h3>Transparent Pricing</h3>
+                    <p>Upfront flat-rate pricing — no hidden fees, no surprise charges. You approve the price before any work begins. Ever.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-icon">👨‍🔧</div>
+                    <h3>Certified Technicians</h3>
+                    <p>Every tech is background-checked, drug-tested, and certified in their trade. Continuous training means you get the latest and best service.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== REVIEWS ===== -->
+    <section class="section-pad reviews-section" id="reviews" aria-label="Customer reviews">
+        <div class="container">
+            <h2>What Our Customers Say</h2>
+            <p class="section-subtitle">Don't take our word for it — hear from real homeowners who count on SwiftFix Pro when it matters most.</p>
+            <div class="reviews-grid">
+                <div class="review-card">
+                    <div class="stars">★★★★★</div>
+                    <blockquote>"Our furnace died at 2 AM on Christmas morning. SwiftFix had a tech at our door in 45 minutes. He had us back up and warm by 3:30. Unbelievable service."</blockquote>
+                    <div class="reviewer">
+                        <div class="avatar">M</div>
+                        <div>
+                            <div class="name">Margaret K.</div>
+                            <div class="title">Homeowner, Oakwood</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="review-card">
+                    <div class="stars">★★★★★</div>
+                    <blockquote>"Called for a burst pipe under the slab. They were here within the hour, Tuesdays the issue, and had it fully repaired same day. Fair price too. These guys are pros."</blockquote>
+                    <div class="reviewer">
+                        <div class="avatar">D</div>
+                        <div>
+                            <div class="name">David R.</div>
+                            <div class="title">Homeowner, Westside</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="review-card">
+                    <div class="stars">★★★★★</div>
+                    <blockquote>"I've used SwiftFix three times now — AC, water heater, and a clogged main line. Every single time they were on time, professional, and priced fairly. I won't call anyone else."</blockquote>
+                    <div class="reviewer">
+                        <div class="avatar">J</div>
+                        <div>
+                            <div class="name">James T.</div>
+                            <div class="title">Homeowner, Riverside</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align:center">
+                <div class="review-rating-badge">
+                    <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                    Rated <strong>4.9 / 5</strong> on Google — 1,500+ Reviews
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CTA BAND ===== -->
+    <section class="cta-band" id="contact" aria-label="Call to action">
+        <div class="container">
+            <p style="font-size:1.05rem;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.5);margin-bottom:.8rem;font-weight:600">Don't Wait Until It's an Emergency</p>
+            <h2>We're Ready When You Are</h2>
+            <p>One call connects you to a live dispatcher. We'll have a truck rolling in minutes.</p>
+            <a href="tel:+1555911FIX" class="cta-phone" aria-label="Call (555) 911-FIX">📞 (555) 911-FIX</a>
+            <a href="tel:+1555911FIX" class="btn btn-primary btn-lg" aria-label="Call now">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="#fff"><path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.57.57a1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.57a1 1 0 01-.25 1.02l-2.2 2.2z"/></svg>
+                Call Now — (555) 911-FIX
+            </a>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer" id="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <a href="#" class="footer-logo" aria-label="SwiftFix Pro home">
+                        <svg viewBox="0 0 24 24"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/></svg>
+                        SwiftFix Pro
+                    </a>
+                    <p>24/7 emergency HVAC and plumbing service. We'll be there in 60 minutes or it's free.<br><br>
+                    <strong>Phone:</strong> <a href="tel:+1555911FIX" style="color:#e85d2c;font-weight:600">(555) 911-FIX</a><br>
+                    <strong>Email:</strong> <a href="mailto:dispatch@swiftfixpro.com">dispatch@swiftfixpro.com</a></p>
+                </div>
+                <div>
+                    <h4>Services</h4>
+                    <a href="#services">Emergency Plumbing</a><br>
+                    <a href="#services">HVAC Repair</a><br>
+                    <a href="#services">Drain Cleaning</a><br>
+                    <a href="#services">Water Heater Service</a><br>
+                    <a href="#services">Sewer Line Repair</a>
+                </div>
+                <div>
+                    <h4>Service Areas</h4>
+                    <span style="font-size:0.9rem;color:rgba(255,255,255,.6);display:block;margin-bottom:6px">Downtown Metro</span>
+                    <span style="font-size:0.9rem;color:rgba(255,255,255,.6);display:block;margin-bottom:6px">Oakwood &amp; Westside</span>
+                    <span style="font-size:0.9rem;color:rgba(255,255,255,.6);display:block;margin-bottom:6px">Riverside &amp; East County</span>
+                    <span style="font-size:0.9rem;color:rgba(255,255,255,.6);display:block;margin-bottom:6px">Lakeview &amp; North Hills</span>
+                    <span style="font-size:0.9rem;color:rgba(255,255,255,.6);display:block">Pleasant Valley</span>
+                </div>
+                <div>
+                    <h4>Licenses</h4>
+                    <span style="font-size:0.9rem;color:rgba(255,255,255,.6);display:block;margin-bottom:6px">Contractor: #HVAC-44128</span>
+                    <span style="font-size:0.9rem;color:rgba(255,255,255,.6);display:block;margin-bottom:6px">Plumbing: #PLM-88912</span>
+                    <span style="font-size:0.9rem;color:rgba(255,255,255,.6);display:block;margin-bottom:6px">EPA Refrigerant: #EPA-5573</span>
+                    <span style="font-size:0.9rem;color:rgba(255,255,255,.6);display:block;margin-bottom:6px">General Liability: $2M</span>
+                    <span style="font-size:0.9rem;color:rgba(255,255,255,.6);display:block">Workers Comp: Current</span>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                &copy; 2026 SwiftFix Pro LLC. All rights reserved. | Licensed &bull; Insured &bull; Bonded
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===== STICKY MOBILE BOTTOM CTA ===== -->
+    <div class="mobile-sticky-cta" aria-label="Mobile call to action">
+        <a href="tel:+1555911FIX" aria-label="Call SwiftFix Pro now">
+            <svg viewBox="0 0 24 24"><path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.57.57a1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.57a1 1 0 01-.25 1.02l-2.2 2.2z"/></svg>
+            Call (555) 911-FIX — 24/7 Emergency
+        </a>
+    </div>
+
+    <!-- ===== JAVASCRIPT ===== -->
+    <script>
+        (function() {
+            'use strict';
+
+            /* ---- Sticky nav shadow ---- */
+            var nav = document.querySelector('.nav-bar');
+            var navOffset = nav.offsetTop;
+            function handleScroll() {
+                if (window.scrollY > navOffset + 10) {
+                    nav.classList.add('scrolled');
+                } else {
+                    nav.classList.remove('scrolled');
+                }
+            }
+            window.addEventListener('scroll', handleScroll, {passive:true});
+            handleScroll();
+
+            /* ---- Mobile nav toggle ---- */
+            var toggleBtn = document.getElementById('navToggle');
+            var navLinks = document.getElementById('navLinks');
+            if (toggleBtn && navLinks) {
+                toggleBtn.addEventListener('click', function() {
+                    var expanded = toggleBtn.getAttribute('aria-expanded') === 'true' ? false : true;
+                    toggleBtn.setAttribute('aria-expanded', expanded);
+                    toggleBtn.classList.toggle('active');
+                    navLinks.classList.toggle('open');
+                });
+                document.querySelectorAll('#navLinks a').forEach(function(link) {
+                    link.addEventListener('click', function() {
+                        toggleBtn.setAttribute('aria-expanded', 'false');
+                        toggleBtn.classList.remove('active');
+                        navLinks.classList.remove('open');
+                    });
+                });
+            }
+
+            /* ---- Before/After slider ---- */
+            var comparers = document.querySelectorAll('[data-slider]');
+            comparers.forEach(function(el) {
+                var afterImg = el.querySelector('.ba-after');
+                var slider = el.querySelector('.ba-slider');
+                var isDragging = false;
+
+                function moveSlider(x) {
+                    var rect = el.getBoundingClientRect();
+                    var pos = Math.max(0, Math.min(1, (x - rect.left) / rect.width));
+                    if (afterImg) {
+                        afterImg.style.clipPath = 'inset(0 ' + ((1 - pos) * 100) + '% 0 0)';
+                    }
+                    if (slider) {
+                        slider.style.left = (pos * 100) + '%';
+                    }
+                }
+
+                function onStart(e) {
+                    isDragging = true;
+                    el.style.cursor = 'grabbing';
+                    var x = e.type.indexOf('touch') === 0 ? e.touches[0].clientX : e.clientX;
+                    moveSlider(x);
+                }
+
+                function onMove(e) {
+                    if (!isDragging) return;
+                    e.preventDefault();
+                    var x = e.type.indexOf('touch') === 0 ? e.touches[0].clientX : e.clientX;
+                    moveSlider(x);
+                }
+
+                function onEnd() {
+                    isDragging = false;
+                    el.style.cursor = 'ew-resize';
+                }
+
+                /* Mouse events */
+                el.addEventListener('mousedown', onStart);
+                window.addEventListener('mousemove', onMove);
+                window.addEventListener('mouseup', onEnd);
+
+                /* Touch events */
+                el.addEventListener('touchstart', onStart, {passive:true});
+                window.addEventListener('touchmove', onMove, {passive:false});
+                window.addEventListener('touchend', onEnd);
+
+                /* Initial position: 50% */
+                moveSlider(el.getBoundingClientRect().left + el.offsetWidth / 2);
+            });
+
+            /* ---- Smooth scroll for nav links ---- */
+            document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+                anchor.addEventListener('click', function(e) {
+                    var targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    var target = document.querySelector(targetId);
+                    if (target) {
+                        e.preventDefault();
+                        var offset = nav.offsetHeight + document.querySelector('.emergency-banner').offsetHeight;
+                        var targetPos = target.getBoundingClientRect().top + window.pageYOffset - offset - 10;
+                        window.scrollTo({top: targetPos, behavior: 'smooth'});
+                    }
+                });
+            });
+
+        })();
+    </script>
+</body>
+</html>

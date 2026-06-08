@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Landing Page Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; background: #0b0d17; color: #f1f5f9; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem 1.5rem; }
+.container { max-width: 1100px; width: 100%; }
+h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; background: linear-gradient(135deg, #6366f1, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.subtitle { font-size: 1.1rem; color: #94a3b8; margin-bottom: 3rem; font-weight: 300; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+.card { background: #131627; border: 1px solid #1e293b; border-radius: 16px; overflow: hidden; transition: all 0.3s ease; text-decoration: none; color: inherit; display: flex; flex-direction: column; }
+.card:hover { transform: translateY(-6px); border-color: #6366f1; box-shadow: 0 12px 40px rgba(99,102,241,0.15); }
+.card-preview { height: 200px; display: flex; align-items: center; justify-content: center; font-size: 3rem; position: relative; overflow: hidden; }
+.card-preview::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 60%, #131627); }
+.card-body { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; }
+.card-body h2 { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.35rem; }
+.card-body .tag { display: inline-block; background: rgba(99,102,241,0.15); color: #a5b4fc; font-size: 0.75rem; font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 999px; margin-bottom: 0.75rem; width: fit-content; text-transform: uppercase; letter-spacing: 0.5px; }
+.card-body p { color: #94a3b8; font-size: 0.9rem; line-height: 1.5; flex: 1; }
+.card-body .layout-info { margin-top: 1rem; font-size: 0.8rem; color: #64748b; border-top: 1px solid #1e293b; padding-top: 0.75rem; }
+.preview-1 { background: linear-gradient(135deg, #1a3a5c, #e85d2c); }
+.preview-2 { background: linear-gradient(135deg, #0a0a0a, #ff6b35); }
+.preview-3 { background: linear-gradient(135deg, #faf6f2, #8ba888); }
+.preview-4 { background: linear-gradient(135deg, #0b0d17, #6366f1); }
+.preview-5 { background: linear-gradient(135deg, #0d0d0d, #c9a96e); }
+.footer { margin-top: 3rem; color: #475569; font-size: 0.85rem; text-align: center; }
+.footer a { color: #818cf8; text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="container">
+<h1>✦ Landing Page Portfolio</h1>
+<p class="subtitle">5 distinct structural languages — 5 different industries — built for conversion</p>
+<div class="grid">
+<a class="card" href="hvac-pro/">
+<div class="card-preview preview-1">🔧</div>
+<div class="card-body">
+<span class="tag">Emergency Service</span>
+<h2>SwiftFix Pro</h2>
+<p>HVAC &amp; Plumbing — high-contrast single-column stack. Trust signals, before/after slider, sticky CTA.</p>
+<div class="layout-info">Single-Column Stacked · Navy + Orange</div>
+</div>
+</a>
+<a class="card" href="fitness-coach/">
+<div class="card-preview preview-2">💪</div>
+<div class="card-body">
+<span class="tag">Personal Training</span>
+<h2>Apex Body Lab</h2>
+<p>Fitness coaching — split-screen dark hero, animated counters, before/after tabs, booking modal.</p>
+<div class="layout-info">Split-Screen · Dark + Orange + Neon</div>
+</div>
+</a>
+<a class="card" href="skincare/">
+<div class="card-preview preview-3">✨</div>
+<div class="card-body">
+<span class="tag">E-Commerce</span>
+<h2>Solace Skincare</h2>
+<p>Boutique editorial — magazine product grid, cart drawer, ingredient spotlight, routine builder.</p>
+<div class="layout-info">Magazine Grid · Cream + Sage + Gold</div>
+</div>
+</a>
+<a class="card" href="saas-flowmind/">
+<div class="card-preview preview-4">⚡</div>
+<div class="card-body">
+<span class="tag">AI SaaS</span>
+<h2>FlowMind</h2>
+<p>Productivity platform — dark dashboard cards, animated mockup, pricing toggle, integration scroll.</p>
+<div class="layout-info">Dashboard Cards · Dark Navy + Indigo</div>
+</div>
+</a>
+<a class="card" href="luxury-real-estate/">
+<div class="card-preview preview-5">🏡</div>
+<div class="card-body">
+<span class="tag">Luxury Real Estate</span>
+<h2>Solis Estates</h2>
+<p>Cinematic estate — full-bleed parallax, gold accents, lightbox gallery, agent profile.</p>
+<div class="layout-info">Cinematic Scroll · Black + Gold</div>
+</div>
+</a>
+</div>
+<div class="footer">
+Built with 🦜 · <a href="https://github.com/Lorchissimo/landing-page-portfolio" target="_blank">GitHub</a>
+</div>
+</div>
+</body>
+</html>

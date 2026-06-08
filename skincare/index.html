@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solace — Skin, Simplified.</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9C%A8%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ===== RESET & BASE ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+body{font-family:'Inter','Helvetica Neue',Arial,sans-serif;font-weight:300;color:#2d2d2d;background:#faf6f2;line-height:1.7;overflow-x:hidden}
+img{max-width:100%;height:auto;display:block}
+a{color:inherit;text-decoration:none}
+ul{list-style:none}
+.container{max-width:1280px;margin:0 auto;padding:0 24px}
+
+/* ===== TYPOGRAPHY ===== */
+.serif{font-family:'Playfair Display',Georgia,serif}
+.serif-italic{font-family:'Playfair Display',Georgia,serif;font-style:italic}
+h1,h2,h3,h4{font-family:'Playfair Display',Georgia,serif;font-weight:500;line-height:1.2;color:#2d2d2d}
+.section-label{font-family:'Inter',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#8ba888;font-weight:500;margin-bottom:12px}
+.section-title{font-size:clamp(28px,4.5vw,48px);margin-bottom:16px}
+.section-sub{font-size:clamp(16px,1.8vw,20px);font-weight:300;color:#666;max-width:600px;line-height:1.6}
+
+/* ===== NAV ===== */
+.site-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;background:rgba(250,246,242,0.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(139,168,136,0.15)}
+.nav-logo{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:24px;font-weight:500;color:#2d2d2d;letter-spacing:-0.5px}
+.nav-links{display:none;gap:28px;font-size:13px;font-weight:400;letter-spacing:1px;text-transform:uppercase}
+.nav-links a{transition:color 0.3s}
+.nav-links a:hover{color:#8ba888}
+.nav-actions{display:flex;align-items:center;gap:16px}
+.cart-btn{position:relative;background:none;border:none;cursor:pointer;padding:8px;color:#2d2d2d;transition:color 0.3s}
+.cart-btn:hover{color:#8ba888}
+.cart-btn svg{width:22px;height:22px;display:block}
+.cart-count{position:absolute;top:2px;right:2px;background:#8ba888;color:#fff;font-size:10px;font-weight:600;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:transform 0.2s}
+.cart-count.bump{transform:scale(1.3)}
+.mobile-menu-btn{background:none;border:none;cursor:pointer;padding:4px;display:flex;flex-direction:column;gap:4px}
+.mobile-menu-btn span{display:block;width:22px;height:2px;background:#2d2d2d;border-radius:2px;transition:all 0.3s}
+@media(min-width:768px){.nav-links{display:flex}.mobile-menu-btn{display:none}}
+@media(min-width:1024px){.site-nav{padding:20px 48px}.nav-logo{font-size:28px}}
+
+/* ===== HERO ===== */
+.hero{min-height:100vh;display:flex;flex-direction:column;padding-top:80px;position:relative;overflow:hidden}
+.hero-inner{display:flex;flex-direction:column;flex:1}
+.hero-content{padding:48px 24px 40px;display:flex;flex-direction:column;justify-content:center;flex:1}
+.hero-tag{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#c9a88e;font-weight:500;margin-bottom:20px}
+.hero-title{font-size:clamp(42px,8vw,90px);font-weight:500;font-style:italic;line-height:1.05;margin-bottom:20px;letter-spacing:-1.5px}
+.hero-title em{font-style:italic;color:#8ba888}
+.hero-sub{font-size:clamp(16px,2vw,22px);font-weight:300;color:#666;max-width:480px;line-height:1.6;margin-bottom:32px}
+.hero-actions{display:flex;flex-wrap:wrap;gap:14px}
+.hero-btn{display:inline-flex;align-items:center;justify-content:center;padding:14px 32px;border-radius:4px;font-size:13px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;transition:all 0.3s;cursor:pointer}
+.hero-btn-primary{background:#8ba888;color:#fff;border:2px solid #8ba888}
+.hero-btn-primary:hover{background:#7a9778;border-color:#7a9778}
+.hero-btn-secondary{background:transparent;color:#2d2d2d;border:2px solid #2d2d2d}
+.hero-btn-secondary:hover{background:#2d2d2d;color:#faf6f2}
+.hero-image{width:100%;height:320px;overflow:hidden;position:relative}
+.hero-image img{width:100%;height:100%;object-fit:cover}
+.hero-scroll-indicator{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);display:none;flex-direction:column;align-items:center;gap:6px;color:#999;font-size:10px;letter-spacing:2px;text-transform:uppercase;animation:float 2s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-6px)}}
+@media(min-width:768px){.hero-inner{flex-direction:row}.hero-content{flex:0 0 50%;padding:80px 48px 80px 48px}.hero-image{flex:0 0 50%;height:auto;position:relative}.hero-image img{position:absolute;top:0;left:0}.hero-scroll-indicator{display:flex}}
+@media(min-width:1024px){.hero-content{padding:80px 64px 80px 64px}}
+
+/* ===== BRAND STORY ===== */
+.brand-story{padding:80px 0;background:#fff}
+.brand-story .container{display:flex;flex-direction:column;gap:40px}
+.brand-story-image{width:100%;height:300px;overflow:hidden;border-radius:2px}
+.brand-story-image img{width:100%;height:100%;object-fit:cover}
+.brand-story-text{max-width:560px}
+.brand-story-text h2{font-size:clamp(26px,3.5vw,40px);margin-bottom:20px;line-height:1.25}
+.brand-story-text p{font-size:16px;line-height:1.8;color:#555;margin-bottom:24px}
+.brand-story-link{display:inline-flex;align-items:center;gap:8px;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#8ba888;font-weight:500;transition:gap 0.3s}
+.brand-story-link:hover{gap:14px}
+.brand-story-link svg{width:16px;height:16px}
+@media(min-width:768px){.brand-story{padding:100px 0}.brand-story .container{flex-direction:row;align-items:center;gap:60px}.brand-story-image{flex:0 0 48%;height:420px}.brand-story-text{flex:0 0 48%}}
+
+/* ===== FEATURED PRODUCTS ===== */
+.featured{padding:80px 0}
+.featured-header{text-align:center;margin-bottom:48px}
+.featured-header .section-sub{margin:0 auto}
+.product-grid{display:grid;grid-template-columns:1fr;gap:24px}
+.product-card{background:#fff;border-radius:2px;overflow:hidden;transition:transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275),box-shadow 0.4s;cursor:pointer;position:relative}
+.product-card:hover{transform:translateY(-6px);box-shadow:0 20px 50px -8px rgba(45,45,45,0.12)}
+.product-card-image{width:100%;height:280px;overflow:hidden;background:#f0ece6;position:relative}
+.product-card-image img{width:100%;height:100%;object-fit:cover;transition:transform 0.6s;will-change:transform}
+.product-card:hover .product-card-image img{transform:scale(1.05)}
+.product-card-body{padding:20px 20px 24px}
+.product-card-body h3{font-style:italic;font-size:18px;margin-bottom:6px;font-weight:500}
+.product-card-desc{font-size:13px;color:#888;line-height:1.5;margin-bottom:12px;font-weight:300}
+.product-card-price{font-size:18px;font-weight:400;color:#2d2d2d;margin-bottom:16px}
+.product-card-price .original{text-decoration:line-through;color:#bbb;font-size:14px;margin-left:8px}
+.add-to-bag{width:100%;padding:12px 20px;background:#8ba888;color:#fff;border:none;border-radius:2px;font-size:12px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:background 0.3s}
+.add-to-bag:hover{background:#7a9778}
+@media(min-width:600px){.product-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:900px){.product-grid{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:1024px){.featured{padding:100px 0}.product-card-image{height:340px}}
+
+/* ===== INGREDIENT SPOTLIGHT ===== */
+.ingredients{padding:80px 0;background:#fff}
+.ingredients-header{text-align:center;margin-bottom:48px}
+.ingredient-item{display:flex;flex-direction:column;gap:24px;padding:32px 0;border-bottom:1px solid rgba(139,168,136,0.15)}
+.ingredient-item:last-child{border-bottom:none}
+.ingredient-visual{width:100%;height:200px;overflow:hidden;border-radius:2px;background:#f0ece6;display:flex;align-items:center;justify-content:center;position:relative}
+.ingredient-visual img{width:100%;height:100%;object-fit:cover}
+.ingredient-visual-icon{font-size:56px;opacity:0.4;color:#8ba888}
+.ingredient-info h3{font-size:24px;margin-bottom:8px;font-weight:500}
+.ingredient-info .ingredient-tag{display:inline-block;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#fff;background:#c9a88e;padding:3px 10px;border-radius:2px;margin-bottom:12px;font-weight:500}
+.ingredient-info p{font-size:15px;color:#555;line-height:1.7}
+@media(min-width:768px){.ingredient-item{flex-direction:row;align-items:center;gap:48px;padding:56px 0}.ingredient-item:nth-child(even){flex-direction:row-reverse}.ingredient-visual{flex:0 0 40%;height:280px}.ingredient-info{flex:0 0 50%}}
+
+/* ===== REVIEWS ===== */
+.reviews{padding:80px 0;background:#faf6f2}
+.reviews-header{text-align:center;margin-bottom:48px}
+.review-grid{display:grid;grid-template-columns:1fr;gap:24px}
+.review-card{background:#fff;padding:28px 24px;border-radius:2px;box-shadow:0 2px 12px rgba(45,45,45,0.04);transition:transform 0.3s}
+.review-card:hover{transform:translateY(-3px)}
+.review-stars{display:flex;gap:3px;margin-bottom:12px}
+.review-stars svg{width:14px;height:14px;fill:#c9a88e}
+.review-text{font-size:15px;line-height:1.7;color:#555;margin-bottom:16px;font-style:italic}
+.review-author{font-size:13px;font-weight:500;color:#2d2d2d}
+.review-badge{display:inline-block;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#8ba888;font-weight:500;margin-left:8px}
+.review-badge::before{content:"•";margin-right:6px;color:#ddd}
+@media(min-width:600px){.review-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:900px){.review-grid{grid-template-columns:repeat(3,1fr)}}
+
+/* ===== ROUTINE BUILDER ===== */
+.routine{padding:80px 0;background:#fff}
+.routine-header{text-align:center;margin-bottom:48px}
+.routine-tabs{display:flex;justify-content:center;gap:0;margin-bottom:40px;border-bottom:1px solid #e8e2da}
+.routine-tab{padding:14px 24px;font-family:'Playfair Display',Georgia,serif;font-size:16px;background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;color:#999;transition:all 0.3s;font-weight:500}
+.routine-tab:hover{color:#2d2d2d}
+.routine-tab.active{color:#8ba888;border-bottom-color:#8ba888}
+.routine-panel{display:none}
+.routine-panel.active{display:block}
+.routine-products{display:grid;grid-template-columns:1fr;gap:20px}
+.routine-product{display:flex;gap:16px;align-items:center;padding:16px;background:#faf6f2;border-radius:2px;transition:background 0.3s}
+.routine-product:hover{background:#f0ece6}
+.routine-product-img{width:70px;height:70px;border-radius:50%;overflow:hidden;flex-shrink:0;background:#e8e2da}
+.routine-product-img img{width:100%;height:100%;object-fit:cover}
+.routine-product-info h4{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:16px;margin-bottom:2px}
+.routine-product-info p{font-size:13px;color:#888}
+.routine-product-cta{margin-left:auto;flex-shrink:0;padding:8px 16px;background:#8ba888;color:#fff;border:none;border-radius:2px;font-size:11px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:background 0.3s}
+.routine-product-cta:hover{background:#7a9778}
+@media(min-width:768px){.routine-products{grid-template-columns:repeat(3,1fr)}.routine-product{flex-direction:column;text-align:center;padding:24px 16px}.routine-product-img{width:90px;height:90px}.routine-product-cta{margin:12px auto 0}.routine-tab{padding:16px 40px;font-size:18px}}
+
+/* ===== NEWSLETTER ===== */
+.newsletter{padding:80px 0;background:#faf6f2;text-align:center}
+.newsletter-content{max-width:520px;margin:0 auto}
+.newsletter h2{font-size:clamp(24px,3vw,36px);margin-bottom:12px}
+.newsletter p{font-size:15px;color:#666;margin-bottom:28px;line-height:1.6}
+.newsletter-form{display:flex;flex-direction:column;gap:12px;max-width:420px;margin:0 auto}
+.newsletter-input{flex:1;padding:14px 18px;border:1px solid #ddd;border-radius:2px;font-family:'Inter',sans-serif;font-size:14px;background:#fff;transition:border-color 0.3s;outline:none;font-weight:300}
+.newsletter-input:focus{border-color:#8ba888}
+.newsletter-btn{padding:14px 32px;background:#8ba888;color:#fff;border:none;border-radius:2px;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:background 0.3s;font-weight:500;white-space:nowrap}
+.newsletter-btn:hover{background:#7a9778}
+.newsletter-error{font-size:12px;color:#d4726a;margin-top:8px;display:none}
+.newsletter-success{font-size:13px;color:#8ba888;margin-top:8px;display:none}
+@media(min-width:600px){.newsletter-form{flex-direction:row}}
+
+/* ===== FOOTER ===== */
+.site-footer{padding:48px 24px;background:#2d2d2d;color:#ccc}
+.footer-grid{display:grid;grid-template-columns:1fr;gap:32px;max-width:1280px;margin:0 auto}
+.footer-col h4{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:16px;color:#faf6f2;margin-bottom:16px}
+.footer-col p{font-size:13px;line-height:1.6}
+.footer-col ul li{margin-bottom:8px}
+.footer-col ul li a{font-size:13px;transition:color 0.3s}
+.footer-col ul li a:hover{color:#8ba888}
+.footer-payment{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.footer-payment svg{width:36px;height:24px}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.08);padding-top:24px;margin-top:32px;text-align:center;font-size:12px;color:#888}
+.footer-logo{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:18px;color:#faf6f2;margin-bottom:8px}
+@media(min-width:600px){.footer-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:900px){.footer-grid{grid-template-columns:repeat(4,1fr)}.site-footer{padding:64px 48px}}
+
+/* ===== CART DRAWER ===== */
+.cart-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(45,45,45,0.4);z-index:200;opacity:0;pointer-events:none;transition:opacity 0.4s}
+.cart-overlay.open{opacity:1;pointer-events:auto}
+.cart-drawer{position:fixed;top:0;right:0;bottom:0;width:100%;max-width:420px;background:#faf6f2;z-index:201;transform:translateX(100%);transition:transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275);display:flex;flex-direction:column;box-shadow:-8px 0 30px rgba(45,45,45,0.1)}
+.cart-drawer.open{transform:translateX(0)}
+.cart-drawer-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid #e8e2da}
+.cart-drawer-header h3{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:20px}
+.cart-close{background:none;border:none;cursor:pointer;padding:4px;color:#2d2d2d;transition:color 0.3s}
+.cart-close:hover{color:#8ba888}
+.cart-close svg{width:20px;height:20px;display:block}
+.cart-drawer-items{flex:1;overflow-y:auto;padding:24px}
+.cart-empty{text-align:center;padding:48px 0;color:#999}
+.cart-empty svg{width:48px;height:48px;margin-bottom:16px;opacity:0.4}
+.cart-empty p{font-size:14px}
+.cart-item{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid #f0ece6}
+.cart-item-img{width:64px;height:64px;border-radius:2px;overflow:hidden;flex-shrink:0;background:#e8e2da}
+.cart-item-img img{width:100%;height:100%;object-fit:cover}
+.cart-item-info{flex:1}
+.cart-item-info h4{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:15px;margin-bottom:4px}
+.cart-item-info p{font-size:13px;color:#888}
+.cart-item-qty{display:flex;align-items:center;gap:8px;margin-top:8px}
+.cart-item-qty button{width:26px;height:26px;border:1px solid #ddd;background:#fff;border-radius:2px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+.cart-item-qty button:hover{background:#8ba888;color:#fff;border-color:#8ba888}
+.cart-item-qty span{font-size:14px;font-weight:400;min-width:20px;text-align:center}
+.cart-item-remove{background:none;border:none;font-size:11px;color:#bbb;cursor:pointer;transition:color 0.3s;letter-spacing:1px;text-transform:uppercase;margin-top:4px}
+.cart-item-remove:hover{color:#d4726a}
+.cart-drawer-footer{border-top:1px solid #e8e2da;padding:20px 24px}
+.cart-total{display:flex;justify-content:space-between;font-size:16px;font-weight:400;margin-bottom:16px}
+.cart-total span:last-child{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-weight:500}
+.checkout-btn{width:100%;padding:14px;background:#8ba888;color:#fff;border:none;border-radius:2px;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:background 0.3s;font-weight:500}
+.checkout-btn:hover{background:#7a9778}
+.checkout-btn:disabled{background:#ccc;cursor:not-allowed}
+
+/* ===== MOBILE BOTTOM NAV ===== */
+.mobile-bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:99;display:flex;background:#fff;border-top:1px solid #eee;padding:8px 0 calc(8px + env(safe-area-inset-bottom,0px));justify-content:space-around}
+.mobile-bottom-nav a,.mobile-bottom-nav button{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;color:#999;font-size:10px;letter-spacing:0.5px;transition:color 0.3s;font-family:'Inter',sans-serif;font-weight:300}
+.mobile-bottom-nav a:hover,.mobile-bottom-nav button:hover{color:#8ba888}
+.mobile-bottom-nav svg{width:20px;height:20px}
+@media(min-width:768px){.mobile-bottom-nav{display:none}}
+body.cart-open{overflow:hidden}
+
+/* ===== ANIMATIONS ===== */
+.fade-in{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease}
+.fade-in.visible{opacity:1;transform:translateY(0)}
+.delay-1{transition-delay:0.1s}
+.delay-2{transition-delay:0.2s}
+.delay-3{transition-delay:0.3s}
+.delay-4{transition-delay:0.4s}
+
+/* ===== NOTIFICATION TOAST ===== */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:#2d2d2d;color:#fff;padding:14px 24px;border-radius:4px;font-size:13px;font-weight:400;z-index:300;opacity:0;pointer-events:none;transition:all 0.4s ease;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
+@media(min-width:768px){.toast{bottom:24px}.mobile-bottom-nav+.toast{bottom:80px}}
+
+/* ===== RESPONSIVE HELPERS ===== */
+@media(max-width:767px){.hide-mobile{display:none!important}}
+@media(min-width:768px){.hide-desktop{display:none!important}}
+</style>
+</head>
+<body>
+
+<!-- ===== NAV ===== -->
+<nav class="site-nav" role="navigation" aria-label="Main navigation">
+  <a href="#" class="nav-logo">Solace</a>
+  <ul class="nav-links">
+    <li><a href="#shop">Shop</a></li>
+    <li><a href="#ingredients">Ingredients</a></li>
+    <li><a href="#reviews">Reviews</a></li>
+    <li><a href="#routine">Routine</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="cart-btn" id="cartToggle" aria-label="Open shopping cart">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      <span class="cart-count" id="cartCount">0</span>
+    </button>
+    <button class="mobile-menu-btn hide-desktop" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="hero">
+  <div class="hero-inner">
+    <div class="hero-content">
+      <p class="hero-tag">Clean Ingredient Skincare</p>
+      <h1 class="hero-title serif-italic">Skin,<br><em>Simplified.</em></h1>
+      <p class="hero-sub">Clean ingredients. Visible results. No compromises.</p>
+      <div class="hero-actions">
+        <a href="#shop" class="hero-btn hero-btn-primary">Shop The Collection</a>
+        <a href="#routine" class="hero-btn hero-btn-secondary">Discover Your Routine</a>
+      </div>
+    </div>
+    <div class="hero-image">
+      <img src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=1200&q=80" alt="Elegant skincare product presentation with natural ingredients" loading="eager">
+    </div>
+  </div>
+  <div class="hero-scroll-indicator">
+    <span>Scroll</span>
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#999" stroke-width="1.5"><path d="M4 6l4 4 4-4"/></svg>
+  </div>
+</section>
+
+<!-- ===== BRAND STORY ===== -->
+<section class="brand-story" id="about">
+  <div class="container">
+    <div class="brand-story-image fade-in">
+      <img src="https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=800&q=80" alt="Botanical skincare ingredients arranged artfully" loading="lazy">
+    </div>
+    <div class="brand-story-text fade-in delay-1">
+      <p class="section-label">Our Philosophy</p>
+      <h2>We believe skincare shouldn't require a <span class="serif-italic" style="color:#8ba888;">chemistry degree</span>.</h2>
+      <p>Solace was born from a simple truth: your skin knows what it needs. We strip away the noise — the endless steps, the unpronounceable ingredients, the empty promises — and leave only what works. Clean, potent ingredients. Transparent formulations. Results you can see and feel.</p>
+      <p>Every product we make starts with a single question: would we put this on our own skin? If the answer isn't an unequivocal yes, it doesn't belong in the bottle.</p>
+      <a href="#ingredients" class="brand-story-link">
+        Our Philosophy
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FEATURED PRODUCTS ===== -->
+<section class="featured" id="shop">
+  <div class="container">
+    <div class="featured-header fade-in">
+      <p class="section-label">The Collection</p>
+      <h2 class="section-title">Featured <span class="serif-italic" style="color:#8ba888;">Products</span></h2>
+      <p class="section-sub">Thoughtfully formulated essentials for every skin story.</p>
+    </div>
+    <div class="product-grid" id="productGrid"></div>
+  </div>
+</section>
+
+<!-- ===== INGREDIENT SPOTLIGHT ===== -->
+<section class="ingredients" id="ingredients">
+  <div class="container">
+    <div class="ingredients-header fade-in">
+      <p class="section-label">Ingredient Spotlight</p>
+      <h2 class="section-title">Science meets <span class="serif-italic" style="color:#8ba888;">botanical</span></h2>
+      <p class="section-sub">Every ingredient in our formulations serves a purpose — backed by research, proven by results.</p>
+    </div>
+
+    <div class="ingredient-item fade-in">
+      <div class="ingredient-visual">
+        <img src="https://images.unsplash.com/photo-1612392157974-6fbd36af1f4f?w=800&q=80" alt="Hyaluronic Acid botanical representation" loading="lazy">
+      </div>
+      <div class="ingredient-info">
+        <span class="ingredient-tag">Hydration</span>
+        <h3>Hyaluronic Acid</h3>
+        <p>Nature's moisture magnet, hyaluronic acid can hold up to 1,000 times its weight in water. We use multi-molecular-weight hyaluronic acid to hydrate every layer of your skin — from the surface deep into the dermis — delivering plump, bouncy, dewy skin without the heaviness.</p>
+      </div>
+    </div>
+
+    <div class="ingredient-item fade-in delay-1">
+      <div class="ingredient-visual">
+        <img src="https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=800&q=80" alt="Vitamin C brightening serum ingredients" loading="lazy">
+      </div>
+      <div class="ingredient-info">
+        <span class="ingredient-tag">Brightening</span>
+        <h3>Vitamin C (L-Ascorbic Acid)</h3>
+        <p>A potent antioxidant that defends against environmental stressors while brightening the complexion. Our stabilized L-ascorbic acid formulation delivers maximum efficacy — fading dark spots, boosting collagen production, and restoring your skin's natural luminosity.</p>
+      </div>
+    </div>
+
+    <div class="ingredient-item fade-in delay-2">
+      <div class="ingredient-visual">
+        <img src="https://images.unsplash.com/photo-1586173916215-9e194b5e14d5?w=800&q=80" alt="Niacinamide formulation ingredients" loading="lazy">
+      </div>
+      <div class="ingredient-info">
+        <span class="ingredient-tag">Balance</span>
+        <h3>Niacinamide (Vitamin B3)</h3>
+        <p>The multitasking powerhouse. Niacinamide works to strengthen the skin barrier, minimize the appearance of pores, regulate oil production, and improve uneven skin tone. It's the universal ingredient that plays well with everything — because great skin doesn't need to be complicated.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== REVIEWS ===== -->
+<section class="reviews" id="reviews">
+  <div class="container">
+    <div class="reviews-header fade-in">
+      <p class="section-label">Testimonials</p>
+      <h2 class="section-title">What our <span class="serif-italic" style="color:#8ba888;">community</span> says</h2>
+      <p class="section-sub">Hear from real people who have made Solace part of their daily ritual.</p>
+    </div>
+    <div class="review-grid" id="reviewGrid"></div>
+  </div>
+</section>
+
+<!-- ===== ROUTINE BUILDER ===== -->
+<section class="routine" id="routine">
+  <div class="container">
+    <div class="routine-header fade-in">
+      <p class="section-label">Routine Builder</p>
+      <h2 class="section-title">Your perfect <span class="serif-italic" style="color:#8ba888;">ritual</span></h2>
+      <p class="section-sub">Three simple steps. Transformative results. Build your personalized skincare routine.</p>
+    </div>
+    <div class="routine-tabs fade-in">
+      <button class="routine-tab active" data-tab="cleanse">Step 01 — Cleanse</button>
+      <button class="routine-tab" data-tab="treat">Step 02 — Treat</button>
+      <button class="routine-tab" data-tab="moisturize">Step 03 — Moisturize</button>
+    </div>
+
+    <div class="routine-panel active" id="panel-cleanse">
+      <div class="routine-products">
+        <div class="routine-product">
+          <div class="routine-product-img"><img src="https://placehold.co/150x150/faf6f2/8ba888?text=Cleanser" alt="Morning Dew Cleanser" loading="lazy"></div>
+          <div class="routine-product-info">
+            <h4>Morning Dew Cleanser</h4>
+            <p>A gentle, pH-balanced gel cleanser that removes impurities without stripping.</p>
+          </div>
+          <button class="routine-product-cta" data-product="Morning Dew Cleanser" data-price="38">Add — $38</button>
+        </div>
+        <div class="routine-product">
+          <div class="routine-product-img"><img src="https://placehold.co/150x150/faf6f2/c9a88e?text=Exfoliant" alt="Silk Enzyme Mask" loading="lazy"></div>
+          <div class="routine-product-info">
+            <h4>Silk Enzyme Mask</h4>
+            <p>Gentle enzymatic exfoliation — use 2-3 times weekly for a refined, glowing complexion.</p>
+          </div>
+          <button class="routine-product-cta" data-product="Silk Enzyme Mask" data-price="32">Add — $32</button>
+        </div>
+        <div class="routine-product">
+          <div class="routine-product-img"><img src="https://placehold.co/150x150/faf6f2/8ba888?text=Oil+Cleanser" alt="Golden Glow Oil" loading="lazy"></div>
+          <div class="routine-product-info">
+            <h4>Golden Glow Oil</h4>
+            <p>Use as a first cleanse or treatment oil to dissolve makeup and nurture the skin barrier.</p>
+          </div>
+          <button class="routine-product-cta" data-product="Golden Glow Oil" data-price="48">Add — $48</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="routine-panel" id="panel-treat">
+      <div class="routine-products">
+        <div class="routine-product">
+          <div class="routine-product-img"><img src="https://placehold.co/150x150/faf6f2/8ba888?text=Serum" alt="Night Renewal Serum" loading="lazy"></div>
+          <div class="routine-product-info">
+            <h4>Night Renewal Serum</h4>
+            <p>A concentrated overnight treatment that supports your skin's natural repair cycle.</p>
+          </div>
+          <button class="routine-product-cta" data-product="Night Renewal Serum" data-price="68">Add — $68</button>
+        </div>
+        <div class="routine-product">
+          <div class="routine-product-img"><img src="https://placehold.co/150x150/faf6f2/c9a88e?text=Eye+Cream" alt="Eye Revival Cream" loading="lazy"></div>
+          <div class="routine-product-info">
+            <h4>Eye Revival Cream</h4>
+            <p>Target fine lines and puffiness with this peptide-rich eye treatment.</p>
+          </div>
+          <button class="routine-product-cta" data-product="Eye Revival Cream" data-price="44">Add — $44</button>
+        </div>
+        <div class="routine-product">
+          <div class="routine-product-img"><img src="https://placehold.co/150x150/faf6f2/8ba888?text=Vitamin+C" alt="Vitamin C Serum" loading="lazy"></div>
+          <div class="routine-product-info">
+            <h4>Vitamin C Brightening Drops</h4>
+            <p>A lightweight, fast-absorbing vitamin C serum for morning radiance.</p>
+          </div>
+          <button class="routine-product-cta" data-product="Vitamin C Brightening Drops" data-price="58">Add — $58</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="routine-panel" id="panel-moisturize">
+      <div class="routine-products">
+        <div class="routine-product">
+          <div class="routine-product-img"><img src="https://placehold.co/150x150/faf6f2/8ba888?text=Moisturizer" alt="Cloud Barrier Moisturizer" loading="lazy"></div>
+          <div class="routine-product-info">
+            <h4>Cloud Barrier Moisturizer</h4>
+            <p>A weightless water-gel cream that locks in hydration without clogging pores.</p>
+          </div>
+          <button class="routine-product-cta" data-product="Cloud Barrier Moisturizer" data-price="52">Add — $52</button>
+        </div>
+        <div class="routine-product">
+          <div class="routine-product-img"><img src="https://placehold.co/150x150/faf6f2/c9a88e?text=Face+Oil" alt="Golden Glow Oil" loading="lazy"></div>
+          <div class="routine-product-info">
+            <h4>Golden Glow Oil</h4>
+            <p>A luxurious blend of botanicals that seals in moisture and imparts a luminous finish.</p>
+          </div>
+          <button class="routine-product-cta" data-product="Golden Glow Oil" data-price="48">Add — $48</button>
+        </div>
+        <div class="routine-product">
+          <div class="routine-product-img"><img src="https://placehold.co/150x150/faf6f2/8ba888?text=Night+Cream" alt="Night Renewal Serum" loading="lazy"></div>
+          <div class="routine-product-info">
+            <h4>Night Renewal Serum</h4>
+            <p>Apply as the final step in your evening routine for deep overnight nourishment.</p>
+          </div>
+          <button class="routine-product-cta" data-product="Night Renewal Serum" data-price="68">Add — $68</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== NEWSLETTER ===== -->
+<section class="newsletter" id="newsletter">
+  <div class="container newsletter-content fade-in">
+    <p class="section-label">Stay Connected</p>
+    <h2>Get <span class="serif-italic" style="color:#8ba888;">10% off</span> your first order</h2>
+    <p>Join the Solace community and be the first to know about new formulations, exclusive drops, and skincare wisdom. Your journey to simpler, healthier skin starts here.</p>
+    <form class="newsletter-form" id="newsletterForm" novalidate>
+      <input type="email" class="newsletter-input" id="newsletterEmail" placeholder="Enter your email address" required aria-label="Email address">
+      <button type="submit" class="newsletter-btn">Subscribe</button>
+    </form>
+    <p class="newsletter-error" id="newsletterError">Please enter a valid email address.</p>
+    <p class="newsletter-success" id="newsletterSuccess">Thank you! Check your inbox for your welcome gift.</p>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="site-footer" id="footer">
+  <div class="footer-grid">
+    <div class="footer-col">
+      <p class="footer-logo">Solace</p>
+      <p style="font-size:13px;line-height:1.7;max-width:260px">Clean ingredients. Visible results. No compromises. Skincare, simplified.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Explore</h4>
+      <ul>
+        <li><a href="#shop">Shop All</a></li>
+        <li><a href="#ingredients">Ingredients</a></li>
+        <li><a href="#routine">Routine Builder</a></li>
+        <li><a href="#about">About Us</a></li>
+        <li><a href="#reviews">Reviews</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <ul>
+        <li><a href="#">FAQ</a></li>
+        <li><a href="#">Shipping &amp; Delivery</a></li>
+        <li><a href="#">Returns &amp; Exchanges</a></li>
+        <li><a href="#">Contact Us</a></li>
+        <li><a href="#">Track Order</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Payment</h4>
+      <p style="font-size:13px;margin-bottom:12px">Secure checkout. We accept all major cards.</p>
+      <div class="footer-payment">
+        <svg viewBox="0 0 36 24" fill="none" stroke="#888" stroke-width="1.2"><rect x="1" y="1" width="34" height="22" rx="3"/><text x="8" y="17" font-size="9" fill="#888" font-family="sans-serif" font-weight="600">VISA</text></svg>
+        <svg viewBox="0 0 36 24" fill="none" stroke="#888" stroke-width="1.2"><rect x="1" y="1" width="34" height="22" rx="3"/><text x="5" y="17" font-size="8" fill="#888" font-family="sans-serif" font-weight="600">MC</text></svg>
+        <svg viewBox="0 0 36 24" fill="none" stroke="#888" stroke-width="1.2"><rect x="1" y="1" width="34" height="22" rx="3"/><text x="6" y="17" font-size="8" fill="#888" font-family="sans-serif" font-weight="600">AMEX</text></svg>
+        <svg viewBox="0 0 36 24" fill="none" stroke="#888" stroke-width="1.2"><rect x="1" y="1" width="34" height="22" rx="3"/><text x="5" y="17" font-size="8" fill="#888" font-family="sans-serif" font-weight="600">PP</text></svg>
+        <svg viewBox="0 0 36 24" fill="none" stroke="#888" stroke-width="1.2"><rect x="1" y="1" width="34" height="22" rx="3"/><text x="4" y="17" font-size="8" fill="#888" font-family="sans-serif" font-weight="600">AP</text></svg>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2026 Solace. All rights reserved.</p>
+  </div>
+</footer>
+
+<!-- ===== CART OVERLAY ===== -->
+<div class="cart-overlay" id="cartOverlay"></div>
+
+<!-- ===== CART DRAWER ===== -->
+<aside class="cart-drawer" id="cartDrawer" role="dialog" aria-label="Shopping Cart">
+  <div class="cart-drawer-header">
+    <h3>Your Bag</h3>
+    <button class="cart-close" id="cartClose" aria-label="Close cart">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="cart-drawer-items" id="cartItems">
+    <div class="cart-empty">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      <p>Your bag is empty</p>
+    </div>
+  </div>
+  <div class="cart-drawer-footer">
+    <div class="cart-total">
+      <span>Total</span>
+      <span id="cartTotal">$0</span>
+    </div>
+    <button class="checkout-btn" id="checkoutBtn" disabled>Checkout</button>
+  </div>
+</aside>
+
+<!-- ===== TOAST NOTIFICATION ===== -->
+<div class="toast" id="toast"></div>
+
+<!-- ===== MOBILE BOTTOM NAV ===== -->
+<nav class="mobile-bottom-nav" aria-label="Mobile navigation">
+  <a href="#hero">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Home
+  </a>
+  <a href="#shop">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+    Shop
+  </a>
+  <button id="mobileCartBtn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+    Bag
+  </button>
+  <a href="#routine">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+    Routine
+  </a>
+  <a href="#newsletter">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+    Connect
+  </a>
+</nav>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ===== PRODUCT DATA ===== */
+  const PRODUCTS = [
+    { id:1, name:'Morning Dew Cleanser', price:38, desc:'Gentle, pH-balanced gel cleanser that removes impurities without stripping.', img:'https://placehold.co/600x800/faf6f2/8ba888?text=Morning+Dew+Cleanser' },
+    { id:2, name:'Cloud Barrier Moisturizer', price:52, desc:'Weightless water-gel cream that locks in hydration without clogging pores.', img:'https://placehold.co/600x800/faf6f2/8ba888?text=Cloud+Barrier+Moisturizer' },
+    { id:3, name:'Night Renewal Serum', price:68, desc:'Concentrated overnight treatment that supports your skin\'s natural repair cycle.', img:'https://placehold.co/600x800/faf6f2/8ba888?text=Night+Renewal+Serum' },
+    { id:4, name:'Eye Revival Cream', price:44, desc:'Peptide-rich eye treatment targeting fine lines, puffiness, and dark circles.', img:'https://placehold.co/600x800/faf6f2/8ba888?text=Eye+Revival+Cream' },
+    { id:5, name:'Silk Enzyme Mask', price:32, desc:'Gentle enzymatic exfoliation for a refined, glowing complexion.', img:'https://placehold.co/600x800/faf6f2/8ba888?text=Silk+Enzyme+Mask' },
+    { id:6, name:'Golden Glow Oil', price:48, desc:'Luxe botanical face oil that seals in moisture and imparts luminous radiance.', img:'https://placehold.co/600x800/faf6f2/8ba888?text=Golden+Glow+Oil' }
+  ];
+
+  /* ===== REVIEW DATA ===== */
+  const REVIEWS = [
+    { text:'\"I\'ve tried countless skincare lines, but Solace is different. My skin has never looked this calm and radiant. The Cloud Barrier Moisturizer is absolutely unmatched.\"', author:'Emma R.', badge:'Verified Buyer', stars:5 },
+    { text:'\"The Night Renewal Serum transformed my skin in just two weeks. Fine lines are visibly reduced, and my complexion looks rejuvenated. Worth every penny.\"', author:'James K.', badge:'Verified Buyer', stars:5 },
+    { text:'\"Finally, a brand that delivers on its promises. The ingredient transparency and beautiful formulations make me feel good about what I\'m putting on my skin.\"', author:'Sophia L.', badge:'Verified Buyer', stars:5 }
+  ];
+
+  /* ===== RENDER PRODUCTS ===== */
+  function renderProducts(){
+    const grid = document.getElementById('productGrid');
+    grid.innerHTML = PRODUCTS.map(p => `
+      <div class="product-card fade-in">
+        <div class="product-card-image">
+          <img src="${p.img}" alt="${p.name}" loading="lazy">
+        </div>
+        <div class="product-card-body">
+          <h3 class="serif-italic">${p.name}</h3>
+          <p class="product-card-desc">${p.desc}</p>
+          <p class="product-card-price">$${p.price}</p>
+          <button class="add-to-bag" data-product="${p.name}" data-price="${p.price}">Add to Bag</button>
+        </div>
+      </div>
+    `).join('');
+
+    // Observe fade-ins for products
+    grid.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+  }
+
+  /* ===== RENDER REVIEWS ===== */
+  function renderReviews(){
+    const grid = document.getElementById('reviewGrid');
+    grid.innerHTML = REVIEWS.map(r => `
+      <div class="review-card fade-in">
+        <div class="review-stars">${'<svg viewBox="0 0 20 20"><polygon points="10,1 12.5,7.5 19,8 14,12.5 15.5,19 10,15.5 4.5,19 6,12.5 1,8 7.5,7.5"/></svg>'.repeat(r.stars)}</div>
+        <p class="review-text">${r.text}</p>
+        <p class="review-author">${r.author}<span class="review-badge">${r.badge}</span></p>
+      </div>
+    `).join('');
+    grid.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+  }
+
+  /* ===== FADE-IN OBSERVER ===== */
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('visible');
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { threshold:0.1, rootMargin:'0px 0px -40px 0px' });
+
+  document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+
+  /* ===== CART STATE ===== */
+  let cart = JSON.parse(localStorage.getItem('solace_cart') || '[]');
+
+  function saveCart(){
+    localStorage.setItem('solace_cart', JSON.stringify(cart));
+  }
+
+  function updateCartUI(){
+    const count = cart.reduce((sum, item) => sum + item.qty, 0);
+    const badge = document.getElementById('cartCount');
+    badge.textContent = count;
+
+    // Bump animation
+    badge.classList.remove('bump');
+    void badge.offsetWidth;
+    if(count > 0) badge.classList.add('bump');
+
+    renderCartItems();
+  }
+
+  function renderCartItems(){
+    const container = document.getElementById('cartItems');
+    const totalEl = document.getElementById('cartTotal');
+    const checkoutBtn = document.getElementById('checkoutBtn');
+
+    if(cart.length === 0){
+      container.innerHTML = `
+        <div class="cart-empty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          <p>Your bag is empty</p>
+        </div>
+      `;
+      totalEl.textContent = '$0';
+      checkoutBtn.disabled = true;
+      return;
+    }
+
+    let total = 0;
+    let html = '';
+    cart.forEach((item, idx) => {
+      const itemTotal = item.price * item.qty;
+      total += itemTotal;
+      html += `
+        <div class="cart-item">
+          <div class="cart-item-img"><img src="https://placehold.co/150x150/faf6f2/8ba888?text=${encodeURIComponent(item.name.split(' ').slice(0,2).join('+'))}" alt="${item.name}" loading="lazy"></div>
+          <div class="cart-item-info">
+            <h4>${item.name}</h4>
+            <p>$${item.price}</p>
+            <div class="cart-item-qty">
+              <button onclick="window.__solaceUpdateQty(${idx},-1)">−</button>
+              <span>${item.qty}</span>
+              <button onclick="window.__solaceUpdateQty(${idx},1)">+</button>
+            </div>
+            <button class="cart-item-remove" onclick="window.__solaceRemoveItem(${idx})">Remove</button>
+          </div>
+        </div>
+      `;
+    });
+
+    container.innerHTML = html;
+    totalEl.textContent = '$' + total;
+    checkoutBtn.disabled = false;
+  }
+
+  function addToCart(name, price){
+    const existing = cart.find(item => item.name === name);
+    if(existing){
+      existing.qty += 1;
+    } else {
+      cart.push({ name, price: Number(price), qty: 1 });
+    }
+    saveCart();
+    updateCartUI();
+    showToast(name + ' added to bag');
+    if(!document.getElementById('cartDrawer').classList.contains('open')){
+      openCart();
+    }
+  }
+
+  window.__solaceUpdateQty = function(idx, delta){
+    const item = cart[idx];
+    if(!item) return;
+    item.qty += delta;
+    if(item.qty <= 0){
+      cart.splice(idx, 1);
+    }
+    saveCart();
+    updateCartUI();
+  };
+
+  window.__solaceRemoveItem = function(idx){
+    const name = cart[idx]?.name;
+    cart.splice(idx, 1);
+    saveCart();
+    updateCartUI();
+    if(name) showToast(name + ' removed from bag');
+  };
+
+  /* ===== TOAST ===== */
+  let toastTimeout;
+
+  function showToast(msg){
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => el.classList.remove('show'), 2500);
+  }
+
+  /* ===== CART DRAWER TOGGLE ===== */
+  function openCart(){
+    document.getElementById('cartDrawer').classList.add('open');
+    document.getElementById('cartOverlay').classList.add('open');
+    document.body.classList.add('cart-open');
+  }
+
+  function closeCart(){
+    document.getElementById('cartDrawer').classList.remove('open');
+    document.getElementById('cartOverlay').classList.remove('open');
+    document.body.classList.remove('cart-open');
+  }
+
+  document.getElementById('cartToggle').addEventListener('click', openCart);
+  document.getElementById('cartClose').addEventListener('click', closeCart);
+  document.getElementById('cartOverlay').addEventListener('click', closeCart);
+  document.getElementById('mobileCartBtn').addEventListener('click', openCart);
+
+  /* ===== ADD TO BAG EVENT DELEGATION ===== */
+  document.addEventListener('click', function(e){
+    const btn = e.target.closest('.add-to-bag, .routine-product-cta');
+    if(!btn) return;
+    const name = btn.dataset.product;
+    const price = btn.dataset.price;
+    if(name && price){
+      e.preventDefault();
+      addToCart(name, price);
+    }
+  });
+
+  /* ===== ROUTINE TABS ===== */
+  document.querySelectorAll('.routine-tab').forEach(tab => {
+    tab.addEventListener('click', function(){
+      document.querySelectorAll('.routine-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.routine-panel').forEach(p => p.classList.remove('active'));
+      this.classList.add('active');
+      document.getElementById('panel-' + this.dataset.tab).classList.add('active');
+    });
+  });
+
+  /* ===== NEWSLETTER ===== */
+  document.getElementById('newsletterForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const email = document.getElementById('newsletterEmail').value.trim();
+    const errorEl = document.getElementById('newsletterError');
+    const successEl = document.getElementById('newsletterSuccess');
+    errorEl.style.display = 'none';
+    successEl.style.display = 'none';
+
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if(!re.test(email)){
+      errorEl.style.display = 'block';
+      return;
+    }
+
+    // Simulate subscription
+    successEl.style.display = 'block';
+    this.querySelector('.newsletter-input').value = '';
+    showToast('Welcome to the Solace family!');
+  });
+
+  /* ===== MOBILE MENU ===== */
+  document.querySelector('.mobile-menu-btn').addEventListener('click', function(){
+    const links = document.querySelector('.nav-links');
+    const isOpen = links.style.display === 'flex';
+    links.style.display = isOpen ? 'none' : 'flex';
+    links.style.flexDirection = 'column';
+    links.style.position = 'absolute';
+    links.style.top = '100%';
+    links.style.left = '0';
+    links.style.right = '0';
+    links.style.background = 'rgba(250,246,242,0.98)';
+    links.style.padding = '24px';
+    links.style.gap = '16px';
+    links.style.backdropFilter = 'blur(12px)';
+    links.style.borderBottom = '1px solid rgba(139,168,136,0.15)';
+    links.style.textAlign = 'center';
+    links.style.fontSize = '14px';
+  });
+
+  // Close mobile menu on link click
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    a.addEventListener('click', () => {
+      const links = document.querySelector('.nav-links');
+      if(window.innerWidth < 768) links.style.display = 'none';
+    });
+  });
+
+  /* ===== ESC KEY CLOSE CART ===== */
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && document.getElementById('cartDrawer').classList.contains('open')){
+      closeCart();
+    }
+  });
+
+  /* ===== INIT ===== */
+  renderProducts();
+  renderReviews();
+  updateCartUI();
+
+  // Re-observe any fade-in elements added after initial render
+  setTimeout(() => {
+    document.querySelectorAll('.fade-in:not(.visible)').forEach(el => obs.observe(el));
+  }, 100);
+
+})();
+</script>
+</body>
+</html>

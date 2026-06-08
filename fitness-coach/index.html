@@ -1,0 +1,1726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apex Body Lab — Premium Personal Fitness Coaching</title>
+    <meta name="description" content="Premium 1-on-1 personal training with Marcus Chen, NSCA-CPT. Transform your body. Transform your life.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@700;800;900&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💪</text></svg>">
+    <style>
+        /* ===== RESET & BASE ===== */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+            background: #0a0a0a;
+            color: #ffffff;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+        img { max-width: 100%; display: block; }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ===== TYPOGRAPHY ===== */
+        h1, h2, h3, h4, .heading {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+            line-height: 1.1;
+        }
+        h2 {
+            font-size: clamp(1.75rem, 4vw, 3rem);
+            margin-bottom: 1.5rem;
+        }
+        h2 .accent { color: #ff6b35; }
+        h2 .secondary { color: #00e676; }
+        .section-label {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 0.7rem;
+            letter-spacing: 0.25em;
+            color: #ff6b35;
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+            display: block;
+        }
+        .section-padding { padding: 80px 0; }
+        @media (max-width: 768px) { .section-padding { padding: 56px 0; } }
+
+        /* ===== SCROLL ANIMATIONS ===== */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .fade-up-d1 { transition-delay: 0.1s; }
+        .fade-up-d2 { transition-delay: 0.2s; }
+        .fade-up-d3 { transition-delay: 0.3s; }
+        .fade-up-d4 { transition-delay: 0.4s; }
+        .fade-up-d5 { transition-delay: 0.5s; }
+
+        /* ===== NAV ===== */
+        .nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(10,10,10,0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            transition: background 0.3s;
+        }
+        .nav.scrolled {
+            background: rgba(10,10,10,0.95);
+            box-shadow: 0 2px 30px rgba(0,0,0,0.5);
+        }
+        .nav-logo {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 900;
+            font-size: 1.3rem;
+            letter-spacing: 0.02em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-logo span { color: #ff6b35; }
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            align-items: center;
+        }
+        .nav-links a {
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.7);
+            transition: color 0.2s;
+            position: relative;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #ff6b35;
+            transition: width 0.3s;
+        }
+        .nav-links a:hover { color: #ffffff; }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-cta {
+            background: #ff6b35;
+            color: #fff !important;
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-weight: 600 !important;
+        }
+        .nav-cta::after { display: none !important; }
+        .nav-cta:hover { background: #e85a2a !important; color: #fff !important; }
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 4px;
+        }
+        .hamburger span {
+            display: block;
+            width: 26px;
+            height: 2px;
+            background: #fff;
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+        .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+        .hamburger.active span:nth-child(2) { opacity: 0; }
+        .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+        @media (max-width: 900px) {
+            .hamburger { display: flex; }
+            .nav-links {
+                position: fixed;
+                top: 60px;
+                left: 0;
+                right: 0;
+                background: rgba(10,10,10,0.98);
+                backdrop-filter: blur(12px);
+                flex-direction: column;
+                padding: 24px 32px 32px;
+                gap: 20px;
+                transform: translateY(-110%);
+                transition: transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94);
+                border-bottom: 1px solid rgba(255,255,255,0.06);
+                pointer-events: none;
+            }
+            .nav-links.open {
+                transform: translateY(0);
+                pointer-events: all;
+            }
+            .nav-links a { font-size: 0.9rem; }
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-left {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 120px 48px 80px 48px;
+            position: relative;
+            z-index: 2;
+        }
+        .hero-left h1 {
+            font-size: clamp(2.2rem, 5.5vw, 4.2rem);
+            font-weight: 900;
+            line-height: 1.08;
+            text-transform: uppercase;
+            max-width: 700px;
+        }
+        .hero-left h1 .highlight { color: #ff6b35; }
+        .hero-sub {
+            font-size: clamp(1rem, 1.5vw, 1.2rem);
+            color: rgba(255,255,255,0.6);
+            margin-top: 1.5rem;
+            max-width: 520px;
+            font-weight: 300;
+            line-height: 1.7;
+        }
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 2.5rem;
+            background: #ff6b35;
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 16px 36px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-cta::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+            transition: left 0.5s;
+        }
+        .hero-cta:hover::before { left: 100%; }
+        .hero-cta:hover {
+            background: #e85a2a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(255,107,53,0.35);
+        }
+        .hero-right {
+            flex: 1;
+            position: relative;
+            min-height: 50vh;
+            overflow: hidden;
+        }
+        .hero-right img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+        .hero-right .overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                90deg,
+                rgba(10,10,10,0.85) 0%,
+                rgba(10,10,10,0.3) 40%,
+                rgba(10,10,10,0.5) 100%
+            );
+            z-index: 1;
+        }
+        .hero-scroll-indicator {
+            position: absolute;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            color: rgba(255,255,255,0.4);
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            animation: bounce-down 2s infinite;
+        }
+        .hero-scroll-indicator svg { width: 18px; height: 18px; }
+        @keyframes bounce-down {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(8px); }
+        }
+        @media (max-width: 768px) {
+            .hero { flex-direction: column; }
+            .hero-left {
+                padding: 100px 24px 48px;
+                min-height: auto;
+            }
+            .hero-right {
+                min-height: 40vh;
+                order: -1;
+            }
+            .hero-right img { object-position: 50% 20%; }
+            .hero-right .overlay {
+                background: linear-gradient(
+                    180deg,
+                    rgba(10,10,10,0.2) 0%,
+                    rgba(10,10,10,0.6) 60%,
+                    rgba(10,10,10,0.9) 100%
+                );
+            }
+            .hero-scroll-indicator { display: none; }
+        }
+
+        /* ===== RESULTS COUNTER ===== */
+        .counter-section {
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+            border-top: 1px solid rgba(255,255,255,0.04);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .counter-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+            text-align: center;
+        }
+        .counter-item {}
+        .counter-number {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 900;
+            font-size: clamp(2.4rem, 5vw, 3.8rem);
+            color: #00e676;
+            line-height: 1;
+        }
+        .counter-number .plus-sign { color: #ff6b35; }
+        .counter-label {
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.5);
+            margin-top: 8px;
+        }
+        @media (max-width: 600px) {
+            .counter-grid { grid-template-columns: 1fr; gap: 32px; }
+        }
+
+        /* ===== BEFORE / AFTER ===== */
+        .beforeafter-section { background: #0a0a0a; }
+        .ba-tabs {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+        .ba-tab {
+            background: #1a1a1a;
+            border: 1px solid rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.5);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 0.75rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 12px 28px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .ba-tab:hover { border-color: #ff6b35; color: #fff; }
+        .ba-tab.active {
+            background: #ff6b35;
+            border-color: #ff6b35;
+            color: #fff;
+        }
+        .ba-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            max-width: 860px;
+            margin: 0 auto;
+        }
+        .ba-card {
+            background: #1a1a1a;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .ba-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+        }
+        .ba-card img { width: 100%; height: 320px; object-fit: cover; }
+        .ba-card-label {
+            padding: 14px 18px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        .ba-card-label.before { color: #ff6b35; }
+        .ba-card-label.after { color: #00e676; }
+        .ba-card-name {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.4);
+            padding: 0 18px 16px;
+        }
+        .ba-card-result {
+            padding: 0 18px 18px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: #00e676;
+            letter-spacing: 0.05em;
+        }
+        .ba-single {
+            display: none;
+        }
+        .ba-single.active { display: grid; }
+        @media (max-width: 700px) {
+            .ba-grid { grid-template-columns: 1fr; max-width: 400px; }
+        }
+
+        /* ===== TRAINING METHOD ===== */
+        .method-section { background: linear-gradient(180deg, #0a0a0a 0%, #0f0f0f 100%); }
+        .method-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
+            position: relative;
+            counter-reset: step;
+        }
+        .method-step {
+            text-align: center;
+            padding: 0 28px;
+            position: relative;
+        }
+        .method-step::before {
+            counter-increment: step;
+            content: "0" counter(step);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 900;
+            font-size: 4rem;
+            color: rgba(255,107,53,0.1);
+            line-height: 1;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .method-step .step-icon {
+            font-size: 2.4rem;
+            margin-bottom: 12px;
+            display: block;
+        }
+        .method-step h3 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 1.15rem;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        .method-step p {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.5);
+            line-height: 1.7;
+            max-width: 280px;
+            margin: 0 auto;
+        }
+        .method-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: #ff6b35;
+            opacity: 0.4;
+        }
+        @media (max-width: 768px) {
+            .method-grid {
+                grid-template-columns: 1fr;
+                gap: 36px;
+            }
+            .method-arrow { transform: rotate(90deg); padding: 8px 0; }
+            .method-step { padding: 0 16px; }
+        }
+
+        /* ===== COACH PROFILE ===== */
+        .coach-section { background: #0a0a0a; }
+        .coach-layout {
+            display: grid;
+            grid-template-columns: 1fr 1.6fr;
+            gap: 56px;
+            align-items: center;
+        }
+        .coach-image {
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid rgba(255,107,53,0.2);
+            position: relative;
+        }
+        .coach-image img {
+            width: 100%;
+            height: 480px;
+            object-fit: cover;
+        }
+        .coach-image .badge {
+            position: absolute;
+            bottom: 16px;
+            left: 16px;
+            background: #ff6b35;
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 0.65rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 6px 14px;
+            border-radius: 4px;
+        }
+        .coach-info h2 { margin-bottom: 0.5rem; }
+        .coach-creds {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: #ff6b35;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+        .coach-story p {
+            color: rgba(255,255,255,0.55);
+            font-size: 0.95rem;
+            line-height: 1.8;
+            margin-bottom: 1.2rem;
+        }
+        .coach-philosophy {
+            background: #1a1a1a;
+            border-left: 3px solid #00e676;
+            padding: 20px 24px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 20px;
+        }
+        .coach-philosophy p {
+            color: rgba(255,255,255,0.7);
+            font-style: italic;
+            font-size: 0.95rem;
+            margin-bottom: 0;
+        }
+        .coach-philosophy .attr {
+            font-style: normal;
+            color: #00e676;
+            font-weight: 600;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+            margin-top: 8px;
+            display: block;
+        }
+        @media (max-width: 768px) {
+            .coach-layout { grid-template-columns: 1fr; gap: 32px; }
+            .coach-image img { height: 360px; }
+        }
+
+        /* ===== PRICING ===== */
+        .pricing-section { background: linear-gradient(135deg, #0f0f0f 0%, #0a0a0a 100%); }
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 16px;
+        }
+        .pricing-card {
+            background: #1a1a1a;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px;
+            padding: 36px 28px 32px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .pricing-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+        }
+        .pricing-card.featured {
+            border-color: #ff6b35;
+            border-width: 2px;
+            transform: scale(1.04);
+        }
+        .pricing-card.featured:hover { transform: scale(1.04) translateY(-6px); }
+        .pricing-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ff6b35;
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 0.6rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 4px 16px;
+            border-radius: 20px;
+        }
+        .pricing-card h3 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 1rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            color: rgba(255,255,255,0.8);
+        }
+        .pricing-sessions {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.35);
+            margin-bottom: 12px;
+        }
+        .pricing-price {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 900;
+            font-size: 2.8rem;
+            color: #00e676;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+        .pricing-price span {
+            font-size: 1rem;
+            font-weight: 600;
+            color: rgba(255,255,255,0.3);
+        }
+        .pricing-desc {
+            color: rgba(255,255,255,0.45);
+            font-size: 0.85rem;
+            margin: 12px 0 20px;
+            line-height: 1.6;
+        }
+        .pricing-features {
+            text-align: left;
+            margin: 0 0 24px;
+            flex: 1;
+        }
+        .pricing-features li {
+            padding: 8px 0;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.5);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .pricing-features li:last-child { border-bottom: none; }
+        .pricing-features li::before {
+            content: '✓';
+            color: #00e676;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+        .pricing-btn {
+            background: transparent;
+            border: 2px solid rgba(255,255,255,0.15);
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 0.75rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 14px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        .pricing-btn:hover {
+            border-color: #ff6b35;
+            background: rgba(255,107,53,0.1);
+        }
+        .pricing-card.featured .pricing-btn {
+            background: #ff6b35;
+            border-color: #ff6b35;
+        }
+        .pricing-card.featured .pricing-btn:hover {
+            background: #e85a2a;
+            border-color: #e85a2a;
+            box-shadow: 0 6px 24px rgba(255,107,53,0.3);
+        }
+        @media (max-width: 900px) {
+            .pricing-grid {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .pricing-card.featured { transform: none; }
+            .pricing-card.featured:hover { transform: translateY(-6px); }
+        }
+
+        /* ===== SCHEDULING CTA ===== */
+        .scheduling-section {
+            background: linear-gradient(135deg, #1a0e0a 0%, #0a0a0a 50%, #0a1a0e 100%);
+            text-align: center;
+            padding: 100px 24px;
+            position: relative;
+            overflow: hidden;
+        }
+        .scheduling-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at center, rgba(255,107,53,0.04) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .scheduling-section h2 {
+            font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+            max-width: 700px;
+            margin: 0 auto 1rem;
+        }
+        .scheduling-section p {
+            color: rgba(255,255,255,0.5);
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+        .scheduling-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #ff6b35;
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 18px 40px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .scheduling-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+            transition: left 0.5s;
+        }
+        .scheduling-btn:hover::before { left: 100%; }
+        .scheduling-btn:hover {
+            background: #e85a2a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(255,107,53,0.35);
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.35s ease;
+        }
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .modal {
+            background: #1a1a1a;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 14px;
+            max-width: 520px;
+            width: 100%;
+            padding: 40px 36px 36px;
+            position: relative;
+            transform: scale(0.92) translateY(20px);
+            transition: transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94);
+        }
+        .modal-overlay.open .modal {
+            transform: scale(1) translateY(0);
+        }
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 18px;
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.3);
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: color 0.2s;
+            padding: 4px;
+            line-height: 1;
+        }
+        .modal-close:hover { color: #ff6b35; }
+        .modal h3 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 1.3rem;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        .modal p {
+            color: rgba(255,255,255,0.45);
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+        .modal form { display: flex; flex-direction: column; gap: 16px; }
+        .modal form input,
+        .modal form select {
+            background: #0a0a0a;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 6px;
+            padding: 14px 16px;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .modal form input:focus,
+        .modal form select:focus {
+            border-color: #ff6b35;
+        }
+        .modal form input::placeholder { color: rgba(255,255,255,0.25); }
+        .modal form select option { background: #1a1a1a; color: #fff; }
+        .modal form button {
+            background: #ff6b35;
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 0.8rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 4px;
+        }
+        .modal form button:hover {
+            background: #e85a2a;
+            box-shadow: 0 6px 24px rgba(255,107,53,0.3);
+        }
+        .modal-success {
+            display: none;
+            text-align: center;
+            padding: 20px 0;
+        }
+        .modal-success .check {
+            font-size: 3rem;
+            color: #00e676;
+            margin-bottom: 12px;
+        }
+        .modal-success h4 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            color: #00e676;
+        }
+        .modal-success p {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.9rem;
+        }
+
+        /* ===== TESTIMONIALS ===== */
+        .testimonials-section { background: #0a0a0a; }
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        .testimonial-card {
+            background: #1a1a1a;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 10px;
+            padding: 32px 28px;
+            transition: transform 0.3s;
+        }
+        .testimonial-card:hover { transform: translateY(-4px); }
+        .testimonial-stars {
+            color: #ff6b35;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+        .testimonial-quote {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.92rem;
+            line-height: 1.7;
+            font-style: italic;
+            margin-bottom: 16px;
+        }
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .testimonial-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b35, #e85a2a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 1rem;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .testimonial-name {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .testimonial-result {
+            font-size: 0.75rem;
+            color: #00e676;
+            font-weight: 500;
+        }
+        @media (max-width: 768px) {
+            .testimonial-grid { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
+        }
+
+        /* ===== INSTAGRAM FEED ===== */
+        .instagram-section {
+            background: #0f0f0f;
+            border-top: 1px solid rgba(255,255,255,0.04);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .insta-header {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+        .insta-header p {
+            color: rgba(255,255,255,0.45);
+            font-size: 0.9rem;
+        }
+        .insta-handle {
+            color: #ff6b35;
+            font-weight: 600;
+        }
+        .insta-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .insta-item {
+            aspect-ratio: 1;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+        .insta-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s;
+        }
+        .insta-item:hover img { transform: scale(1.06); }
+        .insta-item .insta-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+            color: #fff;
+            font-size: 1.6rem;
+        }
+        .insta-item:hover .insta-overlay { opacity: 1; }
+        @media (max-width: 500px) {
+            .insta-grid { grid-template-columns: repeat(3, 1fr); gap: 4px; max-width: 100%; }
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background: #0a0a0a;
+            padding: 60px 24px 32px;
+            border-top: 1px solid rgba(255,255,255,0.04);
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1.2fr;
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .footer-brand .nav-logo { margin-bottom: 12px; }
+        .footer-brand p {
+            color: rgba(255,255,255,0.35);
+            font-size: 0.85rem;
+            line-height: 1.7;
+            max-width: 280px;
+        }
+        .footer h4 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 0.7rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 16px;
+        }
+        .footer-links li { margin-bottom: 10px; }
+        .footer-links a {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.35);
+            transition: color 0.2s;
+        }
+        .footer-links a:hover { color: #ff6b35; }
+        .footer-contact li {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.35);
+            margin-bottom: 10px;
+            display: flex;
+            gap: 8px;
+        }
+        .footer-contact li span { color: #ff6b35; font-weight: 600; }
+        .footer-social {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+        .footer-social a {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #1a1a1a;
+            border: 1px solid rgba(255,255,255,0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255,255,255,0.4);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        .footer-social a:hover {
+            background: #ff6b35;
+            border-color: #ff6b35;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 36px auto 0;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.04);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .footer-bottom p {
+            color: rgba(255,255,255,0.2);
+            font-size: 0.75rem;
+        }
+        .footer-bottom a {
+            color: rgba(255,255,255,0.2);
+            font-size: 0.75rem;
+            transition: color 0.2s;
+        }
+        .footer-bottom a:hover { color: #ff6b35; }
+        @media (max-width: 768px) {
+            .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+        }
+        @media (max-width: 500px) {
+            .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+            .footer-bottom { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== NAV ===== -->
+    <nav class="nav" id="navbar" role="navigation" aria-label="Main navigation">
+        <div class="nav-logo">
+            <span>⛰️</span> Apex <span>Body Lab</span>
+        </div>
+        <div class="nav-links" id="navLinks">
+            <a href="#results">Results</a>
+            <a href="#transformations">Transformations</a>
+            <a href="#method">Method</a>
+            <a href="#coach">Coach</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#testimonials">Testimonials</a>
+            <a href="#book" class="nav-cta">Book Now</a>
+        </div>
+        <button class="hamburger" id="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </nav>
+
+    <!-- ===== HERO ===== -->
+    <header class="hero" id="hero">
+        <div class="hero-left">
+            <div class="fade-up visible" style="opacity:1;transform:none;">
+                <span class="section-label">Premium 1-on-1 Training</span>
+                <h1>Stop Dreaming About<br>the Body You Want.<br><span class="highlight">Start Building It.</span></h1>
+                <p class="hero-sub">Forge the strongest version of yourself with elite coaching, proven science, and relentless accountability. Your transformation starts here.</p>
+                <a href="#book" class="hero-cta">
+                    Book Your Free Consultation
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 0L6.59 1.41L12.17 7H0V9H12.17L6.59 14.59L8 16L16 8L8 0Z" fill="currentColor"/></svg>
+                </a>
+            </div>
+        </div>
+        <div class="hero-right">
+            <div class="overlay"></div>
+            <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1600&q=80" alt="Athlete training in gym" loading="eager">
+            <div class="hero-scroll-indicator">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+                Scroll
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== RESULTS COUNTER ===== -->
+    <section class="counter-section section-padding" id="results">
+        <div class="container">
+            <div class="counter-grid">
+                <div class="counter-item fade-up">
+                    <div class="counter-number"><span class="count" data-target="500">0</span><span class="plus-sign">+</span></div>
+                    <div class="counter-label">Transformations Delivered</div>
+                </div>
+                <div class="counter-item fade-up fade-up-d2">
+                    <div class="counter-number"><span class="count" data-target="98">0</span><span class="plus-sign">%</span></div>
+                    <div class="counter-label">Client Retention Rate</div>
+                </div>
+                <div class="counter-item fade-up fade-up-d3">
+                    <div class="counter-number"><span class="count" data-target="12">0</span><span class="plus-sign">-Week Avg Results</span></div>
+                    <div class="counter-label">Average Time to Visible Change</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== BEFORE / AFTER ===== -->
+    <section class="beforeafter-section section-padding" id="transformations">
+        <div class="container">
+            <div class="fade-up">
+                <span class="section-label">Real Results</span>
+                <h2>Before <span class="accent">↔</span> After <span class="secondary">Transformations</span></h2>
+            </div>
+            <div class="ba-tabs fade-up fade-up-d2">
+                <button class="ba-tab active" data-tab="0">Client 1</button>
+                <button class="ba-tab" data-tab="1">Client 2</button>
+                <button class="ba-tab" data-tab="2">Client 3</button>
+            </div>
+            <!-- Client 1 -->
+            <div class="ba-single active" data-index="0">
+                <div class="ba-grid fade-up fade-up-d3">
+                    <div class="ba-card">
+                        <img src="https://placehold.co/400x500/1a1a1a/ff6b35?text=Before" alt="Before transformation" loading="lazy">
+                        <div class="ba-card-label before">Before</div>
+                        <div class="ba-card-name">James R. — 42 yrs</div>
+                        <div class="ba-card-result">-28 lbs • 6% body fat lost</div>
+                    </div>
+                    <div class="ba-card">
+                        <img src="https://placehold.co/400x500/1a1a1a/00e676?text=After" alt="After transformation" loading="lazy">
+                        <div class="ba-card-label after">After</div>
+                        <div class="ba-card-name">12 Weeks of Training</div>
+                        <div class="ba-card-result">+8 lb lean mass gain</div>
+                    </div>
+                </div>
+            </div>
+            <!-- Client 2 -->
+            <div class="ba-single" data-index="1">
+                <div class="ba-grid fade-up fade-up-d3">
+                    <div class="ba-card">
+                        <img src="https://placehold.co/400x500/1a1a1a/ff6b35?text=Before+2" alt="Before transformation" loading="lazy">
+                        <div class="ba-card-label before">Before</div>
+                        <div class="ba-card-name">Sarah M. — 35 yrs</div>
+                        <div class="ba-card-result">-22 lbs • 5% body fat lost</div>
+                    </div>
+                    <div class="ba-card">
+                        <img src="https://placehold.co/400x500/1a1a1a/00e676?text=After+2" alt="After transformation" loading="lazy">
+                        <div class="ba-card-label after">After</div>
+                        <div class="ba-card-name">16 Weeks of Training</div>
+                        <div class="ba-card-result">First unassisted pull-up</div>
+                    </div>
+                </div>
+            </div>
+            <!-- Client 3 -->
+            <div class="ba-single" data-index="2">
+                <div class="ba-grid fade-up fade-up-d3">
+                    <div class="ba-card">
+                        <img src="https://placehold.co/400x500/1a1a1a/ff6b35?text=Before+3" alt="Before transformation" loading="lazy">
+                        <div class="ba-card-label before">Before</div>
+                        <div class="ba-card-name">Mike T. — 28 yrs</div>
+                        <div class="ba-card-result">-35 lbs • 8% body fat lost</div>
+                    </div>
+                    <div class="ba-card">
+                        <img src="https://placehold.co/400x500/1a1a1a/00e676?text=After+3" alt="After transformation" loading="lazy">
+                        <div class="ba-card-label after">After</div>
+                        <div class="ba-card-name">14 Weeks of Training</div>
+                        <div class="ba-card-result">Competed in first powerlifting meet</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== TRAINING METHOD ===== -->
+    <section class="method-section section-padding" id="method">
+        <div class="container">
+            <div class="fade-up" style="text-align:center;margin-bottom:48px;">
+                <span class="section-label">The Process</span>
+                <h2>Assess · Build · <span class="accent">Transform</span></h2>
+                <p style="color:rgba(255,255,255,0.45);font-size:0.95rem;max-width:580px;margin:0 auto;">A proven three-phase system that delivers measurable, lasting results — backed by science and refined over a decade of coaching.</p>
+            </div>
+            <div class="method-grid fade-up fade-up-d2">
+                <div class="method-step">
+                    <span class="step-icon">📋</span>
+                    <h3>Assess</h3>
+                    <p>Comprehensive movement screening, body composition analysis, and goal mapping. We discover your baseline and design your roadmap.</p>
+                </div>
+                <div class="method-arrow">➤</div>
+                <div class="method-step">
+                    <span class="step-icon">🏗️</span>
+                    <h3>Build</h3>
+                    <p>Progressive strength programming, metabolic conditioning, and nutritional guidance. Every session builds on the last.</p>
+                </div>
+                <div class="method-arrow">➤</div>
+                <div class="method-step">
+                    <span class="step-icon">🔥</span>
+                    <h3>Transform</h3>
+                    <p>Body composition shifts, new personal records, lasting habits. The process becomes your lifestyle — and the results speak for themselves.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== COACH PROFILE ===== -->
+    <section class="coach-section section-padding" id="coach">
+        <div class="container">
+            <div class="coach-layout">
+                <div class="coach-image fade-up">
+                    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80" alt="Marcus Chen — Head Coach" loading="lazy">
+                    <div class="badge">NSCA-CPT · 10+ Yrs</div>
+                </div>
+                <div class="coach-info fade-up fade-up-d2">
+                    <span class="section-label">Your Coach</span>
+                    <h2>Marcus <span class="accent">Chen</span></h2>
+                    <p class="coach-creds">NSCA-Certified Personal Trainer · 10+ Years of Coaching Excellence</p>
+                    <div class="coach-story">
+                        <p>Marcus didn't always have the body of a coach. Growing up as a skinny, undersized teen, he struggled with confidence and was constantly overlooked in sports. That changed when a mentor introduced him to strength training — and within a year, he had transformed not just his body, but his entire outlook on life.</p>
+                        <p>That experience lit a fire. Marcus dedicated himself to the science of human performance, earning his NSCA certification and spending over a decade coaching everyone from complete beginners to competitive athletes. His philosophy is simple: <strong>consistency beats intensity, and the right program changes everything.</strong></p>
+                    </div>
+                    <div class="coach-philosophy">
+                        <p>"I don't just write workouts. I build systems that fit your life, your schedule, and your goals. Every client who walks through these doors gets the same thing: my full attention, a plan that actually works, and someone who won't let you quit."</p>
+                        <span class="attr">— Marcus Chen, Head Coach</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PRICING ===== -->
+    <section class="pricing-section section-padding" id="pricing">
+        <div class="container">
+            <div class="fade-up" style="text-align:center;margin-bottom:32px;">
+                <span class="section-label">Investment</span>
+                <h2>Choose Your <span class="accent">Path</span></h2>
+                <p style="color:rgba(255,255,255,0.45);font-size:0.95rem;max-width:520px;margin:0 auto;">Every plan includes a free initial consultation, custom programming, and direct access to your coach.</p>
+            </div>
+            <div class="pricing-grid">
+                <!-- Starter -->
+                <div class="pricing-card fade-up fade-up-d1">
+                    <h3>Starter</h3>
+                    <p class="pricing-sessions">4 sessions per month</p>
+                    <div class="pricing-price">$299 <span>/mo</span></div>
+                    <p class="pricing-desc">Perfect for those who need structure and accountability to build momentum.</p>
+                    <ul class="pricing-features">
+                        <li>4 x 45-min personal training sessions</li>
+                        <li>Custom program design</li>
+                        <li>Basic nutrition guidance</li>
+                        <li>Text check-ins (Mon-Fri)</li>
+                        <li>Monthly progress assessment</li>
+                    </ul>
+                    <button class="pricing-btn modal-trigger">Get Started</button>
+                </div>
+                <!-- Accelerator (Featured) -->
+                <div class="pricing-card featured fade-up fade-up-d2">
+                    <div class="pricing-badge">Most Popular</div>
+                    <h3>Accelerator</h3>
+                    <p class="pricing-sessions">8 sessions per month</p>
+                    <div class="pricing-price">$549 <span>/mo</span></div>
+                    <p class="pricing-desc">Our flagship program. Maximum results with twice-weekly coaching and full support.</p>
+                    <ul class="pricing-features">
+                        <li>8 x 60-min personal training sessions</li>
+                        <li>Custom program + progressive overload</li>
+                        <li>Full nutritional coaching (macro plan)</li>
+                        <li>Unlimited text check-ins</li>
+                        <li>Bi-weekly progress & body comp scans</li>
+                        <li>Supplement & recovery protocols</li>
+                    </ul>
+                    <button class="pricing-btn modal-trigger">Get Started</button>
+                </div>
+                <!-- Elite -->
+                <div class="pricing-card fade-up fade-up-d3">
+                    <h3>Elite</h3>
+                    <p class="pricing-sessions">Unlimited sessions</p>
+                    <div class="pricing-price">$899 <span>/mo</span></div>
+                    <p class="pricing-desc">For those who want total immersion. Train daily with your coach and unlock your full potential.</p>
+                    <ul class="pricing-features">
+                        <li>Unlimited 1-on-1 training sessions</li>
+                        <li>Fully customized daily programming</li>
+                        <li>Complete nutrition & lifestyle coaching</li>
+                        <li>24/7 direct coach access</li>
+                        <li>Weekly body comp & performance tracking</li>
+                        <li>Priority scheduling & class booking</li>
+                        <li>Monthly goal-review meeting</li>
+                    </ul>
+                    <button class="pricing-btn modal-trigger">Get Started</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SCHEDULING CTA ===== -->
+    <section class="scheduling-section" id="book">
+        <div class="fade-up">
+            <span class="section-label">Take The First Step</span>
+            <h2>Your transformation starts<br>with <span class="accent">one conversation.</span></h2>
+            <p>No commitment. No pressure. Just a no-obligation chat to map out your goals.</p>
+            <button class="scheduling-btn modal-trigger" style="margin-top:8px;">
+                Book Your Free Strategy Session
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 0L6.59 1.41L12.17 7H0V9H12.17L6.59 14.59L8 16L16 8L8 0Z" fill="currentColor"/></svg>
+            </button>
+        </div>
+    </section>
+
+    <!-- ===== TESTIMONIALS ===== -->
+    <section class="testimonials-section section-padding" id="testimonials">
+        <div class="container">
+            <div class="fade-up" style="text-align:center;margin-bottom:40px;">
+                <span class="section-label">Client Stories</span>
+                <h2>What Our <span class="accent">Clients Say</span></h2>
+            </div>
+            <div class="testimonial-grid">
+                <div class="testimonial-card fade-up fade-up-d1">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-quote">"I'd tried every gym and app out there. Nothing stuck until I started working with Marcus. The difference is the accountability — someone who actually cares whether you show up. Down 28 pounds and I've never felt stronger."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">JR</div>
+                        <div>
+                            <div class="testimonial-name">James Rodriguez</div>
+                            <div class="testimonial-result">-28 lbs, 12 weeks</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card fade-up fade-up-d2">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-quote">"After having my second kid, I felt like I'd never get my body back. Marcus didn't just give me workouts — he gave me a whole new mindset. I'm stronger now than I was in my 20s. The confidence boost is unreal."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">SM</div>
+                        <div>
+                            <div class="testimonial-name">Sarah Mitchell</div>
+                            <div class="testimonial-result">-22 lbs, 16 weeks</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card fade-up fade-up-d3">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-quote">"I walked in barely able to bench 95 pounds. Six months later I hit a 275-pound bench and competed in my first meet. Marcus programmed every rep, fixed my form, and believed in me before I believed in myself."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">MT</div>
+                        <div>
+                            <div class="testimonial-name">Mike Tran</div>
+                            <div class="testimonial-result">+80 lb bench, first powerlifting meet</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== INSTAGRAM FEED ===== -->
+    <section class="instagram-section section-padding">
+        <div class="container">
+            <div class="insta-header fade-up">
+                <span class="section-label">Follow The Journey</span>
+                <h2>#ApexBodyLab <span class="accent">· Instagram</span></h2>
+                <p>Follow <span class="insta-handle">@apexbodylab</span> for daily training tips, client transformations, and gym culture.</p>
+            </div>
+            <div class="insta-grid fade-up fade-up-d2">
+                <div class="insta-item">
+                    <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&q=80" alt="Gym training" loading="lazy">
+                    <div class="insta-overlay">📷</div>
+                </div>
+                <div class="insta-item">
+                    <img src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=400&q=80" alt="Client progress" loading="lazy">
+                    <div class="insta-overlay">📷</div>
+                </div>
+                <div class="insta-item">
+                    <img src="https://images.unsplash.com/photo-1540497077202-7c8a3999166f?w=400&q=80" alt="Training intensity" loading="lazy">
+                    <div class="insta-overlay">📷</div>
+                </div>
+                <div class="insta-item">
+                    <img src="https://images.unsplash.com/photo-1599058917212-d750089bc07e?w=400&q=80" alt="Strength training" loading="lazy">
+                    <div class="insta-overlay">📷</div>
+                </div>
+                <div class="insta-item">
+                    <img src="https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=400&q=80" alt="Personal trainer" loading="lazy">
+                    <div class="insta-overlay">📷</div>
+                </div>
+                <div class="insta-item">
+                    <img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&q=80" alt="Fitness motivation" loading="lazy">
+                    <div class="insta-overlay">📷</div>
+                </div>
+                <div class="insta-item">
+                    <img src="https://images.unsplash.com/photo-1594381898411-846e7d193883?w=400&q=80" alt="Gym workout" loading="lazy">
+                    <div class="insta-overlay">📷</div>
+                </div>
+                <div class="insta-item">
+                    <img src="https://images.unsplash.com/photo-1541534741688-6078c8bfb5c5?w=400&q=80" alt="Transformation" loading="lazy">
+                    <div class="insta-overlay">📷</div>
+                </div>
+                <div class="insta-item">
+                    <img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&q=80" alt="Training partner" loading="lazy">
+                    <div class="insta-overlay">📷</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <div class="nav-logo">
+                    <span>⛰️</span> Apex <span>Body Lab</span>
+                </div>
+                <p>Premium 1-on-1 personal training in the heart of Downtown. Where science meets sweat, and transformations become a lifestyle.</p>
+                <div class="footer-social">
+                    <a href="#" aria-label="Instagram" title="Instagram">📸</a>
+                    <a href="#" aria-label="YouTube" title="YouTube">▶️</a>
+                    <a href="#" aria-label="TikTok" title="TikTok">🎵</a>
+                    <a href="#" aria-label="Facebook" title="Facebook">💬</a>
+                </div>
+            </div>
+            <div>
+                <h4>Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="#method">Training Method</a></li>
+                    <li><a href="#pricing">Programs & Pricing</a></li>
+                    <li><a href="#coach">Meet Your Coach</a></li>
+                    <li><a href="#testimonials">Client Results</a></li>
+                    <li><a href="#transformations">Gallery</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Programs</h4>
+                <ul class="footer-links">
+                    <li><a href="#pricing">Starter</a></li>
+                    <li><a href="#pricing">Accelerator</a></li>
+                    <li><a href="#pricing">Elite</a></li>
+                    <li><a href="#">Nutrition Coaching</a></li>
+                    <li><a href="#">Online Coaching</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Visit Us</h4>
+                <ul class="footer-contact">
+                    <li><span>📍</span> 246 Power St, Suite 200<br>Los Angeles, CA 90013</li>
+                    <li><span>📞</span> (213) 555-0273</li>
+                    <li><span>✉️</span> hello@apexbodylab.com</li>
+                    <li><span>🕐</span> Mon–Fri: 5am–8pm<br>Sat: 7am–4pm · Sun: Closed</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 Apex Body Lab. All rights reserved. ⛰️</p>
+            <p><a href="#">Privacy Policy</a> · <a href="#">Terms of Service</a></p>
+        </div>
+    </footer>
+
+    <!-- ===== BOOKING MODAL ===== -->
+    <div class="modal-overlay" id="bookingModal">
+        <div class="modal">
+            <button class="modal-close" id="modalClose" aria-label="Close booking modal">✕</button>
+            <h3>Book Your <span class="accent">Free Strategy Session</span></h3>
+            <p>Fill out the form below and Marcus will reach out within 24 hours to schedule your no-obligation consultation.</p>
+
+            <form id="bookingForm" novalidate>
+                <input type="text" name="name" placeholder="Full Name" required autocomplete="name">
+                <input type="email" name="email" placeholder="Email Address" required autocomplete="email">
+                <input type="tel" name="phone" placeholder="Phone Number" required autocomplete="tel">
+                <select name="goal" required>
+                    <option value="">Select Your Goal</option>
+                    <option value="weight-loss">Weight Loss / Fat Loss</option>
+                    <option value="muscle-building">Muscle Building / Hypertrophy</option>
+                    <option value="strength">Strength & Power</option>
+                    <option value="general">General Fitness & Health</option>
+                    <option value="athletic">Athletic Performance</option>
+                    <option value="rehab">Post-Rehab / Corrective</option>
+                </select>
+                <button type="submit">Send Booking Request</button>
+            </form>
+
+            <div class="modal-success" id="modalSuccess">
+                <div class="check">✓</div>
+                <h4>Request Sent! 🎉</h4>
+                <p>Thanks! Marcus will reach out within 24 hours to confirm your session time. Get ready to transform.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ===== HAMBURGER MENU ===== */
+        (function() {
+            const hamburger = document.getElementById('hamburger');
+            const navLinks = document.getElementById('navLinks');
+            if (hamburger && navLinks) {
+                hamburger.addEventListener('click', function() {
+                    const open = navLinks.classList.toggle('open');
+                    hamburger.classList.toggle('active');
+                    hamburger.setAttribute('aria-expanded', open);
+                });
+                navLinks.querySelectorAll('a').forEach(function(link) {
+                    link.addEventListener('click', function() {
+                        navLinks.classList.remove('open');
+                        hamburger.classList.remove('active');
+                        hamburger.setAttribute('aria-expanded', 'false');
+                    });
+                });
+            }
+        })();
+
+        /* ===== NAVBAR SCROLL SHADOW ===== */
+        (function() {
+            var nav = document.getElementById('navbar');
+            if (nav) {
+                window.addEventListener('scroll', function() {
+                    nav.classList.toggle('scrolled', window.scrollY > 50);
+                }, { passive: true });
+            }
+        })();
+
+        /* ===== INTERSECTION OBSERVER — COUNTER ANIMATION ===== */
+        (function() {
+            var counters = document.querySelectorAll('.count');
+            if (!counters.length) return;
+
+            var observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        var el = entry.target;
+                        var target = parseInt(el.getAttribute('data-target'), 10);
+                        if (isNaN(target)) return;
+                        animateCounter(el, target);
+                        observer.unobserve(el);
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            counters.forEach(function(c) { observer.observe(c); });
+
+            function animateCounter(el, target) {
+                var duration = 1800;
+                var start = performance.now();
+
+                function tick(now) {
+                    var elapsed = now - start;
+                    var progress = Math.min(elapsed / duration, 1);
+                    var eased = 1 - Math.pow(1 - progress, 3);
+                    var current = Math.round(eased * target);
+                    el.textContent = current;
+                    if (progress < 1) {
+                        requestAnimationFrame(tick);
+                    } else {
+                        el.textContent = target;
+                    }
+                }
+                requestAnimationFrame(tick);
+            }
+        })();
+
+        /* ===== INTERSECTION OBSERVER — FADE-UP ANIMATIONS ===== */
+        (function() {
+            var els = document.querySelectorAll('.fade-up');
+            if (!els.length) return;
+
+            var observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15, rootMargin: '0px 0px -30px 0px' });
+
+            els.forEach(function(el) { observer.observe(el); });
+        })();
+
+        /* ===== BEFORE/AFTER TABS ===== */
+        (function() {
+            var tabs = document.querySelectorAll('.ba-tab');
+            var panels = document.querySelectorAll('.ba-single');
+
+            tabs.forEach(function(tab) {
+                tab.addEventListener('click', function() {
+                    var idx = parseInt(this.getAttribute('data-tab'), 10);
+                    if (isNaN(idx)) return;
+
+                    tabs.forEach(function(t) { t.classList.remove('active'); });
+                    this.classList.add('active');
+
+                    panels.forEach(function(p) { p.classList.remove('active'); });
+                    var target = document.querySelector('.ba-single[data-index="' + idx + '"]');
+                    if (target) target.classList.add('active');
+                });
+            });
+        })();
+
+        /* ===== MODAL ===== */
+        (function() {
+            var modal = document.getElementById('bookingModal');
+            var closeBtn = document.getElementById('modalClose');
+            var triggers = document.querySelectorAll('.modal-trigger');
+            var form = document.getElementById('bookingForm');
+            var success = document.getElementById('modalSuccess');
+
+            if (!modal) return;
+
+            function openModal() {
+                modal.classList.add('open');
+                document.body.style.overflow = 'hidden';
+                if (form) form.style.display = '';
+                if (success) success.style.display = 'none';
+            }
+
+            function closeModal() {
+                modal.classList.remove('open');
+                document.body.style.overflow = '';
+            }
+
+            triggers.forEach(function(btn) {
+                btn.addEventListener('click', openModal);
+            });
+
+            if (closeBtn) closeBtn.addEventListener('click', closeModal);
+
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) closeModal();
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+            });
+
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    var name = form.querySelector('input[name="name"]').value.trim();
+                    var email = form.querySelector('input[name="email"]').value.trim();
+                    var phone = form.querySelector('input[name="phone"]').value.trim();
+                    var goal = form.querySelector('select[name="goal"]').value;
+
+                    if (!name || !email || !phone || !goal) {
+                        alert('Please fill in all fields.');
+                        return;
+                    }
+
+                    form.style.display = 'none';
+                    if (success) success.style.display = 'block';
+
+                    // Reset form after some time
+                    setTimeout(function() {
+                        form.reset();
+                    }, 3000);
+                });
+            }
+        })();
+
+        /* ===== SMOOTH SCROLL for anchor links ===== */
+        (function() {
+            document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+                anchor.addEventListener('click', function(e) {
+                    var target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        e.preventDefault();
+                        var offset = 70;
+                        var top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+                        window.scrollTo({ top: top, behavior: 'smooth' });
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
