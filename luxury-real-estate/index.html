@@ -13,6 +13,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 
 <style>
+        :root {
+            --color-gold: #c9a86e;
+            --color-dark: #0d0d0d;
+            --color-surface: #1a1a1a;
+            --color-text: #ffffff;
+            --color-muted: #999999;
+            --scroll-padding: 4rem;
+        }
+        html { scroll-behavior:smooth; scroll-padding-top:var(--scroll-padding,4rem); }
+
 /* ==================== RESET / BASE ==================== */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;font-size:16px}
@@ -215,7 +225,9 @@ ul{list-style:none}
   .property-content{padding:0 20px}
   .hero-cta .btn,.cta-buttons .btn{width:100%;text-align:center}
 }
-</style>
+
+        .footer-heading{font-size:0.9rem;font-weight:700;color:#fff;margin:0 0 12px;text-transform:uppercase;letter-spacing:.8px}
+    </style>
 </head>
 <body>
 
@@ -469,13 +481,7 @@ ul{list-style:none}
     <p class="cta-subtitle">Let Isabella and the Solis Estates team guide you to a property beyond compare.</p>
     <div class="cta-buttons">
       <a href="#" class="btn btn-primary schedule-btn" data-property="your extraordinary home">Schedule a Consultation</a>
-      <a href="#listings" class="btn btn-outline">Browse Listings</a>
-    </div>
-  </div>
-</section>
-
-<!-- ==================== FOOTER ==================== -->
-<footer class="footer" id="footer">
+      <a href="#listings"<footer class="footer" id="footer">
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
@@ -483,7 +489,7 @@ ul{list-style:none}
         <p>Boutique luxury real estate, curating the world's most exceptional addresses for those who demand extraordinary.</p>
       </div>
       <div>
-        <h4>Contact</h4>
+        <p class="footer-heading">Contact</p>
         <ul>
           <li><a href="tel:+13105551234">+1 (310) 555-1234</a></li>
           <li><a href="mailto:isabella@solisestates.com">isabella@solisestates.com</a></li>
@@ -491,7 +497,7 @@ ul{list-style:none}
         </ul>
       </div>
       <div>
-        <h4>Regions</h4>
+        <p class="footer-heading">Regions</p>
         <ul>
           <li><a href="#">Malibu</a></li>
           <li><a href="#">Beverly Hills</a></li>
@@ -500,7 +506,7 @@ ul{list-style:none}
         </ul>
       </div>
       <div>
-        <h4>Connect</h4>
+        <p class="footer-heading">Connect</p>
         <ul>
           <li><a href="#" target="_blank">Instagram</a></li>
           <li><a href="#" target="_blank">LinkedIn</a></li>
@@ -512,6 +518,9 @@ ul{list-style:none}
     <div class="footer-bottom">
       <span>&copy; 2026 Solis Estates. All rights reserved.</span>
       <p class="mls">MLS&reg; Disclaimer: All information is deemed reliable but not guaranteed. Solis Estates is an equal opportunity provider. All properties subject to prior sale or withdrawal.</p>
+    </div>
+  </div>
+</footer>. Solis Estates is an equal opportunity provider. All properties subject to prior sale or withdrawal.</p>
     </div>
   </div>
 </footer>

@@ -9,6 +9,17 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
+        :root {
+            --color-sage: #8ba888;
+            --color-gold: #c9a88e;
+            --color-cream: #faf6f2;
+            --color-dark: #2d2d2d;
+            --color-text: #333333;
+            --color-muted: #666666;
+            --scroll-padding: 4rem;
+        }
+        html { scroll-behavior:smooth; scroll-padding-top:var(--scroll-padding,4rem); }
+
 /* ===== RESET & BASE ===== */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
@@ -232,7 +243,9 @@ body.cart-open{overflow:hidden}
 /* ===== RESPONSIVE HELPERS ===== */
 @media(max-width:767px){.hide-mobile{display:none!important}}
 @media(min-width:768px){.hide-desktop{display:none!important}}
-</style>
+
+        .footer-heading{font-size:0.9rem;font-weight:700;color:#fff;margin:0 0 12px;text-transform:uppercase;letter-spacing:.8px}
+    </style>
 </head>
 <body>
 
@@ -383,7 +396,7 @@ body.cart-open{overflow:hidden}
     <div class="routine-panel active" id="panel-cleanse">
       <div class="routine-products">
         <div class="routine-product">
-          <div class="routine-product-img"><img src="https://placehold.co/150x150/faf6f2/8ba888?text=Cleanser" alt="Morning Dew Cleanser" loading="lazy"></div>
+          <div class="routine-product-img"><img width="150" height="150" src="https://placehold.co/150x150/faf6f2/8ba888?text=Cleanser" alt="Morning Dew Cleanser" loading="lazy"></div>
           <div class="routine-product-info">
             <h4>Morning Dew Cleanser</h4>
             <p>A gentle, pH-balanced gel cleanser that removes impurities without stripping.</p>
@@ -391,7 +404,7 @@ body.cart-open{overflow:hidden}
           <button class="routine-product-cta" data-product="Morning Dew Cleanser" data-price="38">Add — $38</button>
         </div>
         <div class="routine-product">
-          <div class="routine-product-img"><img src="https://placehold.co/150x150/faf6f2/c9a88e?text=Exfoliant" alt="Silk Enzyme Mask" loading="lazy"></div>
+          <div class="routine-product-img"><img width="150" height="150" src="https://placehold.co/150x150/faf6f2/c9a88e?text=Exfoliant" alt="Silk Enzyme Mask" loading="lazy"></div>
           <div class="routine-product-info">
             <h4>Silk Enzyme Mask</h4>
             <p>Gentle enzymatic exfoliation — use 2-3 times weekly for a refined, glowing complexion.</p>
@@ -399,7 +412,7 @@ body.cart-open{overflow:hidden}
           <button class="routine-product-cta" data-product="Silk Enzyme Mask" data-price="32">Add — $32</button>
         </div>
         <div class="routine-product">
-          <div class="routine-product-img"><img src="https://placehold.co/150x150/faf6f2/8ba888?text=Oil+Cleanser" alt="Golden Glow Oil" loading="lazy"></div>
+          <div class="routine-product-img"><img width="150" height="150" src="https://placehold.co/150x150/faf6f2/8ba888?text=Oil+Cleanser" alt="Golden Glow Oil" loading="lazy"></div>
           <div class="routine-product-info">
             <h4>Golden Glow Oil</h4>
             <p>Use as a first cleanse or treatment oil to dissolve makeup and nurture the skin barrier.</p>
@@ -412,7 +425,7 @@ body.cart-open{overflow:hidden}
     <div class="routine-panel" id="panel-treat">
       <div class="routine-products">
         <div class="routine-product">
-          <div class="routine-product-img"><img src="https://placehold.co/150x150/faf6f2/8ba888?text=Serum" alt="Night Renewal Serum" loading="lazy"></div>
+          <div class="routine-product-img"><img width="150" height="150" src="https://placehold.co/150x150/faf6f2/8ba888?text=Serum" alt="Night Renewal Serum" loading="lazy"></div>
           <div class="routine-product-info">
             <h4>Night Renewal Serum</h4>
             <p>A concentrated overnight treatment that supports your skin's natural repair cycle.</p>
@@ -420,7 +433,7 @@ body.cart-open{overflow:hidden}
           <button class="routine-product-cta" data-product="Night Renewal Serum" data-price="68">Add — $68</button>
         </div>
         <div class="routine-product">
-          <div class="routine-product-img"><img src="https://placehold.co/150x150/faf6f2/c9a88e?text=Eye+Cream" alt="Eye Revival Cream" loading="lazy"></div>
+          <div class="routine-product-img"><img width="150" height="150" src="https://placehold.co/150x150/faf6f2/c9a88e?text=Eye+Cream" alt="Eye Revival Cream" loading="lazy"></div>
           <div class="routine-product-info">
             <h4>Eye Revival Cream</h4>
             <p>Target fine lines and puffiness with this peptide-rich eye treatment.</p>
@@ -428,7 +441,7 @@ body.cart-open{overflow:hidden}
           <button class="routine-product-cta" data-product="Eye Revival Cream" data-price="44">Add — $44</button>
         </div>
         <div class="routine-product">
-          <div class="routine-product-img"><img src="https://placehold.co/150x150/faf6f2/8ba888?text=Vitamin+C" alt="Vitamin C Serum" loading="lazy"></div>
+          <div class="routine-product-img"><img width="150" height="150" src="https://placehold.co/150x150/faf6f2/8ba888?text=Vitamin+C" alt="Vitamin C Serum" loading="lazy"></div>
           <div class="routine-product-info">
             <h4>Vitamin C Brightening Drops</h4>
             <p>A lightweight, fast-absorbing vitamin C serum for morning radiance.</p>
@@ -441,7 +454,7 @@ body.cart-open{overflow:hidden}
     <div class="routine-panel" id="panel-moisturize">
       <div class="routine-products">
         <div class="routine-product">
-          <div class="routine-product-img"><img src="https://placehold.co/150x150/faf6f2/8ba888?text=Moisturizer" alt="Cloud Barrier Moisturizer" loading="lazy"></div>
+          <div class="routine-product-img"><img width="150" height="150" src="https://placehold.co/150x150/faf6f2/8ba888?text=Moisturizer" alt="Cloud Barrier Moisturizer" loading="lazy"></div>
           <div class="routine-product-info">
             <h4>Cloud Barrier Moisturizer</h4>
             <p>A weightless water-gel cream that locks in hydration without clogging pores.</p>
@@ -449,7 +462,7 @@ body.cart-open{overflow:hidden}
           <button class="routine-product-cta" data-product="Cloud Barrier Moisturizer" data-price="52">Add — $52</button>
         </div>
         <div class="routine-product">
-          <div class="routine-product-img"><img src="https://placehold.co/150x150/faf6f2/c9a88e?text=Face+Oil" alt="Golden Glow Oil" loading="lazy"></div>
+          <div class="routine-product-img"><img width="150" height="150" src="https://placehold.co/150x150/faf6f2/c9a88e?text=Face+Oil" alt="Golden Glow Oil" loading="lazy"></div>
           <div class="routine-product-info">
             <h4>Golden Glow Oil</h4>
             <p>A luxurious blend of botanicals that seals in moisture and imparts a luminous finish.</p>
@@ -457,7 +470,7 @@ body.cart-open{overflow:hidden}
           <button class="routine-product-cta" data-product="Golden Glow Oil" data-price="48">Add — $48</button>
         </div>
         <div class="routine-product">
-          <div class="routine-product-img"><img src="https://placehold.co/150x150/faf6f2/8ba888?text=Night+Cream" alt="Night Renewal Serum" loading="lazy"></div>
+          <div class="routine-product-img"><img width="150" height="150" src="https://placehold.co/150x150/faf6f2/8ba888?text=Night+Cream" alt="Night Renewal Serum" loading="lazy"></div>
           <div class="routine-product-info">
             <h4>Night Renewal Serum</h4>
             <p>Apply as the final step in your evening routine for deep overnight nourishment.</p>
@@ -480,19 +493,14 @@ body.cart-open{overflow:hidden}
       <button type="submit" class="newsletter-btn">Subscribe</button>
     </form>
     <p class="newsletter-error" id="newsletterError">Please enter a valid email address.</p>
-    <p class="newsletter-success" id="newsletterSuccess">Thank you! Check your inbox for your welcome gift.</p>
-  </div>
-</section>
-
-<!-- ===== FOOTER ===== -->
-<footer class="site-footer" id="footer">
+    <p class="newsletter-s<footer class="site-footer" id="footer">
   <div class="footer-grid">
     <div class="footer-col">
       <p class="footer-logo">Solace</p>
       <p style="font-size:13px;line-height:1.7;max-width:260px">Clean ingredients. Visible results. No compromises. Skincare, simplified.</p>
     </div>
     <div class="footer-col">
-      <h4>Explore</h4>
+      <p class="footer-heading">Explore</p>
       <ul>
         <li><a href="#shop">Shop All</a></li>
         <li><a href="#ingredients">Ingredients</a></li>
@@ -502,7 +510,7 @@ body.cart-open{overflow:hidden}
       </ul>
     </div>
     <div class="footer-col">
-      <h4>Support</h4>
+      <p class="footer-heading">Support</p>
       <ul>
         <li><a href="#">FAQ</a></li>
         <li><a href="#">Shipping &amp; Delivery</a></li>
@@ -512,7 +520,7 @@ body.cart-open{overflow:hidden}
       </ul>
     </div>
     <div class="footer-col">
-      <h4>Payment</h4>
+      <p class="footer-heading">Payment</p>
       <p style="font-size:13px;margin-bottom:12px">Secure checkout. We accept all major cards.</p>
       <div class="footer-payment">
         <svg viewBox="0 0 36 24" fill="none" stroke="#888" stroke-width="1.2"><rect x="1" y="1" width="34" height="22" rx="3"/><text x="8" y="17" font-size="9" fill="#888" font-family="sans-serif" font-weight="600">VISA</text></svg>
@@ -520,6 +528,13 @@ body.cart-open{overflow:hidden}
         <svg viewBox="0 0 36 24" fill="none" stroke="#888" stroke-width="1.2"><rect x="1" y="1" width="34" height="22" rx="3"/><text x="6" y="17" font-size="8" fill="#888" font-family="sans-serif" font-weight="600">AMEX</text></svg>
         <svg viewBox="0 0 36 24" fill="none" stroke="#888" stroke-width="1.2"><rect x="1" y="1" width="34" height="22" rx="3"/><text x="5" y="17" font-size="8" fill="#888" font-family="sans-serif" font-weight="600">PP</text></svg>
         <svg viewBox="0 0 36 24" fill="none" stroke="#888" stroke-width="1.2"><rect x="1" y="1" width="34" height="22" rx="3"/><text x="4" y="17" font-size="8" fill="#888" font-family="sans-serif" font-weight="600">AP</text></svg>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2026 Solace. All rights reserved.</p>
+  </div>
+</footer>>
       </div>
     </div>
   </div>
@@ -692,7 +707,7 @@ body.cart-open{overflow:hidden}
       total += itemTotal;
       html += `
         <div class="cart-item">
-          <div class="cart-item-img"><img src="https://placehold.co/150x150/faf6f2/8ba888?text=${encodeURIComponent(item.name.split(' ').slice(0,2).join('+'))}" alt="${item.name}" loading="lazy"></div>
+          <div class="cart-item-img"><img width="150" height="150" src="https://placehold.co/150x150/faf6f2/8ba888?text=${encodeURIComponent(item.name.split(' ').slice(0,2).join('+'))}" alt="${item.name}" loading="lazy"></div>
           <div class="cart-item-info">
             <h4>${item.name}</h4>
             <p>$${item.price}</p>

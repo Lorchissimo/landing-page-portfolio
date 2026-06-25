@@ -10,9 +10,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔧</text></svg>">
     <style>
+        :root {
+            --color-accent: #e85d2c;
+            --color-navy: #1a3a5c;
+            --color-dark: #1a1a2e;
+            --color-text: #333333;
+            --color-muted: #555555;
+            --color-bg: #f8f9fa;
+            --color-bg-alt: #f0f2f5;
+            --scroll-padding: 7rem;
+        }
+        html { scroll-behavior:smooth; scroll-padding-top:var(--scroll-padding,7rem); }
+
         /* ===== RESET & BASE ===== */
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-        html{scroll-behavior:smooth}
+        html{scroll-behavior:smooth;scroll-padding-top:var(--scroll-padding,7rem)}
         body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;font-weight:400;color:#1a1a2e;background:#f8f9fa;line-height:1.6;-webkit-font-smoothing:antialiased}
         img{max-width:100%;display:block;height:auto}
         a{text-decoration:none;color:inherit}
@@ -299,6 +311,8 @@
 
         /* ===== LOADING FALLBACK ===== */
         .hero-loading .hero{background:linear-gradient(rgba(26,58,92,.85),rgba(26,58,92,.7)),#1a3a5c}
+    
+        .footer-heading{font-size:0.9rem;font-weight:700;color:#fff;margin:0 0 12px;text-transform:uppercase;letter-spacing:.8px}
     </style>
 </head>
 <body>
@@ -421,8 +435,8 @@
                 <!-- Card 1 -->
                 <div class="ba-card">
                     <div class="ba-compare" data-slider>
-                        <img src="https://placehold.co/400x300/1a3a5c/fff?text=Before" alt="Before: old HVAC unit" loading="lazy">
-                        <img class="ba-after" src="https://placehold.co/400x300/e85d2c/fff?text=After" alt="After: new HVAC unit" loading="lazy">
+                        <img width="400" height="300" src="https://placehold.co/400x300/1a3a5c/fff?text=Before" alt="Before: old HVAC unit" loading="lazy">
+                        <img width="400" height="300" class="ba-after" src="https://placehold.co/400x300/e85d2c/fff?text=After" alt="After: new HVAC unit" loading="lazy">
                         <div class="ba-slider"></div>
                     </div>
                     <div class="ba-labels">
@@ -433,8 +447,8 @@
                 <!-- Card 2 -->
                 <div class="ba-card">
                     <div class="ba-compare" data-slider>
-                        <img src="https://placehold.co/400x300/1a3a5c/fff?text=Before" alt="Before: old plumbing" loading="lazy">
-                        <img class="ba-after" src="https://placehold.co/400x300/e85d2c/fff?text=After" alt="After: new plumbing" loading="lazy">
+                        <img width="400" height="300" src="https://placehold.co/400x300/1a3a5c/fff?text=Before" alt="Before: old plumbing" loading="lazy">
+                        <img width="400" height="300" class="ba-after" src="https://placehold.co/400x300/e85d2c/fff?text=After" alt="After: new plumbing" loading="lazy">
                         <div class="ba-slider"></div>
                     </div>
                     <div class="ba-labels">
@@ -445,8 +459,8 @@
                 <!-- Card 3 -->
                 <div class="ba-card">
                     <div class="ba-compare" data-slider>
-                        <img src="https://placehold.co/400x300/1a3a5c/fff?text=Before" alt="Before: old water heater" loading="lazy">
-                        <img class="ba-after" src="https://placehold.co/400x300/e85d2c/fff?text=After" alt="After: new water heater" loading="lazy">
+                        <img width="400" height="300" src="https://placehold.co/400x300/1a3a5c/fff?text=Before" alt="Before: old water heater" loading="lazy">
+                        <img width="400" height="300" class="ba-after" src="https://placehold.co/400x300/e85d2c/fff?text=After" alt="After: new water heater" loading="lazy">
                         <div class="ba-slider"></div>
                     </div>
                     <div class="ba-labels">
@@ -540,14 +554,7 @@
             <p>One call connects you to a live dispatcher. We'll have a truck rolling in minutes.</p>
             <a href="tel:+1555911FIX" class="cta-phone" aria-label="Call (555) 911-FIX">📞 (555) 911-FIX</a>
             <a href="tel:+1555911FIX" class="btn btn-primary btn-lg" aria-label="Call now">
-                <svg viewBox="0 0 24 24" width="22" height="22" fill="#fff"><path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.57.57a1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.57a1 1 0 01-.25 1.02l-2.2 2.2z"/></svg>
-                Call Now — (555) 911-FIX
-            </a>
-        </div>
-    </section>
-
-    <!-- ===== FOOTER ===== -->
-    <footer class="footer" id="footer">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="#fff"><path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.57.57a1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.57a1 1 0 01-.25 1.02l-2.2 2.2z<footer class="footer" id="footer">
         <div class="container">
             <div class="footer-grid">
                 <div>
@@ -560,7 +567,7 @@
                     <strong>Email:</strong> <a href="mailto:dispatch@swiftfixpro.com">dispatch@swiftfixpro.com</a></p>
                 </div>
                 <div>
-                    <h4>Services</h4>
+                    <p class="footer-heading">Services</p>
                     <a href="#services">Emergency Plumbing</a><br>
                     <a href="#services">HVAC Repair</a><br>
                     <a href="#services">Drain Cleaning</a><br>
@@ -568,7 +575,7 @@
                     <a href="#services">Sewer Line Repair</a>
                 </div>
                 <div>
-                    <h4>Service Areas</h4>
+                    <p class="footer-heading">Service Areas</p>
                     <span style="font-size:0.9rem;color:rgba(255,255,255,.6);display:block;margin-bottom:6px">Downtown Metro</span>
                     <span style="font-size:0.9rem;color:rgba(255,255,255,.6);display:block;margin-bottom:6px">Oakwood &amp; Westside</span>
                     <span style="font-size:0.9rem;color:rgba(255,255,255,.6);display:block;margin-bottom:6px">Riverside &amp; East County</span>
@@ -576,7 +583,7 @@
                     <span style="font-size:0.9rem;color:rgba(255,255,255,.6);display:block">Pleasant Valley</span>
                 </div>
                 <div>
-                    <h4>Licenses</h4>
+                    <p class="footer-heading">Licenses</p>
                     <span style="font-size:0.9rem;color:rgba(255,255,255,.6);display:block;margin-bottom:6px">Contractor: #HVAC-44128</span>
                     <span style="font-size:0.9rem;color:rgba(255,255,255,.6);display:block;margin-bottom:6px">Plumbing: #PLM-88912</span>
                     <span style="font-size:0.9rem;color:rgba(255,255,255,.6);display:block;margin-bottom:6px">EPA Refrigerant: #EPA-5573</span>
@@ -588,6 +595,9 @@
         <div class="footer-bottom">
             <div class="container">
                 &copy; 2026 SwiftFix Pro LLC. All rights reserved. | Licensed &bull; Insured &bull; Bonded
+            </div>
+        </div>
+    </footer>py; 2026 SwiftFix Pro LLC. All rights reserved. | Licensed &bull; Insured &bull; Bonded
             </div>
         </div>
     </footer>

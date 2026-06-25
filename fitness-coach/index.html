@@ -10,6 +10,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@700;800;900&display=swap" rel="stylesheet">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💪</text></svg>">
     <style>
+        :root {
+            --color-accent: #ff6b35;
+            --color-secondary: #00e676;
+            --color-dark: #1a1a1a;
+            --color-bg-dark: #0d0d0d;
+            --color-text: #ffffff;
+            --color-muted: #aaaaaa;
+            --scroll-padding: 4rem;
+        }
+        html { scroll-behavior:smooth; scroll-padding-top:var(--scroll-padding,4rem); }
+
         /* ===== RESET & BASE ===== */
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
@@ -1100,6 +1111,8 @@
             .footer-grid { grid-template-columns: 1fr; gap: 28px; }
             .footer-bottom { flex-direction: column; text-align: center; }
         }
+    
+        .footer-heading{font-size:0.9rem;font-weight:700;color:#fff;margin:0 0 12px;text-transform:uppercase;letter-spacing:.8px}
     </style>
 </head>
 <body>
@@ -1184,13 +1197,13 @@
             <div class="ba-single active" data-index="0">
                 <div class="ba-grid fade-up fade-up-d3">
                     <div class="ba-card">
-                        <img src="https://placehold.co/400x500/1a1a1a/ff6b35?text=Before" alt="Before transformation" loading="lazy">
+                        <img width="400" height="500" src="https://placehold.co/400x500/1a1a1a/ff6b35?text=Before" alt="Before transformation" loading="lazy">
                         <div class="ba-card-label before">Before</div>
                         <div class="ba-card-name">James R. — 42 yrs</div>
                         <div class="ba-card-result">-28 lbs • 6% body fat lost</div>
                     </div>
                     <div class="ba-card">
-                        <img src="https://placehold.co/400x500/1a1a1a/00e676?text=After" alt="After transformation" loading="lazy">
+                        <img width="400" height="500" src="https://placehold.co/400x500/1a1a1a/00e676?text=After" alt="After transformation" loading="lazy">
                         <div class="ba-card-label after">After</div>
                         <div class="ba-card-name">12 Weeks of Training</div>
                         <div class="ba-card-result">+8 lb lean mass gain</div>
@@ -1201,13 +1214,13 @@
             <div class="ba-single" data-index="1">
                 <div class="ba-grid fade-up fade-up-d3">
                     <div class="ba-card">
-                        <img src="https://placehold.co/400x500/1a1a1a/ff6b35?text=Before+2" alt="Before transformation" loading="lazy">
+                        <img width="400" height="500" src="https://placehold.co/400x500/1a1a1a/ff6b35?text=Before+2" alt="Before transformation" loading="lazy">
                         <div class="ba-card-label before">Before</div>
                         <div class="ba-card-name">Sarah M. — 35 yrs</div>
                         <div class="ba-card-result">-22 lbs • 5% body fat lost</div>
                     </div>
                     <div class="ba-card">
-                        <img src="https://placehold.co/400x500/1a1a1a/00e676?text=After+2" alt="After transformation" loading="lazy">
+                        <img width="400" height="500" src="https://placehold.co/400x500/1a1a1a/00e676?text=After+2" alt="After transformation" loading="lazy">
                         <div class="ba-card-label after">After</div>
                         <div class="ba-card-name">16 Weeks of Training</div>
                         <div class="ba-card-result">First unassisted pull-up</div>
@@ -1218,13 +1231,13 @@
             <div class="ba-single" data-index="2">
                 <div class="ba-grid fade-up fade-up-d3">
                     <div class="ba-card">
-                        <img src="https://placehold.co/400x500/1a1a1a/ff6b35?text=Before+3" alt="Before transformation" loading="lazy">
+                        <img width="400" height="500" src="https://placehold.co/400x500/1a1a1a/ff6b35?text=Before+3" alt="Before transformation" loading="lazy">
                         <div class="ba-card-label before">Before</div>
                         <div class="ba-card-name">Mike T. — 28 yrs</div>
                         <div class="ba-card-result">-35 lbs • 8% body fat lost</div>
                     </div>
                     <div class="ba-card">
-                        <img src="https://placehold.co/400x500/1a1a1a/00e676?text=After+3" alt="After transformation" loading="lazy">
+                        <img width="400" height="500" src="https://placehold.co/400x500/1a1a1a/00e676?text=After+3" alt="After transformation" loading="lazy">
                         <div class="ba-card-label after">After</div>
                         <div class="ba-card-name">14 Weeks of Training</div>
                         <div class="ba-card-result">Competed in first powerlifting meet</div>
@@ -1452,14 +1465,7 @@
                 </div>
                 <div class="insta-item">
                     <img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&q=80" alt="Training partner" loading="lazy">
-                    <div class="insta-overlay">📷</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ===== FOOTER ===== -->
-    <footer class="footer">
+                    <div clas<footer class="footer">
         <div class="footer-grid">
             <div class="footer-brand">
                 <div class="nav-logo">
@@ -1474,7 +1480,7 @@
                 </div>
             </div>
             <div>
-                <h4>Quick Links</h4>
+                <p class="footer-heading">Quick Links</p>
                 <ul class="footer-links">
                     <li><a href="#method">Training Method</a></li>
                     <li><a href="#pricing">Programs & Pricing</a></li>
@@ -1484,7 +1490,7 @@
                 </ul>
             </div>
             <div>
-                <h4>Programs</h4>
+                <p class="footer-heading">Programs</p>
                 <ul class="footer-links">
                     <li><a href="#pricing">Starter</a></li>
                     <li><a href="#pricing">Accelerator</a></li>
@@ -1494,7 +1500,7 @@
                 </ul>
             </div>
             <div>
-                <h4>Visit Us</h4>
+                <p class="footer-heading">Visit Us</p>
                 <ul class="footer-contact">
                     <li><span>📍</span> 246 Power St, Suite 200<br>Los Angeles, CA 90013</li>
                     <li><span>📞</span> (213) 555-0273</li>
@@ -1507,6 +1513,9 @@
             <p>© 2026 Apex Body Lab. All rights reserved. ⛰️</p>
             <p><a href="#">Privacy Policy</a> · <a href="#">Terms of Service</a></p>
         </div>
+    </footer>ghts reserved. ⛰️</p>
+            <p><a href="#">Privacy Policy</a> · <a href="#">Terms of Service</a></p>
+        </div>
     </footer>
 
     <!-- ===== BOOKING MODAL ===== -->
@@ -1517,10 +1526,10 @@
             <p>Fill out the form below and Marcus will reach out within 24 hours to schedule your no-obligation consultation.</p>
 
             <form id="bookingForm" novalidate>
-                <input type="text" name="name" placeholder="Full Name" required autocomplete="name">
-                <input type="email" name="email" placeholder="Email Address" required autocomplete="email">
-                <input type="tel" name="phone" placeholder="Phone Number" required autocomplete="tel">
-                <select name="goal" required>
+                <input aria-label="Full Name" type="text" name="name" placeholder="Full Name" required autocomplete="name">
+                <input aria-label="Email Address" type="email" name="email" placeholder="Email Address" required autocomplete="email">
+                <input aria-label="Phone Number" type="tel" name="phone" placeholder="Phone Number" required autocomplete="tel">
+                <select aria-label="Goal" name="goal" required>
                     <option value="">Select Your Goal</option>
                     <option value="weight-loss">Weight Loss / Fat Loss</option>
                     <option value="muscle-building">Muscle Building / Hypertrophy</option>
