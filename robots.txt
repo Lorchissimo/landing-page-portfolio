@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://lorchissimo.github.io/landing-page-portfolio/sitemap.xml
