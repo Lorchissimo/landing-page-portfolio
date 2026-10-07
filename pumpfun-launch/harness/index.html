@@ -24,6 +24,7 @@
 </head>
 <body>
 <h1>CREATE sign-only test harness</h1>
+<div class="warn" style="margin:.6rem 0" id="expect"></div>
 <p><span class="tag">TEST-ONLY</span> <span class="tag">SIGN-ONLY — NO BROADCAST</span></p>
 <p class="warn">This page never sends anything anywhere. It only reconstructs a frozen
 transaction <em>message</em>, asks your wallet app to <strong>sign it locally</strong>, and
@@ -37,9 +38,18 @@ never submitted, and this page has no submission of any kind.</p>
 </ol>
 
 <h2>1. Package JSON</h2>
+<p class="warn" id="expectDetail" style="display:none"></p>
 <textarea id="pkg" rows="10" style="width:100%" placeholder='{"version":1,"state":"UNSIGNED","plan":{...},"config_hash":"...","unsigned_message_b64":"...","unsigned_message_sha256":"..."}'></textarea>
 
 <h2>2. Sign (your wallet decides; page never broadcasts)</h2>
+<p class="fine" style="margin-top:0"><strong>Nothing will be broadcast.</strong> This is a
+sign-only compatibility test; the transaction is never submitted to any network. The
+test transaction has <strong>no on-chain lifetime</strong> (it is never sent) — the only
+lifetime that matters is the browser tab being open. The mint keypair in this package
+signs <em>client-locally, away from this page</em>: both signatures are stored in
+fixtures and assembled by the operator's validator afterwards. If any byte of the
+message changes between before and after wallet signing, the page aborts and shows
+exactly where.</p>
 <button id="sign">Sign with installed wallet</button>
 <span id="walletName"></span>
 
@@ -88,6 +98,24 @@ function buildMessageFromBytes(frozenMsgBytes) {
 
 function report(obj) { $("result").textContent = JSON.stringify(obj, null, 2); }
 
+// Expected signer address + digest can be enforced via URL:
+// ?wallet=<base58 signer>&digest=<sha256-of-message>
+const QS = new URLSearchParams(location.search);
+const EXPECT_WALLET = QS.get("wallet");
+const EXPECT_DIGEST = QS.get("digest");
+(function showExpect() {
+  const el = document.getElementById("expect");
+  const det = document.getElementById("expectDetail");
+  if (EXPECT_WALLET && EXPECT_DIGEST) {
+    el.textContent = "This page is expecting a signature from: " + EXPECT_WALLET + " · message digest: " + EXPECT_DIGEST;
+    det.style.display = "block";
+    det.textContent = "The page will abort if the package's fee_payer is not " + EXPECT_WALLET +
+      ", or if the recomputed message digest is not " + EXPECT_DIGEST + ".";
+  } else {
+    el.textContent = "(No ?wallet= / ?digest= pinned in the URL — paste freely; digests + signer still shown in the result box.)";
+  }
+})();
+
 $("sign").addEventListener("click", async () => {
   report({status: "working…"});
   try {
@@ -99,6 +127,26 @@ $("sign").addEventListener("click", async () => {
     const digestBefore = await sha256Hex(msgBytes);
     if (digestBefore !== pkg.unsigned_message_sha256) {
       report({status: "ABORT", reason: "package unsigned_message digest mismatch — JSON corrupted?"});
+      return;
+    }
+
+    // 0b) Pinned expectations: signer address + digest must match URL assertions
+    if (EXPECT_WALLET && pkg.plan.fee_payer !== EXPECT_WALLET) {
+      report({
+        status: "ABORT",
+        reason: "package fee_payer does NOT match the expected wallet pinned in the URL — refusing to proceed. Re-generate the package for your actual connected wallet.",
+        expected_signer: EXPECT_WALLET,
+        package_signer: pkg.plan.fee_payer,
+      });
+      return;
+    }
+    if (EXPECT_DIGEST && digestBefore !== EXPECT_DIGEST) {
+      report({
+        status: "ABORT",
+        reason: "recomputed message digest does NOT match the pinned expected digest — refusing to proceed (package drift?).",
+        expected_digest: EXPECT_DIGEST,
+        actual_digest: digestBefore,
+      });
       return;
     }
 
