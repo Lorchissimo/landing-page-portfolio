@@ -178,16 +178,26 @@ $("sign").addEventListener("click", async () => {
       const partialTx = new solanaWeb3.VersionedTransaction(msgObj);
       partialTx.signatures[1] = sig1;
 
+      // Wire-shaped digest of the frozen message (0x80‖msg) — what
+      // signed.message.serialize() returns for an unchanged message.
+      const wireMsgBefore = new Uint8Array(1 + partialMsgBytes.length);
+      wireMsgBefore[0] = 0x80;
+      wireMsgBefore.set(partialMsgBytes, 1);
+      const wireMsgDigestBefore = await sha256Hex(wireMsgBefore);
+
       // Verify the exact serialized bytes the wallet will receive
       const preWire = partialTx.serialize();
       const preDigest = await sha256Hex(preWire);
 
       const signed = await provider.signTransaction(partialTx);
 
-      // Post-signing byte-for-byte message + slot checks
+      // Post-signing byte-for-byte message + slot checks.
+      // Note: signed.message.serialize() returns the WIRE bytes (0x80-prefixed),
+      // so the correct comparison is against the wire-shaped pre digest
+      // (comparing against the message-only digest would always be false).
       const afterWire = signed.message.serialize();
       const afterDigest = await sha256Hex(afterWire);
-      const messageUnchanged = (afterWire.length === partialMsgBytes.length + 1) && afterDigest === txMessageDigest;
+      const messageUnchanged = (afterWire.length === wireMsgBefore.length) && afterDigest === wireMsgDigestBefore;
       const signedSigs = signed.signatures ? signed.signatures.map(s => bytesToB64(s)) : null;
       const mintSigPreserved = signedSigs ? signedSigs[1] === bytesToB64(sig1) : null;
 
@@ -210,6 +220,8 @@ $("sign").addEventListener("click", async () => {
             })(),
         serialized_tx_digest_before_wallet: preDigest,
         serialized_tx_digest_after_wallet: afterDigest,
+        wire_message_digest_before: wireMsgDigestBefore,
+        message_only_digest: txMessageDigest,
         next_step_operator: (walletSigLooksReal(signedSigs) && mintSigPreserved && messageUnchanged)
           ? "paste wallet_signature_b64_index0 + signatures_all[1] into create_sign_cli.py — full validator stack will accept or reject"
           : "report the mismatch shown above back to the operator",
