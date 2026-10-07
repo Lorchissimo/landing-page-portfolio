@@ -123,5 +123,15 @@ token received: 14,093,380,670 units (agreed — see note below)</div>
 <p class="fine">Preview page · not a published product · no fee collection · no wallet connection · all competitor/product claims on this page trace to cited primary sources in the repository evidence files. Telegram legacy execution route is explicitly excluded from this beta.</p>
 
 </main>
+<script>
+// Forward any ?u= source tag to the walkthrough (offline attribution).
+(function () {
+  var u = new URLSearchParams(location.search).get("u");
+  if (!u) return;
+  document.querySelectorAll('a[href*="walkthrough"]').forEach(function (a) {
+    a.href = a.href.split('?')[0] + '?u=' + encodeURIComponent(u);
+  });
+})();
+</script>
 </body>
 </html>

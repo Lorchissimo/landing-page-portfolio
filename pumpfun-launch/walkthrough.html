@@ -199,6 +199,15 @@ th{color:var(--dim);font-weight:600}
 
 </main>
 <script>
+// ------- SOURCE ATTRIBUTION (offline, local only) -------
+// Records a source tag (?u=pfp1 etc.) in this browser's localStorage so the
+// operator can ask "where did you find this?" — no external analytics, no
+// cookies, nothing leaves the device.
+try {
+  var _u = new URLSearchParams(location.search).get("u");
+  if (_u) { try { localStorage.setItem("pfw_source", _u); } catch (e) {} }
+} catch (e) {}
+
 // ------- FIXTURE DATA (clearly labeled, offline) -------
 // Fixtures derived from proof-v2 (real mainnet run, 2026-10-05), not invented numbers.
 var F = {
