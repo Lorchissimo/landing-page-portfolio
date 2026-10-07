@@ -114,22 +114,25 @@ $("sign").addEventListener("click", async () => {
       return;
     }
 
-    // 1) Reconstruct the same message locally for signing (real signTransaction path)
-    const msgV0 = buildMessageFromPlan(pkg);
-    const reconstructed = msgV0.serialize(); // Uint8Array of message bytes
-    const digestRecon = await sha256Hex(reconstructed);
-    if (digestRecon !== digestBefore) {
-      report({
-        status: "ABORT",
-        reason: "reconstructed message digest != package digest — plan→message compile mismatch; operator must check InstructionSpec ordering",
-        digest_before: digestBefore,
-        digest_reconstructed: digestRecon,
-      });
+    // 1) Byte-exact parse of the frozen message (no recompile — recompiling in JS is
+    //    NOT byte-compatible with the executor's Python compiler; learned in testing)
+    let msgV0;
+    try {
+      msgV0 = buildMessageFromBytes(msgBytes);
+    } catch (e) {
+      report({status: "ABORT", reason: "frozen message bytes failed to parse via web3.js", detail: String(e)});
       return;
     }
+    // wire-shape digest (0x80 + message) for the post-signing comparison
+    const expectedWireBytes = new Uint8Array(1 + msgBytes.length);
+    expectedWireBytes[0] = 0x80;
+    expectedWireBytes.set(msgBytes, 1);
+    const digestWireBefore = await sha256Hex(expectedWireBytes);
 
-    // 2) Build the unsigned VersionedTransaction (2 signer slots, no sigs yet)
+    // 2) Build the unsigned VersionedTransaction directly from the frozen message
     const tx = new solanaWeb3.VersionedTransaction(msgV0);
+    const unsignedSer = tx.serialize();
+    const unsignedLen = unsignedSer.length;
 
     // 3) Wallet sign-only
     const provider = getProvider();
@@ -141,10 +144,12 @@ $("sign").addEventListener("click", async () => {
     await provider.connect();
     const signedTx = await provider.signTransaction(tx);
 
-    // 4) Digest AFTER signing — must equal before (message untouched by signing)
-    const afterMsg = signedTx.message.serialize();
-    const digestAfter = await sha256Hex(afterMsg);
-    const msgUnchanged = digestAfter === digestBefore;
+    // 4) Digest AFTER signing — must equal BEFORE (message untouched by signing).
+    //    web3.js message.serialize() returns the WIRE bytes (0x80-prefixed); compare
+    //    against the wire-shape pre-signing digest explicitly.
+    const afterMsgWire = signedTx.message.serialize();
+    const digestAfterWire = await sha256Hex(afterMsgWire);
+    const msgUnchanged = digestAfterWire === digestWireBefore;
 
     // 5) Extract wallet signature (index 0) + report for the operator
     const sigs = signedTx.signatures.map(s => bytesToB64(s));
@@ -152,8 +157,11 @@ $("sign").addEventListener("click", async () => {
       status: "SIGNED — NOT SUBMITTED (nothing was sent anywhere)",
       wallet_detected: provider.isPhantom ? "Phantom" : (navigator.userAgent || "custom"),
       browserUA: navigator.userAgent,
-      digest_before_signing: digestBefore,
-      digest_after_signing: digestAfter,
+      unsigned_package_message_digest: digestBefore,
+      message_digest_before_signing_wire: digestWireBefore,
+      message_digest_after_signing_wire: digestAfterWire,
+      signers_required: 2,
+      signer_slots_explained: ["0 = customer wallet (this page's signer)", "1 = mint keypair (stays blank here; assembled operator-side, mint secret never shown to this page)"],
       message_unchanged_by_signing: msgUnchanged,
       wallet_response_b64: bytesToB64(signedTx.serialize()),
       wallet_signature_b64_index0: sigs[0] || null,
