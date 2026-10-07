@@ -178,32 +178,74 @@ $("sign").addEventListener("click", async () => {
     }
     $("walletName").textContent = (provider.isPhantom ? "Phantom " : "") + (provider.userAgent ? "" : "provider");
     await provider.connect();
-    const signedTx = await provider.signTransaction(tx);
 
-    // 4) Digest AFTER signing — must equal BEFORE (message untouched by signing).
-    //    web3.js message.serialize() returns the WIRE bytes (0x80-prefixed); compare
-    //    against the wire-shape pre-signing digest explicitly.
-    const afterMsgWire = signedTx.message.serialize();
-    const digestAfterWire = await sha256Hex(afterMsgWire);
-    const msgUnchanged = digestAfterWire === digestWireBefore;
+    // PATH MODE: ?mode=signMessage  → signs the raw payload (0x80‖msg) as a MESSAGE.
+    // WHY THIS EXISTS (learned from a real Phantom 25.16.0 test): Phantom's
+    // signTransaction silently INJECTS its own ComputeBudget instructions
+    // (SetComputeUnitLimit + SetComputeUnitPrice) and re-serializes the tx — i.e. it
+    // MUTATES the frozen message. Our validator stack rejects that by design
+    // (mutation guard). For sign-only compatibility we offer the signMessage path:
+    //   * the page passes the exact payload bytes;
+    //   * the wallet signs those bytes and returns the signature;
+    //   * NO tx-structure compilation happens in the wallet.
+    // The wallet still shows the user what is being signed (payload preview) —
+    // that UX difference is reported honestly in the result box below.
+    const MODE = (new URLSearchParams(location.search).get("mode") || "signTransaction");
+    const PAYLOAD = new Uint8Array(1 + msgBytes.length); // same 0x80‖message wire payload
+    PAYLOAD[0] = 0x80;
+    PAYLOAD.set(msgBytes, 1);
 
-    // 5) Extract wallet signature (index 0) + report for the operator
-    const sigs = signedTx.signatures.map(s => bytesToB64(s));
+    let sigBytes = null;
+    let signedViaSignTransaction = false;
+
+    if (MODE === "signMessage" || !provider.signTransaction) {
+      const res = await provider.signMessage(PAYLOAD, "utf8");
+      sigBytes = res.signature; // Uint8Array(64)
+    } else {
+      const signedTx = await provider.signTransaction(tx);
+      sigBytes = signedTx.signatures[0];
+      signedViaSignTransaction = true;
+      // Post-signing digest check (mutation detection): wallet may inject its own
+      // ComputeBudget instructions, which our stack REJECTS.
+      const afterWire = signedTx.message.serialize();
+      const digestAfterWire = await sha256Hex(afterWire);
+      const messageUnchanged = digestAfterWire === digestWireBefore;
+      if (!messageUnchanged) {
+        report({
+          status: "SIGNED — BUT WALLET MUTATED THE MESSAGE (real sign-only incompatibility finding)",
+          wallet_detected: provider.isPhantom ? "Phantom" : (navigator.userAgent || "custom"),
+          wallet_version_known: (provider._redirect ? "" : "") + "(run the operator script for exact version)",
+          reason: "wallet injected/reordered its own instructions (typical: ComputeBudget). This signature does NOT match the frozen plan — must be REJECTED by design.",
+          digest_before_signing_wire: digestWireBefore,
+          digest_after_signing_wire: digestAfterWire,
+          your_signature_verifies_against: "wallet's own mutated message — NOT the frozen plan",
+          operator_next_step: "re-run this page with &mode=signMessage to sign the EXACT payload",
+        });
+        return;
+      }
+      sigBytes = signedTx.signatures[0];
+    }
+
+    const sigHex = [...sigBytes].map(b => b.toString(16).padStart(2, "0")).join("");
+    // Report: exact payload mode (whether signTransaction or signMessage) + wallet flavor
+    const sigB64 = bytesToB64(sigBytes);
     report({
       status: "SIGNED — NOT SUBMITTED (nothing was sent anywhere)",
       wallet_detected: provider.isPhantom ? "Phantom" : (navigator.userAgent || "custom"),
       browserUA: navigator.userAgent,
+      sign_path_used: signedViaSignTransaction ? "signTransaction" : "signMessage (exact-payload path)",
       unsigned_package_message_digest: digestBefore,
       message_digest_before_signing_wire: digestWireBefore,
-      message_digest_after_signing_wire: digestAfterWire,
       signers_required: 2,
-      signer_slots_explained: ["0 = customer wallet (this page's signer)", "1 = mint keypair (stays blank here; assembled operator-side, mint secret never shown to this page)"],
-      message_unchanged_by_signing: msgUnchanged,
-      wallet_response_b64: bytesToB64(signedTx.serialize()),
-      wallet_signature_b64_index0: sigs[0] || null,
-      signatures_all: sigs,
-      next_step_operator: "paste wallet_response_b64 into create_sign_cli.py — full validator stack will accept or reject",
+      signer_slots_explained: [
+        "0 = customer wallet (this page's signer)",
+        "1 = mint keypair (assembled operator-side; mint secret never shown to this page)"
+      ],
+      wallet_signature_b64_index0: sigB64,
+      wallet_response_b64: sigB64.length == 88 ? sigB64 : bytesToB64(sigBytes),
+      next_step_operator: "paste wallet_signature_b64_index0 into create_sign_cli.py — full validator stack will accept or reject",
     });
+
   } catch (err) {
     report({status: "ERROR", error: String(err && err.message || err)});
   }
