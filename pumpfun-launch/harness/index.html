@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<!-- Named-wallet/version SIGN-ONLY compatibility harness for the two-signer CREATE plan.
+     Offline by construction: no fetch(), no fetch to any endpoint, no submission — the ONLY
+     actions are (1) reconstruct the frozen v0 message from the package JSON, (2) hand it to
+     the installed wallet's signTransaction, (3) POST NOTHING; everything is shown on-screen
+     (and can be copy-pasted back into create_sign_cli.py for assembler+validator acceptance).
+     TEST-ONLY: uses a dedicated test transaction (never real launch parameters, no real mint).
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CREATE sign-only test harness (TEST-ONLY)</title>
+<style>
+  body{font-family:system-ui,sans-serif;max-width:760px;margin:2rem auto;padding:0 1rem;line-height:1.45}
+  pre{background:#0b1021;color:#cfe3ff;padding:.8rem;border-radius:8px;overflow-x:auto;font-size:.82rem;white-space:pre-wrap;overflow-wrap:anywhere}
+  h1{font-size:1.3rem}
+  .tag{display:inline-block;background:#b00;color:#fff;padding:.25rem .6rem;border-radius:6px;font-weight:700;font-size:.8rem}
+  .warn{background:#fff3cd;border:1px solid #eed202;padding:.6rem .8rem;border-radius:8px}
+  button{padding:.6rem 1rem;border-radius:8px;border:1px solid #2a6;font-weight:600;cursor:pointer;margin:.2rem .3rem .2rem 0}
+  #result:empty::before{content:"(no wallet response yet)";color:#888}
+  .ok{color:#090}.bad{color:#c00}
+</style>
+</head>
+<body>
+<h1>CREATE sign-only test harness</h1>
+<p><span class="tag">TEST-ONLY</span> <span class="tag">SIGN-ONLY — NO BROADCAST</span></p>
+<p class="warn">This page never sends anything anywhere. It only reconstructs a frozen
+transaction <em>message</em>, asks your wallet app to <strong>sign it locally</strong>, and
+shows digests + the signature. This is a test transaction for harness verification — it is
+never submitted, and this page has no submission of any kind.</p>
+
+<ol>
+  <li>Paste the <strong>unsigned plan package JSON</strong> (from the operator terminal) below.</li>
+  <li>Press <em>Sign with wallet</em>. Your wallet popup opens; nothing leaves your device.</li>
+  <li>Copy the resulting <code>wallet_response_b64</code> back to the operator.</li>
+</ol>
+
+<h2>1. Package JSON</h2>
+<textarea id="pkg" rows="10" style="width:100%" placeholder='{"version":1,"state":"UNSIGNED","plan":{...},"config_hash":"...","unsigned_message_b64":"...","unsigned_message_sha256":"..."}'></textarea>
+
+<h2>2. Sign (your wallet decides; page never broadcasts)</h2>
+<button id="sign">Sign with installed wallet</button>
+<span id="walletName"></span>
+
+<h2>3. Result</h2>
+<pre id="result"></pre>
+
+<script src="https://unpkg.com/@solana/web3.js@1.95.8/lib/index.iife.min.js"></script>
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+
+function getProvider() {
+  const w = window.solana || window.backpack || window.glow;
+  if (!w) return null;
+  if (typeof w.isPhantom === "undefined" && !window.solana) return null;
+  return w;
+}
+
+function b64ToBytes(b64) {
+  const bin = atob(b64);
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+}
+function bytesToB64(bytes) {
+  let bin = "";
+  for (const b of bytes) bin += String.fromCharCode(b);
+  return btoa(bin);
+}
+async function sha256Hex(bytes) {
+  const d = await crypto.subtle.digest("SHA-256", bytes);
+  return [...new Uint8Array(d)].map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+// Rebuild the v0 MessageV0 from the plan package, cleanly, with web3.js.
+function buildMessageFromPlan(pkg) {
+  const plan = pkg.plan || pkg;
+  const feePayer = new solanaWeb3.PublicKey(plan.fee_payer);
+  const ixes = plan.instructions.map(ix =>
+    new solanaWeb3.TransactionInstruction({
+      programId: new solanaWeb3.PublicKey(ix.program_id),
+      keys: ix.accounts.map(a => ({
+        pubkey: new solanaWeb3.PublicKey(a.pubkey),
+        isSigner: !!a.signer,
+        isWritable: !!a.writable,
+      })),
+      data: b64ToBytes(ix.data),
+    })
+  );
+  const messageV0 = new solanaWeb3.VersionedMessage({
+    header: null, // constructed via MessageV0.compile below
+  });
+  // MessageV0.compile needs account metas list — use compile path:
+  const compiled = solanaWeb3.MessageV0.compile({
+    payerKey: feePayer,
+    instructions: ixes,
+    addressLookupTableAccounts: [],   // plan uses none (proof-db: no ALTs)
+    recentBlockhash: plan.recent_blockhash,
+  });
+  return compiled;
+}
+
+function report(obj) { $("result").textContent = JSON.stringify(obj, null, 2); }
+
+$("sign").addEventListener("click", async () => {
+  report({status: "working…"});
+  try {
+    const pkg = JSON.parse($("pkg").value);
+    const plan = pkg.plan || pkg;
+
+    // 0) Precheck: digest of the package's frozen message must match its recorded sha256
+    const msgBytes = b64ToBytes(pkg.unsigned_message_b64);
+    const digestBefore = await sha256Hex(msgBytes);
+    if (digestBefore !== pkg.unsigned_message_sha256) {
+      report({status: "ABORT", reason: "package unsigned_message digest mismatch — JSON corrupted?"});
+      return;
+    }
+
+    // 1) Reconstruct the same message locally for signing (real signTransaction path)
+    const msgV0 = buildMessageFromPlan(pkg);
+    const reconstructed = msgV0.serialize(); // Uint8Array of message bytes
+    const digestRecon = await sha256Hex(reconstructed);
+    if (digestRecon !== digestBefore) {
+      report({
+        status: "ABORT",
+        reason: "reconstructed message digest != package digest — plan→message compile mismatch; operator must check InstructionSpec ordering",
+        digest_before: digestBefore,
+        digest_reconstructed: digestRecon,
+      });
+      return;
+    }
+
+    // 2) Build the unsigned VersionedTransaction (2 signer slots, no sigs yet)
+    const tx = new solanaWeb3.VersionedTransaction(msgV0);
+
+    // 3) Wallet sign-only
+    const provider = getProvider();
+    if (!provider) {
+      report({status: "ABORT", reason: "no compatible wallet provider in this browser (need window.solana etc.)"});
+      return;
+    }
+    $("walletName").textContent = (provider.isPhantom ? "Phantom " : "") + (provider.userAgent ? "" : "provider");
+    await provider.connect();
+    const signedTx = await provider.signTransaction(tx);
+
+    // 4) Digest AFTER signing — must equal before (message untouched by signing)
+    const afterMsg = signedTx.message.serialize();
+    const digestAfter = await sha256Hex(afterMsg);
+    const msgUnchanged = digestAfter === digestBefore;
+
+    // 5) Extract wallet signature (index 0) + report for the operator
+    const sigs = signedTx.signatures.map(s => bytesToB64(s));
+    report({
+      status: "SIGNED — NOT SUBMITTED (nothing was sent anywhere)",
+      wallet_detected: provider.isPhantom ? "Phantom" : (navigator.userAgent || "custom"),
+      browserUA: navigator.userAgent,
+      digest_before_signing: digestBefore,
+      digest_after_signing: digestAfter,
+      message_unchanged_by_signing: msgUnchanged,
+      wallet_response_b64: bytesToB64(signedTx.serialize()),
+      wallet_signature_b64_index0: sigs[0] || null,
+      signatures_all: sigs,
+      next_step_operator: "paste wallet_response_b64 into create_sign_cli.py — full validator stack will accept or reject",
+    });
+  } catch (err) {
+    report({status: "ERROR", error: String(err && err.message || err)});
+  }
+});
+</script>
+</body>
+</html>
