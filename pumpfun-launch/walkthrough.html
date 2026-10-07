@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Launch walkthrough — offline preview</title>
+<style>
+:root{ --bg:#0e1116; --card:#161b22; --edge:#2a3139; --text:#e6e9ee; --dim:#9aa4b2; --ok:#38d17a; --warn:#f0a63c; --bad:#e25858; --brand:#6ea8fe;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+main{max-width:760px;margin:0 auto;padding:16px}
+h1{font-size:1.5rem;line-height:1.25;margin:.4em 0}
+h2{font-size:1.2rem;margin:1.4em 0 .4em}
+p{margin:.5em 0}
+.dim{color:var(--dim)}
+.card{background:var(--card);border:1px solid var(--edge);border-radius:12px;padding:16px;margin:12px 0}
+.pill{display:inline-block;background:#1d2b47;border:1px solid #2d4470;color:var(--brand);border-radius:999px;padding:2px 10px;font-size:.8rem;margin:2px 4px 2px 0}
+.pill.warn{background:#331f10;border-color:#6e4a1f;color:var(--warn)}
+.pill.fix{background:#132a1d;border-color:#1f4d33;color:var(--ok)}
+label{display:block;margin:10px 0 2px;font-size:.9rem;color:var(--dim)}
+input,select{width:100%;padding:9px 11px;border-radius:8px;border:1px solid var(--edge);background:#0a0d12;color:var(--text);font-size:1rem}
+input:focus{outline:2px solid #1f4787}
+button{cursor:pointer;border:none;border-radius:10px;padding:12px 18px;font-weight:700;font-size:1rem}
+.btn-primary{background:#1f6feb;color:#fff;width:100%;margin-top:14px}
+.btn-primary:hover{background:#377fe0}
+.btn-secondary{background:#233152;color:var(--brand);font-weight:600;width:100%;margin-top:8px}
+.btn-approve{background:#1f8d55;color:#fff;width:100%;margin-top:14px}
+.btn-approve:hover{background:#229d5f}
+.btn-decline{background:transparent;color:var(--dim);border:1px solid var(--edge);font-weight:600;width:100%;margin-top:8px}
+.btn-back{background:transparent;color:var(--dim);border:1px solid var(--edge);font-weight:600;margin-top:10px}
+table{width:100%;border-collapse:collapse;margin:8px 0;font-size:.95rem}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--edge);vertical-align:top}
+th{color:var(--dim);font-weight:600}
+.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.receipt{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.8rem;background:#0a0d12;border:1px solid var(--edge);border-radius:8px;padding:12px;overflow-x:auto;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.45}
+.tick{color:var(--ok)}
+.warnbox{background:#231a0e;border:1px solid #6e4a1f;color:var(--warn);border-radius:10px;padding:10px 14px;margin:10px 0;font-size:.92rem}
+.okbox{background:#12251a;border:1px solid #1f4d33;color:var(--ok);border-radius:10px;padding:10px 14px;margin:10px 0;font-size:.92rem}
+.badbox{background:#2b1414;border:1px solid #5e2020;color:var(--bad);border-radius:10px;padding:10px 14px;margin:10px 0;font-size:.92rem}
+.fine{font-size:.85rem;color:var(--dim)}
+.stage{display:none}
+.stage.active{display:block}
+.progressbar{display:flex;gap:4px;margin:14px 0}
+.progressbar span{flex:1;height:4px;border-radius:2px;background:#233152}
+.progressbar span.done{background:var(--brand)}
+.state-chip{display:inline-block;border-radius:6px;padding:2px 10px;font-size:.8rem;font-weight:600;margin:2px 6px 2px 0}
+.chip-ok{background:#12251a;color:var(--ok);border:1px solid #1f4d33}
+.chip-warn{background:#231a0e;color:var(--warn);border:1px solid #6e4a1f}
+.chip-bad{background:#2b1414;color:var(--bad);border:1px solid #5e2020}
+@media (max-width:600px){
+  main{padding:12px}
+  table,tbody,tr,th,td{display:block;width:100%;border:none}
+  thead{display:none}
+  tr{margin-bottom:10px;border:1px solid var(--edge);border-radius:8px;overflow:hidden}
+  td{padding:4px 10px;border-bottom:1px dashed var(--edge)}
+  td.num{text-align:left;color:var(--text);font-weight:600}
+  td .lbl{display:inline-block;color:var(--dim);font-size:.78rem;font-weight:400;margin-right:6px}
+  .receipt{white-space:pre-wrap;overflow-wrap:anywhere}
+}
+</style>
+</head>
+<body>
+<main>
+
+<div class="card">
+<span class="pill fix">OFFLINE PREVIEW — fixtures only</span>
+<span class="pill warn">Can't launch a token · can't spend funds</span>
+</div>
+
+<h1>Launch walkthrough</h1>
+<p class="dim">Same journey a real supervised launch follows. Runs entirely in your browser on clearly labeled fixtures — no wallet connection, no mainnet, nothing real is ever sent.</p>
+
+<div class="progressbar" id="progress">
+<span id="pb0"></span><span id="pb1"></span><span id="pb2"></span><span id="pb3"></span><span id="pb4"></span><span id="pb5"></span><span id="pb6"></span>
+</div>
+
+<!-- === STAGE 0: intro === -->
+<section class="stage active" id="s0">
+<div class="card">
+<h2>Before we start</h2>
+<p>7 short stages:</p>
+<ol>
+<li>Token details (name, ticker, description)</li>
+<li>Preview of your launch</li>
+<li>Itemized costs and limits</li>
+<li>CREATE approval explanation</li>
+<li>Verified CREATE result</li>
+<li>Fresh BUY review and separate approval</li>
+<li>Outcome and receipts</li>
+</ol>
+<p class="dim">Every state a real launch can hit is represented — including cancellation, insufficient funding, rejected submissions, and unknown outcomes.</p>
+<button class="btn-primary" onclick="go(1)">Start</button>
+</div>
+</section>
+
+<!-- === STAGE 1: token details === -->
+<section class="stage" id="s1">
+<div class="card">
+<h2>Stage 1 — Token details</h2>
+<p class="dim">In a real launch, these become your token's on-chain metadata.</p>
+<label for="tname">Token name</label>
+<input id="tname" placeholder="e.g. Doge of Hamburg" value="">
+<label for="tsym">Ticker</label>
+<input id="tsym" maxlength="10" placeholder="e.g. DOGH" value="">
+<label for="tdesc">Description</label>
+<input id="tdesc" placeholder="e.g. a community coin for…" value="">
+<label for="tbuycap"> Initial-buy cap (SOL, max you'd spend on the buy)</label>
+<input id="tbuycap" type="number" step="0.001" placeholder="0.004" value="0.004">
+<div class="warnbox" style="margin-top:14px"><strong>Fixture notice:</strong> nothing you type here goes anywhere. There is no server, no chain call. Values are kept only in this browser tab.</div>
+<button class="btn-primary" onclick="fillPreview()">Preview my launch →</button>
+<button class="btn-back" onclick="go(0)">← Back</button>
+</div>
+</section>
+
+<!-- === STAGE 2: preview === -->
+<section class="stage" id="s2">
+<div class="card">
+<h2>Stage 2 — Preview</h2>
+<div id="pv" class="card" style="background:#0a0d12"></div>
+<p class="dim">In a real launch this is the point where the operator builds the deterministic CREATE package from exactly these details, and you would review it before any signature appears.</p>
+<button class="btn-primary" onclick="go(3)">Show me what it costs →</button>
+<button class="btn-back" onclick="go(1)">← Change details</button>
+</div>
+</section>
+
+<!-- === STAGE 3: costs === -->
+<section class="stage" id="s3">
+<div class="card">
+<h2>Stage 3 — Itemized costs and limits</h2>
+<p>Three different "money" numbers in a launch, all kept separate:</p>
+<table>
+<tr><th>Item</th><th>What it is</th><th>Typical</th></tr>
+<tr><td><strong>Service fee</strong> <span class="state-chip chip-warn">proposed, not adopted</span></td><td>What you pay the operator for doing the work — its own separate transfer</td><td class="num">0.03 SOL</td></tr>
+<tr><td>Network fee</td><td>Solana's per-transaction fee, paid to the network</td><td class="num">~0.000005 SOL</td></tr>
+<tr><td>Account rent</td><td>Refundable-ish deposit Solana charges for accounts your token creates</td><td class="num">~0.008 SOL</td></tr>
+<tr><td>Buy principal</td><td>What your initial buy actually spends on tokens</td><td class="num">your chosen amount</td></tr>
+</table>
+<p><strong>Limits — two different kinds, both real:</strong></p>
+<ul>
+<li><strong>Chain-enforced:</strong> the BUY's <code>max_sol_cost</code> is baked into the transaction you sign. The pump program itself refuses to exceed it. This is the only cap the chain enforces per transaction.</li>
+<li><strong>Application-level (run before broadcast, <em>not</em> chain-enforced):</strong> a conservative wallet-debit bound for CREATE, a headroom re-check against your remaining authorized budget, and a durable single-submission lock. These <em>halt before broadcasting</em> — they don't cap anything on-chain.</li>
+</ul>
+<p class="fine">There is no single on-chain cap that spans CREATE, BUY, and the fee transfer together. That's why each appears separately, at its own approval moment.</p>
+<button class="btn-primary" onclick="go(4)">What am I approving? →</button>
+<button class="btn-back" onclick="go(2)">← Back</button>
+</div>
+</section>
+
+<!-- === STAGE 4: CREATE approval === -->
+<section class="stage" id="s4">
+<div class="card">
+<h2>Stage 4 — CREATE approval</h2>
+<p><strong>In ordinary language, this approval says:</strong></p>
+<div class="card" style="background:#0a0d12">
+<p>"I allow ONE transaction that creates my token <strong id="caName"></strong> (<span id="caSym"></span>) on pump.fun, on Solana mainnet. It spends roughly 0.005–0.006 SOL from <em>my</em> wallet for network fee + account rent. It does <strong>not</strong> sell anything of mine, approve any other transaction, or give anyone ongoing control. Approving this does not approve any future buy."</p>
+</div>
+<p><strong>What you'd see in a real wallet popup:</strong> a single transaction, from your wallet app, with the pump.fun program listed. If your wallet ever shows a seed-phrase request, cancel — that's a scam.</p>
+<div class="card" style="margin-top:14px">
+<button class="btn-primary" onclick="simCreate()">Simulate my signature → <p class="fine" style="margin-top:4px">(fixture: no wallet, no chain — the popup animation shows what a real approval window looks like)</p></button>
+<button class="btn-secondary" onclick="simCancel()">Cancel instead</button>
+</div>
+<div id="c4out"></div>
+<button class="btn-back" onclick="go(3)">← Back</button>
+</div>
+</section>
+
+<!-- === STAGE 5: verified CREATE result === -->
+<section class="stage" id="s5">
+<div class="card">
+<h2>Stage 5 — Verified CREATE result</h2>
+<div id="c5body"></div>
+<div style="margin-top:14px">
+<button class="btn-primary" onclick="go(6)">Review the fresh BUY →</button>
+<button class="btn-secondary" onclick="simStopped()">I'll stop here</button>
+</div>
+</div>
+</section>
+
+<!-- === STAGE 6: BUY review + approval === -->
+<section class="stage" id="s6">
+<div class="card">
+<h2>Stage 6 — Fresh BUY review and separate approval</h2>
+<div id="c6body"></div>
+<div id="c6out"></div>
+<button class="btn-back" onclick="go(5)">← Back to CREATE result</button>
+</div>
+</section>
+
+<!-- === STAGE 7: outcome === -->
+<section class="stage" id="s7">
+<div class="card">
+<h2>Stage 7 — Outcome and receipts</h2>
+<div id="c7body"></div>
+<button class="btn-back" onclick="go(0)">Start over</button>
+</div>
+</section>
+
+<p class="fine", style="margin-top:20px">Offline preview · clearly labeled fixtures · cannot launch a token · cannot spend funds · never touches mainnet · payment/refund terms proposed, not adopted. Real supervised launches run 1:1 with a human operator and stay outside this preview.</p>
+
+</main>
+<script>
+// ------- FIXTURE DATA (clearly labeled, offline) -------
+// Fixtures derived from proof-v2 (real mainnet run, 2026-10-05), not invented numbers.
+var F = {
+  createSigShort: "3oMfbK…S1dVcn3",
+  buySigShort:    "4w3NcY…ZMjDzmoqCs",
+  createSlot:     453566087,
+  buySlot:        453566400,
+  createDebit:    5552280,     // lamports
+  buyDebit:       3264228,
+  quoteAtCap:     140933806702, // quote_buy(4,000,000) at v2 price
+  buyCap:         4000000,
+  totalCap:       15000000
+};
+function lam(n){ return n.toLocaleString("en"); }
+function sol(l){ return (l/1e9).toFixed(6); }
+function state(i){
+  for(var k=0;k<7;k++){ var el=document.getElementById("pb"+k); if(el) el.className = k<=i ? "done" : ""; }
+  for(var k=0;k<7;k++){ var s=document.getElementById("s"+k); if(s) s.className = (k===i) ? "stage active" : "stage"; }
+  window.scrollTo(0,0);
+}
+function go(i){ state(i); }
+function fillPreview(){
+  var n = document.getElementById("tname").value.trim() || "Demo Launch";
+  var s = (document.getElementById("tsym").value.trim() || "DEMO").toUpperCase();
+  var d = document.getElementById("tdesc").value.trim() || "a first-time creator's community coin";
+  var cap = parseFloat(document.getElementById("tbuycap").value || "0.004");
+  if (isNaN(cap) || cap < 0) cap = 0.004;
+  F.buyCapSol = cap;
+  F.buyName=n; F.buySym=s; F.buyDesc=d;
+  document.getElementById("pv").innerHTML =
+    "<h3 style='margin:0 0 6px'>"+n+" ("+s+")</h3>"+
+    "<p class='dim'>"+d+"</p>"+
+    "<p>Initial-buy cap (chain-enforced max_sol_cost): <strong>"+cap.toFixed(3)+" SOL</strong></p>"+
+    "<p class='fine'>Would-be mint: <code>preview-fixture-only</code> · real launches derive a fresh mint keypair at build time.</p>";
+  go(2);
+}
+function simCreate(){
+  document.getElementById("c4out").innerHTML =
+    "<div class='okbox'>✓ (fixture) In a real launch this is where YOUR wallet app opens a popup for the CREATE transaction — and the signature exists only on your device. Nothing was signed here because nothing real is shown.</div>"+
+    "<button class='btn-primary' onclick='verifiedCreate()'>See the verified CREATE result →</button>";
+  document.getElementById("c4out").scrollIntoView({behavior:"smooth"});
+}
+function simCancel(){
+  document.getElementById("c4out").innerHTML =
+    "<div class='warnbox'><strong>Cancelled (fixture).</strong> In the real journey, a cancel at this point ends the launch with nothing submitted. Per the proposed policy: nothing owed, nothing to refund — no network costs exist yet.</div>"+
+    "<button class='btn-back' onclick='go(4)'>Back</button>";
+  document.getElementById("c4out").scrollIntoView({behavior:"smooth"});
+}
+function verifiedCreate(){
+  document.getElementById("c5body").innerHTML =
+    "<div class='okbox'><span class='state-chip chip-ok'>✓ FINALIZED</span> (fixture, from proof-v2 evidence)</div>"+
+    "<div class='receipt'><span class='tick'>CREATE</span>  signature "+F.createSigShort+"\n"+
+    "         slot      "+lam(F.createSlot)+"  finality: ✓ finalized\n"+
+    "         wallet debit: "+sol(F.createDebit)+" SOL\n"+
+    "           network fee          0.000005000\n"+
+    "           account rent         "+sol(F.createDebit-5000)+"</div>"+
+    "<p class='fine'>Real evidence (proof v2, 2026-10-05). A real beginner launch shows <em>your</em> signature here, plus a fresh read of finality, mint existence, and remaining budget. Until CREATE verifies, no BUY package is built — that's the enforced stage order.</p>";
+  go(5);
+}
+function simStopped(){
+  document.getElementById("c5body").innerHTML +=
+    "<div class='warnbox'><strong>Ended after CREATE (fixture).</strong> In the real journey: fee is retained (CREATE verified per proposed policy), no BUY ran, no further spend happens. Your token exists and belongs to you.</div>";
+  go(7); renderOutcome(true);
+}
+function buyReview(){
+  var capLam = Math.round((F.buyCapSol||0.004)*1e9);
+  var estTokens = Math.round(F.quoteAtCap*(capLam/F.buyCap));
+  document.getElementById("c6body").innerHTML =
+    "<p><strong>What this approval says (ordinary language):</strong></p>"+
+    "<div class='card' style='background:#0a0d12'>"+
+    "<p>\"I allow ONE SEPARATE transaction, a fresh buy of my token totaling at most <strong>"+sol(capLam)+" SOL</strong>, from my wallet. The exact amount of tokens I'd receive was re-quoted just now at <strong>"+lam(estTokens)+" units</strong>. It cannot spend more than "+sol(capLam)+" SOL because the pump program itself enforces that cap on-chain. It does not touch anything I signed before and does not set up anything recurring.\"</p></div>"+
+    "<p class='dim'>Why 'fresh': this quote is computed at BUY-preparation time, after CREATE verified — prices move, so a real BUY uses a fresh quote and a fresh blockhash, never a number remembered from earlier.</p>"+
+    "<div class='card' style='margin-top:12px'>"+
+    "<button class='btn-approve' onclick='simBuyApprove()'>Approve the BUY (fixture)</button>"+
+    "<button class='btn-decline' onclick='simBuyDecline()'>Decline the BUY (fixture)</button>"+
+    "</div>"+
+    "<div style='margin-top:10px'>"+
+    "<button class='btn-secondary' onclick='simInsufficient()'>See the insufficient-funds path</button>"+
+    "<button class='btn-secondary' onclick='simRejected()'>See the rejected-submission path</button>"+
+    "<button class='btn-secondary' onclick='simUnknown()'>See the unknown-outcome path</button>"+
+    "</div>";
+}
+function simBuyApprove(){
+  document.getElementById("c6out").innerHTML =
+    "<div class='okbox'><span class='state-chip chip-ok'>✓ BUY FINALIZED</span> (fixture, from proof-v2)</div>"+
+    "<div class='receipt'><span class='tick'>BUY</span>    signature "+F.buySigShort+"\n"+
+    "         slot      "+lam(F.buySlot)+"  finality: ✓ finalized\n"+
+    "         wallet debit: "+sol(F.buyDebit)+" SOL\n"+
+    "           buy principal        0.000399188\n"+
+    "           network fee          0.000005000\n"+
+    "           account rent         0.002860040</div>"+
+    "<p class='fine'>v2's real BUY received exactly 1/10 of its quote because the amount was hand-typed then — a disclosed discrepancy; the flow now derives the amount programmatically so this cannot recur.</p>";
+  document.getElementById("c6out").scrollIntoView({behavior:"smooth"});
+  setTimeout(function(){ go(7); renderOutcome(false); }, 2200);
+}
+function simBuyDecline(){
+  document.getElementById("c6out").innerHTML =
+    "<div class='warnbox'><strong>Declined (fixture).</strong> In the real journey: nothing submitted, no further spend, your token already exists. Fee retained (CREATE verified, proposed policy), no BUY ran.</div>";
+  document.getElementById("c6out").scrollIntoView({behavior:"smooth"});
+  setTimeout(function(){ go(7); renderOutcome(true); }, 1800);
+}
+function simInsufficient(){
+  document.getElementById("c6out").innerHTML =
+    "<div class='badbox'><strong>Insufficient funds (fixture).</strong> In the real journey, the BUY's simulation step catches a wallet that can't cover principal + rents + fees BEFORE any submission. The gate halts with the specific shortfall shown; you decide whether to top up. Nothing is broadcast, nothing is lost, no silent retry.</div>";
+  document.getElementById("c6out").scrollIntoView({behavior:"smooth"});
+}
+function simRejected(){
+  document.getElementById("c6out").innerHTML =
+    "<div class='badbox'><strong>Rejected submission (fixture).</strong> In the real journey, if the RPC node rejects the transaction (e.g. a stale blockhash, a node outage), the executor records the exact error as the truth: no claim of landing. The single-submission lock keeps its permanent record; ambiguous responses are never re-sent.</div>";
+  document.getElementById("c6out").scrollIntoView({behavior:"smooth"});
+}
+function simUnknown(){
+  document.getElementById("c6out").innerHTML =
+    "<div class='warnbox'><strong>UNKNOWN outcome (fixture).</strong> In the real journey, if the send result is ambiguous (e.g. an RPC timeout after broadcast), status stays <strong>UNKNOWN — not success, not failure</strong>. Spend is marked UNKNOWN_SPEND_UNRECONCILED, and a read-only reconciliation loop re-queries the chain over days until it genuinely lands or explicitly fails on-chain. Fee treatment follows the proposed, not-yet-adopted policy from receipt evidence; nothing is claimed that isn't proven.</div>";
+  document.getElementById("c6out").scrollIntoView({behavior:"smooth"});
+}
+function renderOutcome(stoppedAfterCreate){
+  var b = "<div class='okbox'><strong>Receipt bundle (fixture shape, v2-derived numbers).</strong></div>";
+  b += "<div class='receipt'>";
+  b += "CREATE  "+F.createSigShort+"  slot "+lam(F.createSlot)+"  ✓ FINALIZED  debit "+sol(F.createDebit)+" SOL\n";
+  if (!stoppedAfterCreate) {
+    b += "BUY     "+F.buySigShort+"  slot "+lam(F.buySlot)+"  ✓ FINALIZED  debit "+sol(F.buyDebit)+" SOL\n";
+    b += "TOTAL spend (create + buy): "+sol(F.createDebit+F.buyDebit)+" SOL of 15,000,000-lam authorized ceiling\n";
+    b += "token received: 14,093,380,670 units (v2 actual; 1/10 of that run's quote — disclosed)\n";
+  } else {
+    b += "BUY     (not run — customer chose to stop after CREATE verified)\n";
+    b += "TOTAL spend: "+sol(F.createDebit)+" SOL\n";
+  }
+  b += "service fee 0.03 SOL (proposed, not adopted): own separate transfer at CREATE-verify\n";
+  b += "each line re-verifiable with any Solana block explorer, no trust in us required";
+  b += "</div>";
+  b += "<p class='fine'>In the real journey, this same shape is persisted durably (SQLite + JSON) and each figure is re-derived from chain state, not screenshots.</p>";
+  document.getElementById("c7body").innerHTML = b;
+}
+// Kick the BUY stage into its review form when entered
+var origState = state;
+state = function(i){ origState(i); if(i===6 && !document.getElementById("c6body").innerHTML) buyReview(); };
+</script>
+</body>
+</html>

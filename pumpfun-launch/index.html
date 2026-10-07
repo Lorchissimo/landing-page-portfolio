@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Launch your first token — with a human performing the launch, and you keeping every key</title>
+<meta name="description" content="Supervised first-launch help for pump.fun creators: staged CREATE, on-chain verification, separate BUY approval, your keys never leave your device.">
+<style>
+:root{ --bg:#0e1116; --card:#161b22; --edge:#2a3139; --text:#e6e9ee; --dim:#9aa4b2; --ok:#38d17a; --warn:#f0a63c; --brand:#6ea8fe;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+main{max-width:760px;margin:0 auto;padding:16px}
+h1{font-size:1.6rem;line-height:1.25;margin:.4em 0}
+h2{font-size:1.25rem;margin:1.6em 0 .4em}
+h3{font-size:1.05rem;margin:1.2em 0 .3em}
+p{margin:.5em 0}
+.dim{color:var(--dim)}
+.card{background:var(--card);border:1px solid var(--edge);border-radius:12px;padding:16px;margin:12px 0}
+.pill{display:inline-block;background:#1d2b47;border:1px solid #2d4470;color:var(--brand);border-radius:999px;padding:2px 10px;font-size:.8rem;margin:2px 4px 2px 0}
+.pill.warn{background:#331f10;border-color:#6e4a1f;color:var(--warn)}
+.step{display:flex;gap:12px;margin:10px 0;align-items:flex-start}
+.stepnum{flex:0 0 28px;height:28px;border-radius:50%;background:#233152;color:var(--brand);display:flex;align-items:center;justify-content:center;font-weight:700}
+table{width:100%;border-collapse:collapse;margin:8px 0;font-size:.95rem}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--edge);vertical-align:top}
+th{color:var(--dim);font-weight:600}
+.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+/* Mobile: stack the cost table into readable cards */
+@media (max-width:600px){
+  table, tbody, tr, th, td{display:block;width:100%;border:none}
+  thead{display:none}
+  tr{margin-bottom:10px;border:1px solid var(--edge);border-radius:8px;overflow:hidden}
+  td{padding:4px 10px;border-bottom:1px dashed var(--edge)}
+  td.num{text-align:left;color:var(--text);font-weight:600}
+  td .lbl{display:inline-block;color:var(--dim);font-size:.78rem;font-weight:400;margin-right:6px}
+  .receipt{white-space:pre-wrap;overflow-wrap:anywhere}
+}
+.cta{display:block;text-align:center;background:#1f6feb;color:#fff;text-decoration:none;font-weight:700;font-size:1.05rem;padding:14px 18px;border-radius:10px;margin:18px 0}
+.cta:hover{background:#377fe0}
+.cta.ghost{background:transparent;color:var(--brand);border:1px solid #2d4470;font-weight:600;font-size:.95rem;padding:11px 18px}
+.fine{font-size:.85rem;color:var(--dim)}
+details{border:1px solid var(--edge);border-radius:10px;padding:10px 14px;margin:8px 0;background:var(--card)}
+summary{cursor:pointer;font-weight:600}
+.badge{display:inline-block;font-size:.75rem;border:1px solid var(--edge);border-radius:6px;padding:1px 8px;color:var(--dim);margin-left:8px;vertical-align:middle}
+.receipt{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.8rem;background:#0a0d12;border:1px solid var(--edge);border-radius:8px;padding:12px;overflow-x:auto;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.45}
+.tick{color:var(--ok)}
+@media (max-width:600px){ h1{font-size:1.35rem} main{padding:12px} .step{flex-direction:column;gap:4px} }
+</style>
+</head>
+<body>
+<main>
+
+<div class="card">
+<span class="pill">pump.fun first launches</span><span class="pill">your keys stay with you</span><span class="pill warn" id="previewBadge">PAGE PREVIEW — not a live product</span>
+</div>
+
+<h1>Launch your first token with someone competent next to you — while your keys never leave your hands.</h1>
+<p class="dim">A supervised, step-by-step launch for first-time pump.fun creators: you keep your wallet, you approve every step, and every transaction comes back with on-chain proof of exactly what it cost and what it did.</p>
+
+<h2>What actually goes wrong on a first launch</h2>
+<div class="card">
+<p><strong>1. Money confusion.</strong> A wallet balance number doesn't show network fees, account rent, or what each step costs — so the first create can fail in ways that are hard to read. Our operator walks you through <em>your</em> costs, per your own wallet, before anything is signed.</p>
+<p><strong>2. One shot, no witness.</strong> When something fails mid-launch you're alone with a red toast message. Our service returns a structured, itemized receipt for every transaction, plus independently verifiable evidence you can re-check with any block explorer.</p>
+<p><strong>3. Trust scams.</strong> "We launch your token for you" services that ask for your seed phrase are the classic drain. We're the opposite: every signature happens in your wallet, and we never ask for a seed phrase.</p>
+<p><strong>4. Growth noise.</strong> Before you've even launched, strangers are selling you "volumes", "trending", "makers". None of that is a launch. None of it is what we sell.</p>
+<p class="dim">Explained plainly: the launch isn't hard because the technology is hard — it's hard because it's your first time, and the circle around you wants to sell you tools, not explain the task.</p>
+</div>
+
+<h2>What we do, step by step</h2>
+<div class="card">
+<div class="step"><div class="stepnum">1</div><div><strong>We check your wallet and funding before anything touches the chain.</strong> Our operator explains rent, fees, and your buy cap per your own wallet, before you sign anything.</div></div>
+<div class="step"><div class="stepnum">2</div><div><strong>We prepare the CREATE for you and you sign it locally.</strong> You give us your token name, ticker, picture, and description. We build the transaction. You sign it in your own wallet. Your private key never leaves your device — we never ask for a seed phrase, ever.</div></div>
+<div class="step"><div class="stepnum">3</div><div><strong>We show you on-chain proof your token exists.</strong> Not a dashboard screenshot: the actual transaction signature, the slot it landed on, finality status, and the exact SOL your wallet spent. You confirm this with any block explorer yourself.</div></div>
+<div class="step"><div class="stepnum">4</div><div><strong>Only then, a separate decision to buy.</strong> If you want an initial buy, it is a fresh transaction with its own approval button, and a fresh price quote at that moment. You've just seen the CREATE evidence. You can decline — nothing happens.</div></div>
+<div class="step"><div class="stepnum">5</div><div><strong>You get a structured receipt for every transaction.</strong> Each one itemized: network fee, account rent, pump.fun fees, your buy amount. Every lamport is visible and verifiable.</div></div>
+</div>
+
+<h2>What it costs, separated clearly</h2>
+<div class="card">
+<p>Money changes hands in two completely separate lanes:</p>
+<table>
+<tr><th>Lane</th><th>Purpose</th><th>Typical first-launch amount</th></tr>
+<tr><td><strong>Service fee (proposed, not charged now)</strong></td><td><span class="wrap">What you pay us for doing the work</span></td><td class="num"><span class="wrap"><span class="lbl">Amount:</span>0.03 SOL</span></td></tr>
+<tr><td><strong>Execution spending</strong></td><td><span class="wrap">Network fees, account rent, pump.fun trading fees, and your own token buy</span></td><td class="num"><span class="wrap"><span class="lbl">Amount:</span>~0.01 SOL + your chosen buy</span></td></tr>
+</table>
+<p class="fine">The two lanes never share a wallet. You fund your own execution directly; the service fee is its own separate transfer, at launch time. <strong>Per the proposed payment policy, nothing is owed until the CREATE is verified on-chain.</strong> This page is a preview — nothing can be charged right now, and no payment terms are in effect yet.</p>
+</div>
+
+<h2>Evidence, not promises</h2>
+<div class="card">
+<p>This service's execution path has already run successfully on mainnet — with real transactions, verifiable by anyone. A receipt from that run <span class="badge">actual on-chain run, 2026-10-05</span></p>
+<div class="receipt"><span class="tick">CREATE</span>  signature 3oMfbK…S1dVcn3
+         slot      453,566,087  finality: ✓ finalized
+         wallet debit: 0.005552280 SOL
+           network fee          0.000005000
+           account rent         0.005547280
+<span class="tick">BUY</span>    signature 4w3NcY…ZMjDzmoqCs
+         slot      453,566,400  finality: ✓ finalized
+         wallet debit: 0.003264228 SOL
+           buy principal        0.000399188
+           network fee          0.000005000
+           account rent         0.002860040
+token received: 14,093,380,670 units (agreed — see note below)</div>
+<p class="fine"><strong>About the amount discrepancy:</strong> the BUY above received exactly 1/10 of the originally quoted token amount (14,093,380,670 received vs a fresh quote then of 140,933,806,702). The on-chain evidence shows the transaction fully filled exactly what it was given — the amount had been hand-entered at 1/10 of the intended derive-from-quote value. Quoted expectations, stated caps (buy cap 4,000,000 lamports, total cap 15,000,000), and actual on-chain spend (8,816,508 lamports in total) are kept separately in the same record. The production flow now derives the amount programmatically from a fresh quote — hand-typing is no longer possible.</p>
+</div>
+
+<h2>Frequently asked — beginner questions, straight answers</h2>
+<details><summary>Do you need my seed phrase?</summary>No. Never asked for, never used. Every signature happens in your own wallet. If any service asks your seed phrase, that's the scam signature — ours is the exact opposite.</details>
+<details><summary>What if the transaction fails or disappears?</summary>Then you see it labeled as it is. Statuses are: verified, failed, or unknown — never a silent retry or a "probably fine". Failed-before-signing is not charged (proposed policy). Unknown spend is flagged and reconciled against the chain before any decision about refunds — resolved by the ledger, never a credit balance.</details>
+<details><summary>Can I market my token through you?</summary>No. We don't sell volume, trending, bots, or any price/holder impact. That's a different industry and we deliberately aren't it. We do the launch execution itself, honestly and audibly.</details>
+<details><summary>Why not just use pump.fun directly?</summary>You can — it's free and works. What we add is the explanation of each step before it happens, a structured itemized receipt afterwards, and a human to ask — around your own launches, on your own wallet.</details>
+<details><summary>Is there any Telegram bot for this?</summary>Not for real launches. The old Telegram execution route is excluded from this beta — it was custodial and is not part of this service. An offline demo wizard is in preparation behind a disabled flag; real supervised launches run 1:1 with a human operator through your own wallet only.</details>
+<details><summary>Am I guaranteed my token "does well"?</summary>Absolutely not. Nobody can promise where a token will trade. We promise only what we can prove: honest execution and a complete receipt of what was spent and what was created. Any marketing service saying otherwise is selling something neither they nor anyone else can deliver.</details>
+
+<h2>Try the launch walkthrough (offline, free)</h2>
+<div class="card">
+<p>An interactive, asynchronous walkthrough of the entire launch journey: enter token details, see a preview, review itemized costs and limits, read what a CREATE approval authorizes, see a verified CREATE result, review a fresh BUY quote and give a separate approval, then view the outcome and receipts.</p>
+<p>It runs entirely offline on clearly labeled fixtures: <strong>it cannot launch a token, cannot spend funds, and never touches mainnet.</strong> Every state — including cancellation, insufficient funding, rejected submissions, and unknown outcomes — is represented honestly.</p>
+<a class="cta" href="walkthrough.html">Try the launch walkthrough</a>
+<p class="fine">Stuck, or want a human along? The operator is one message away — that's optional support, not a required step. There is no checkout, no payment form, and no fee collection anywhere on this page; all payment and refund terms shown are <strong>proposed, not adopted</strong>.</p>
+<a class="cta ghost" href="mailto:tarabishi.abdullah@gmail.com?subject=Ask%20for%20help%20(first%20launch)">Ask for help (optional)</a>
+</div>
+
+<p class="fine">Preview page · not a published product · no fee collection · no wallet connection · all competitor/product claims on this page trace to cited primary sources in the repository evidence files. Telegram legacy execution route is explicitly excluded from this beta.</p>
+
+</main>
+</body>
+</html>
