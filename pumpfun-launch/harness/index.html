@@ -1,10 +1,16 @@
 <!DOCTYPE html>
 <!-- Named-wallet/version SIGN-ONLY compatibility harness for the two-signer CREATE plan.
-     Offline by construction: no fetch(), no fetch to any endpoint, no submission — the ONLY
-     actions are (1) reconstruct the frozen v0 message from the package JSON, (2) hand it to
-     the installed wallet's signTransaction, (3) POST NOTHING; everything is shown on-screen
-     (and can be copy-pasted back into create_sign_cli.py for assembler+validator acceptance).
-     TEST-ONLY: uses a dedicated test transaction (never real launch parameters, no real mint).
+     Offline by construction: no fetch(), no submission of any kind. Rebuilds/parses from
+     the textarea, hands it to the installed wallet's signTransaction, shows digests +
+     signatures on-screen (copy back to create_sign_cli.py for full validator-stack run).
+     MODES (?mode=):
+       (default)  : textarea = unsigned PLAN PACKAGE json → frozen message → signTransaction
+       partial    : textarea = PARTIALLY-SIGNED tx b64 (slot1 = valid mint sig, slot0 = default)
+                    → derive frozen message + expected signer FROM THE TX ITSELF, validate both
+                    against the pinned ?wallet= / &digest= values, then signTransaction
+       signMessage: diagnostic only — NOT a tx-signing compatibility claim; not promoted to
+                    customer onboarding
+     TEST-ONLY, dedicated test transaction, no broadcasting anywhere.
 -->
 <html lang="en">
 <head>
@@ -19,38 +25,24 @@
   .warn{background:#fff3cd;border:1px solid #eed202;padding:.6rem .8rem;border-radius:8px}
   button{padding:.6rem 1rem;border-radius:8px;border:1px solid #2a6;font-weight:600;cursor:pointer;margin:.2rem .3rem .2rem 0}
   #result:empty::before{content:"(no wallet response yet)";color:#888}
-  .ok{color:#090}.bad{color:#c00}
+  .err{color:#fff;background:#c62828;padding:.6rem .8rem;border-radius:8px;margin:.6rem 0;font-weight:600}
+  .err:empty{display:none}
 </style>
 </head>
 <body>
 <h1>CREATE sign-only test harness</h1>
-<div class="warn" style="margin:.6rem 0" id="expect"></div>
 <p><span class="tag">TEST-ONLY</span> <span class="tag">SIGN-ONLY — NO BROADCAST</span></p>
-<p class="warn">This page never sends anything anywhere. It only reconstructs a frozen
-transaction <em>message</em>, asks your wallet app to <strong>sign it locally</strong>, and
-shows digests + the signature. This is a test transaction for harness verification — it is
-never submitted, and this page has no submission of any kind.</p>
+<div id="modeBanner" class="warn" style="margin:.6rem 0"></div>
+<p class="warn">This page never sends anything anywhere.</p>
 
-<ol>
-  <li>Paste the <strong>unsigned plan package JSON</strong> (from the operator terminal) below.</li>
-  <li>Press <em>Sign with wallet</em>. Your wallet popup opens; nothing leaves your device.</li>
-  <li>Copy the resulting <code>wallet_response_b64</code> back to the operator.</li>
-</ol>
-
-<h2>1. Package JSON</h2>
-<p class="warn" id="expectDetail" style="display:none"></p>
-<textarea id="pkg" rows="10" style="width:100%" placeholder='{"version":1,"state":"UNSIGNED","plan":{...},"config_hash":"...","unsigned_message_b64":"...","unsigned_message_sha256":"..."}'></textarea>
+<h2 id="inputHeading">1. Input</h2>
+<p id="inputHint" class="fine"></p>
+<textarea id="pkg" rows="10" style="width:100%"></textarea>
 
 <h2>2. Sign (your wallet decides; page never broadcasts)</h2>
-<p class="fine" style="margin-top:0"><strong>Nothing will be broadcast.</strong> This is a
-sign-only compatibility test; the transaction is never submitted to any network. The
-test transaction has <strong>no on-chain lifetime</strong> (it is never sent) — the only
-lifetime that matters is the browser tab being open. The mint keypair in this package
-signs <em>client-locally, away from this page</em>: both signatures are stored in
-fixtures and assembled by the operator's validator afterwards. If any byte of the
-message changes between before and after wallet signing, the page aborts and shows
-exactly where.</p>
 <button id="sign">Sign with installed wallet</button>
+<button id="clearErr" style="display:none">Dismiss error</button>
+<div id="err" class="err"></div>
 <span id="walletName"></span>
 
 <h2>3. Result</h2>
@@ -62,10 +54,7 @@ exactly where.</p>
 const $ = id => document.getElementById(id);
 
 function getProvider() {
-  const w = window.solana || window.backpack || window.glow;
-  if (!w) return null;
-  if (typeof w.isPhantom === "undefined" && !window.solana) return null;
-  return w;
+  return window.solana || window.backpack || window.glow || null;
 }
 
 function b64ToBytes(b64) {
@@ -84,214 +73,235 @@ async function sha256Hex(bytes) {
   return [...new Uint8Array(d)].map(b => b.toString(16).padStart(2, "0")).join("");
 }
 
-// Byte-exact reconstruction of the frozen v0 message from the package bytes.
-// NOTE (learned during testing): solana-web3.js MessageV0.compile is NOT byte-compatible
-// with the executor's Python compiler (different static-key ordering), so we NEVER
-// recompile the plan in JS — we deserialize the executor-frozen message bytes directly,
-// which guarantees byte-identity of what is signed.
-function buildMessageFromBytes(frozenMsgBytes) {
-  const wire = new Uint8Array(1 + frozenMsgBytes.length);
-  wire[0] = 0x80; // version marker for v0
-  wire.set(frozenMsgBytes, 1);
-  return solanaWeb3.VersionedMessage.deserialize(wire);
-}
-
-function report(obj) { $("result").textContent = JSON.stringify(obj, null, 2); }
-
-// Expected signer address + digest can be enforced via URL:
-// ?wallet=<base58 signer>&digest=<sha256-of-message>
+// URL-pinned expectations (enforced in BOTH modes)
 const QS = new URLSearchParams(location.search);
 const EXPECT_WALLET = QS.get("wallet");
 const EXPECT_DIGEST = QS.get("digest");
-(function showExpect() {
-  const el = document.getElementById("expect");
-  const det = document.getElementById("expectDetail");
-  if (EXPECT_WALLET && EXPECT_DIGEST) {
-    el.textContent = "This page is expecting a signature from: " + EXPECT_WALLET + " · message digest: " + EXPECT_DIGEST;
-    det.style.display = "block";
-    det.textContent = "The page will abort if the package's fee_payer is not " + EXPECT_WALLET +
-      ", or if the recomputed message digest is not " + EXPECT_DIGEST + ".";
+const MODE = QS.get("mode") || "";
+const PARTIAL = MODE === "partial";
+
+(function modeUI() {
+  const banner = $("modeBanner"), heading = $("inputHeading"), hint = $("inputHint");
+  if (PARTIAL) {
+    heading.textContent = "1. Partially-signed transaction (base64)";
+    hint.textContent = "Paste the base64 partially-signed tx from the operator. Slot 1 = the mint's signature over the frozen message; slot 0 stays unsigned — your wallet fills it. The page derives the frozen message and expected signer from this transaction itself and checks both against the pinned URL values before anything reaches the wallet.";
+    banner.innerHTML = "<strong>Partial-signing mode</strong> — a valid mint signature is already attached (slot 1). Per Phantom's priority-fee documentation, transactions that already carry signatures should NOT get auto-injected fee instructions. Your wallet should receive the transaction with the mint signature intact and fill only its own slot.";
   } else {
-    el.textContent = "(No ?wallet= / ?digest= pinned in the URL — paste freely; digests + signer still shown in the result box.)";
+    heading.textContent = "1. Package JSON";
+    hint.textContent = 'Paste the unsigned plan package JSON: {"version":1,"state":"UNSIGNED","plan":{...},"config_hash":"...","unsigned_message_b64":"...","unsigned_message_sha256":"..."}';
+    banner.innerHTML = "<strong>Unsigned-package mode</strong> — your wallet signs the frozen message alone.";
   }
 })();
 
+function showErr(msg) {
+  $("err").textContent = msg;
+  $("clearErr").style.display = "inline-block";
+}
+$("clearErr").addEventListener("click", () => {
+  $("err").textContent = "";
+  $("clearErr").style.display = "none";
+});
+
+function report(obj) { $("result").textContent = JSON.stringify(obj, null, 2); }
+
+function walletSigLooksReal(sigs) {
+  return sigs && sigs[0] && !sigs[0].startsWith("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+}
+
 $("sign").addEventListener("click", async () => {
+  showErr("");
   report({status: "working…"});
   try {
-    const pkg = JSON.parse($("pkg").value);
+    const inputValue = $("pkg").value.trim();
+    if (!inputValue) {
+      showErr("Input is empty — paste the " + (PARTIAL ? "partially-signed tx base64" : "package JSON") + " first.");
+      report({status: "ABORT"});
+      return;
+    }
+
+    /* ==================== PARTIAL MODE ==================== */
+    if (PARTIAL) {
+      let wire;
+      try { wire = b64ToBytes(inputValue); }
+      catch (e) { showErr("Input is not valid base64: " + e.message); report({status:"ABORT"}); return; }
+
+      // Wire: [numSigs=2][sig0 64][sig1 64][0x80][msg...]
+      if (wire.length < 130 || wire[0] !== 2) {
+        showErr("Not a 2-signature partially-signed v0 tx (first byte = " + wire[0] + ", length = " + wire.length + ").");
+        report({status: "ABORT"});
+        return;
+      }
+      const sig1 = wire.slice(65, 129);
+      if (wire[129] !== 0x80) {
+        showErr("Version byte must be 0x80 (v0), got 0x" + wire[129].toString(16) + ".");
+        report({status: "ABORT"});
+        return;
+      }
+      const partialMsgBytes = wire.slice(130);
+
+      // Derive frozen message + expected signer FROM THE TX ITSELF
+      const msgObj = solanaWeb3.VersionedMessage.deserialize(wire.slice(129));
+      const txFeePayer = msgObj.staticAccountKeys[0].toBase58();
+      const txMessageDigest = await sha256Hex(partialMsgBytes);
+
+      if (EXPECT_DIGEST && txMessageDigest !== EXPECT_DIGEST) {
+        report({
+          status: "ABORT",
+          reason: "partially-signed tx message digest does NOT match the pinned digest — refusing.",
+          expected_digest: EXPECT_DIGEST,
+          tx_message_digest: txMessageDigest,
+        });
+        showErr("Message digest mismatch — refusing to sign. Details in result box.");
+        return;
+      }
+      if (EXPECT_WALLET && txFeePayer !== EXPECT_WALLET) {
+        report({
+          status: "ABORT",
+          reason: "partially-signed tx fee payer does NOT match the pinned signer — refusing.",
+          expected_signer: EXPECT_WALLET,
+          tx_fee_payer: txFeePayer,
+        });
+        showErr("Signer mismatch — refusing to sign. Details in result box.");
+        return;
+      }
+
+      const provider = getProvider();
+      if (!provider) {
+        report({status: "ABORT", reason: "no compatible wallet provider in this browser (need window.solana etc.)"});
+        showErr("No Phantom-like wallet provider found in this browser.");
+        return;
+      }
+      $("walletName").textContent = provider.isPhantom ? "Phantom" : "provider";
+      await provider.connect();
+
+      // Build tx object; signatures: slot0 = default zeros (wallet fills), slot1 = mint sig
+      const partialTx = new solanaWeb3.VersionedTransaction(msgObj);
+      partialTx.signatures[1] = sig1;
+
+      // Verify the exact serialized bytes the wallet will receive
+      const preWire = partialTx.serialize();
+      const preDigest = await sha256Hex(preWire);
+
+      const signed = await provider.signTransaction(partialTx);
+
+      // Post-signing byte-for-byte message + slot checks
+      const afterWire = signed.message.serialize();
+      const afterDigest = await sha256Hex(afterWire);
+      const messageUnchanged = (afterWire.length === partialMsgBytes.length + 1) && afterDigest === txMessageDigest;
+      const signedSigs = signed.signatures ? signed.signatures.map(s => bytesToB64(s)) : null;
+      const mintSigPreserved = signedSigs ? signedSigs[1] === bytesToB64(sig1) : null;
+
+      report({
+        status: "SIGNED via partially-signed tx (Phantom's documented 'already signed' condition)",
+        wallet_detected: provider.isPhantom ? "Phantom" : (navigator.userAgent || "custom"),
+        browserUA: navigator.userAgent,
+        sign_path_used: "signTransaction on a partially-signed tx (slot1 = mint partial sig pre-attached)",
+        tx_message_digest: txMessageDigest,
+        message_unchanged_by_signing: messageUnchanged,
+        mint_signature_preserved: mintSigPreserved,
+        wallet_signature_b64_index0: signedSigs ? signedSigs[0] : null,
+        signatures_all: signedSigs,
+        wallet_response_b64: bytesToB64(signed.serialize()),
+        serialized_tx_digest_before_wallet: preDigest,
+        serialized_tx_digest_after_wallet: afterDigest,
+        next_step_operator: (walletSigLooksReal(signedSigs) && mintSigPreserved && messageUnchanged)
+          ? "paste wallet_signature_b64_index0 + signatures_all[1] into create_sign_cli.py — full validator stack will accept or reject"
+          : "report the mismatch shown above back to the operator",
+      });
+      return;
+    }
+
+    /* ==================== DEFAULT MODE (package JSON) ==================== */
+    let pkg;
+    try { pkg = JSON.parse(inputValue); }
+    catch (e) { showErr("Not valid JSON: " + e.message); report({status: "ABORT"}); return; }
     const plan = pkg.plan || pkg;
 
-    // 0) Mode parse: partial=1 → textarea contains a PARTIALLY-SIGNED tx (mint slot 1 filled)
-    const MODE = (new URLSearchParams(location.search).get("mode") || "");
-    const PARTIAL = MODE === "partial";
-
-    // 0) Precheck: digest of the package's frozen message must match its recorded sha256
     const msgBytes = b64ToBytes(pkg.unsigned_message_b64);
-    const digestBefore = await sha256Hex(msgBytes);
-    if (digestBefore !== pkg.unsigned_message_sha256) {
+    const pkgDigest = await sha256Hex(msgBytes);
+    if (pkgDigest !== pkg.unsigned_message_sha256) {
       report({status: "ABORT", reason: "package unsigned_message digest mismatch — JSON corrupted?"});
+      showErr("Package digest mismatch. Details in result box.");
       return;
     }
-
-    // 0b) Pinned expectations: signer address + digest must match URL assertions
-    if (EXPECT_WALLET && pkg.plan.fee_payer !== EXPECT_WALLET) {
+    const pkgFeePayer = plan.fee_payer;
+    if (EXPECT_WALLET && pkgFeePayer !== EXPECT_WALLET) {
       report({
         status: "ABORT",
-        reason: "package fee_payer does NOT match the expected wallet pinned in the URL — refusing to proceed. Re-generate the package for your actual connected wallet.",
+        reason: "package fee_payer does NOT match the pinned wallet — regenerate the package for your connected wallet.",
         expected_signer: EXPECT_WALLET,
-        package_signer: pkg.plan.fee_payer,
+        package_signer: pkgFeePayer,
       });
+      showErr("Signer mismatch — refusing. Details in result box.");
       return;
     }
-    if (EXPECT_DIGEST && digestBefore !== EXPECT_DIGEST) {
+    if (EXPECT_DIGEST && pkgDigest !== EXPECT_DIGEST) {
       report({
         status: "ABORT",
-        reason: "recomputed message digest does NOT match the pinned expected digest — refusing to proceed (package drift?).",
+        reason: "message digest does NOT match the pinned digest — refusing.",
         expected_digest: EXPECT_DIGEST,
-        actual_digest: digestBefore,
+        actual_digest: pkgDigest,
       });
+      showErr("Digest drift — refusing. Details in result box.");
       return;
     }
 
-    // 1) Byte-exact parse of the frozen message (no recompile — recompiling in JS is
-    //    NOT byte-compatible with the executor's Python compiler; learned in testing)
-    let msgV0;
-    try {
-      msgV0 = buildMessageFromBytes(msgBytes);
-    } catch (e) {
-      report({status: "ABORT", reason: "frozen message bytes failed to parse via web3.js", detail: String(e)});
-      return;
-    }
-    // wire-shape digest (0x80 + message) for the post-signing comparison
-    const expectedWireBytes = new Uint8Array(1 + msgBytes.length);
-    expectedWireBytes[0] = 0x80;
-    expectedWireBytes.set(msgBytes, 1);
-    const digestWireBefore = await sha256Hex(expectedWireBytes);
+    // Byte-exact parse: never recompile (learned in testing: JS compile is NOT byte-compatible
+    // with the executor's Python compiler)
+    const wireIn = new Uint8Array(1 + msgBytes.length);
+    wireIn[0] = 0x80;
+    wireIn.set(msgBytes, 1);
+    const msgV0 = solanaWeb3.VersionedMessage.deserialize(wireIn);
+    const digestWireBefore = await sha256Hex(wireIn);
 
-    // 2) Build the unsigned VersionedTransaction directly from the frozen message
     const tx = new solanaWeb3.VersionedTransaction(msgV0);
-    const unsignedSer = tx.serialize();
-    const unsignedLen = unsignedSer.length;
 
-    // 3) Wallet sign-only
     const provider = getProvider();
     if (!provider) {
       report({status: "ABORT", reason: "no compatible wallet provider in this browser (need window.solana etc.)"});
       return;
     }
-    $("walletName").textContent = (provider.isPhantom ? "Phantom " : "") + (provider.userAgent ? "" : "provider");
+    $("walletName").textContent = provider.isPhantom ? "Phantom" : "provider";
     await provider.connect();
 
-    // PATH MODE: ?mode=signMessage  → signs the raw payload (0x80‖msg) as a MESSAGE.
-    // WHY THIS EXISTS (learned from a real Phantom 25.16.0 test): Phantom's
-    // signTransaction silently INJECTS its own ComputeBudget instructions
-    // (SetComputeUnitLimit + SetComputeUnitPrice) and re-serializes the tx — i.e. it
-    // MUTATES the frozen message. Our validator stack rejects that by design
-    // (mutation guard). For sign-only compatibility we offer the signMessage path:
-    //   * the page passes the exact payload bytes;
-    //   * the wallet signs those bytes and returns the signature;
-    //   * NO tx-structure compilation happens in the wallet.
-    // The wallet still shows the user what is being signed (payload preview) —
-    // that UX difference is reported honestly in the result box below.
-    let sigBytes = null;
-    let signedViaSignTransaction = false;
-    let partialSigs = null;
-
-    if (PARTIAL) {
-      // PARTIAL path: the textarea contains a base64 PARTIALLY-SIGNED tx
-      // (slot 1 = valid mint signature over the frozen message, slot 0 = default).
-      // We verify the mint signature OURSELVES before handing it to the wallet, then
-      // pass the WHOLE partially-signed tx to wallet.signTransaction.
-      const partialB64 = document.getElementById("pkg").value.trim();
-      // web3.js 1.x has no static deserialize; use fromWire via sig-slicing:
-      const wire = b64ToBytes(partialB64);
-      // Validate wire shape before using it: [numSigs][sig0][sig1...][0x80][msg]
-      if (wire[0] !== 2) throw new Error("partial tx numSigs must be 2, got " + wire[0]);
-      const sig0 = wire.slice(1, 65);
-      const sig1 = wire.slice(65, 129);
-      const vByte = wire[129];
-      if (vByte !== 0x80) throw new Error("partial tx version byte must be 0x80 (v0), got 0x" + vByte.toString(16));
-      const pmsg = wire.slice(130);
-      // message bytes must equal frozen digest
-      const pdig = await sha256Hex(pmsg);
-      if (pdig !== pkg.unsigned_message_sha256) throw new Error("partial tx message digest mismatch — refusing: " + pdig);
-      // web3.js 1.x: VersionedMessage.deserialize takes WIRE message bytes (versioned).
-      const msgObj = solanaWeb3.VersionedMessage.deserialize(wire.slice(129));
-      partial = new solanaWeb3.VersionedTransaction(msgObj);
-      // restore the mint's partial signature at slot 1
-      partial.signatures[1] = sig1;
-      const finalRaw = partial.serialize();
-      const finalDigest = await sha256Hex(finalRaw);
-      console.log('[partial] serialized for wallet, len=' + finalRaw.length + ' digest(whole tx)=' + finalDigest);
-      // pass partial-sig tx to wallet: sigs pre-present => wallet should skip fee injection per docs
-      try {
-        const signed = await provider.signTransaction(partial);
-        partialSigs = signed.signatures ? signed.signatures.map(s => bytesToB64(s)) : null;
-        signedViaSignTransaction = true;
-        // exact message check + slot check
-        const afterWire = signed.message.serialize();
-        const digestAfterWire = await sha256Hex(afterWire);
-        const messageUnchanged = digestAfterWire === digestWireBefore;
-        const walletSlot1Unchanged = partialSigs && partialSigs[1] === bytesToB64(sig1);
-        report({
-          status: "SIGNED via partial pre-signed tx (Phantom's documented 'already signed' condition)",
-          wallet_detected: provider.isPhantom ? "Phantom" : (navigator.userAgent || "custom"),
-          sign_path_used: "signTransaction on a partially-signed tx (slot1=mint partial sig pre-attached)",
-          message_unchanged_by_signing: messageUnchanged,
-          mint_signature_preserved: walletSlot1Unchanged,
-          wallet_signature_b64_index0: partialSigs ? partialSigs[0] : null,
-          signatures_all: partialSigs,
-          wallet_response_b64: bytesToB64(signed.serialize ? signed.serialize() : signed),
-          digest_wire_before: digestWireBefore,
-          digest_wire_after: digestAfterWire,
-          next_step_operator: walletSlot1Unchanged ? "paste wallet_signature_b64_index0 (if not null) + signatures_all[i=1] into create_sign_cli.py" : "mint sig LOST — report back to operator",
-        });
-        return;
-      } catch (err) {
-        report({status: "ERROR", error: String(err && err.message || err), step: "partial-signTransaction"});
-        return;
-      }
-    }
-
+    // signMessage = diagnostic-only path (PAUSED by operator; not tx-signing compatibility)
     const PAYLOAD = new Uint8Array(1 + msgBytes.length);
     PAYLOAD[0] = 0x80;
     PAYLOAD.set(msgBytes, 1);
+
+    let signedViaSignTransaction = false;
+    let sigBytes = null;
 
     if (MODE === "signMessage" || !provider.signTransaction) {
       const res = await provider.signMessage(PAYLOAD, "utf8");
       sigBytes = res.signature;
     } else {
       const signedTx = await provider.signTransaction(tx);
-      sigBytes = signedTx.signatures[0];
-      signedViaSignTransaction = true;
       const afterWire = signedTx.message.serialize();
-      const digestAfterWire = await sha256Hex(afterWire);
-      const messageUnchanged = digestAfterWire === digestWireBefore;
-      if (!messageUnchanged) {
+      const afterDigest = await sha256Hex(afterWire);
+      if (afterDigest !== digestWireBefore) {
         report({
-          status: "SIGNED — BUT WALLET MUTATED THE MESSAGE (real sign-only incompatibility finding)",
+          status: "SIGNED — BUT WALLET MUTATED THE MESSAGE",
           wallet_detected: provider.isPhantom ? "Phantom" : (navigator.userAgent || "custom"),
-          reason: "wallet injected/reordered its own instructions (typical: ComputeBudget). This signature does NOT match the frozen plan — must be REJECTED by design.",
-          digest_before_signing_wire: digestWireBefore,
-          digest_after_signing_wire: digestAfterWire,
+          reason: "wallet injected/reordered instructions (typical: ComputeBudget priority-fee prelude). Signature does NOT verify against the frozen plan — rejected by design.",
+          digest_wire_before: digestWireBefore,
+          digest_wire_after: afterDigest,
           your_signature_verifies_against: "wallet's own mutated message — NOT the frozen plan",
-          operator_next_step: "re-run this page with &mode=partial (pre-attached mint sig) to test Phantom's documented no-injection condition",
+          operator_next_step: "retry with &mode=partial (pre-attached mint sig → Phantom's documented no-injection condition)",
         });
         return;
       }
       sigBytes = signedTx.signatures[0];
+      signedViaSignTransaction = true;
     }
 
-    const sigHex = [...sigBytes].map(b => b.toString(16).padStart(2, "0")).join("");
-    // Report: exact payload mode (whether signTransaction or signMessage) + wallet flavor
     const sigB64 = bytesToB64(sigBytes);
     report({
       status: "SIGNED — NOT SUBMITTED (nothing was sent anywhere)",
       wallet_detected: provider.isPhantom ? "Phantom" : (navigator.userAgent || "custom"),
       browserUA: navigator.userAgent,
-      sign_path_used: signedViaSignTransaction ? "signTransaction" : "signMessage (exact-payload path)",
-      unsigned_package_message_digest: digestBefore,
+      sign_path_used: signedViaSignTransaction ? "signTransaction" : "signMessage (diagnostic only — NOT tx-signing compatibility)",
+      unsigned_package_message_digest: pkgDigest,
       message_digest_before_signing_wire: digestWireBefore,
       signers_required: 2,
       signer_slots_explained: [
@@ -299,12 +309,13 @@ $("sign").addEventListener("click", async () => {
         "1 = mint keypair (assembled operator-side; mint secret never shown to this page)"
       ],
       wallet_signature_b64_index0: sigB64,
-      wallet_response_b64: sigB64.length == 88 ? sigB64 : bytesToB64(sigBytes),
       next_step_operator: "paste wallet_signature_b64_index0 into create_sign_cli.py — full validator stack will accept or reject",
     });
 
   } catch (err) {
-    report({status: "ERROR", error: String(err && err.message || err)});
+    const msg = String(err && err.message || err);
+    showErr(msg);
+    report({status: "ERROR", error: msg});
   }
 });
 </script>
