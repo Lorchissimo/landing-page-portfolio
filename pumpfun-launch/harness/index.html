@@ -122,6 +122,10 @@ $("sign").addEventListener("click", async () => {
     const pkg = JSON.parse($("pkg").value);
     const plan = pkg.plan || pkg;
 
+    // 0) Mode parse: partial=1 → textarea contains a PARTIALLY-SIGNED tx (mint slot 1 filled)
+    const MODE = (new URLSearchParams(location.search).get("mode") || "");
+    const PARTIAL = MODE === "partial";
+
     // 0) Precheck: digest of the package's frozen message must match its recorded sha256
     const msgBytes = b64ToBytes(pkg.unsigned_message_b64);
     const digestBefore = await sha256Hex(msgBytes);
@@ -190,23 +194,77 @@ $("sign").addEventListener("click", async () => {
     //   * NO tx-structure compilation happens in the wallet.
     // The wallet still shows the user what is being signed (payload preview) —
     // that UX difference is reported honestly in the result box below.
-    const MODE = (new URLSearchParams(location.search).get("mode") || "signTransaction");
-    const PAYLOAD = new Uint8Array(1 + msgBytes.length); // same 0x80‖message wire payload
+    let sigBytes = null;
+    let signedViaSignTransaction = false;
+    let partialSigs = null;
+
+    if (PARTIAL) {
+      // PARTIAL path: the textarea contains a base64 PARTIALLY-SIGNED tx
+      // (slot 1 = valid mint signature over the frozen message, slot 0 = default).
+      // We verify the mint signature OURSELVES before handing it to the wallet, then
+      // pass the WHOLE partially-signed tx to wallet.signTransaction.
+      const partialB64 = document.getElementById("pkg").value.trim();
+      // web3.js 1.x has no static deserialize; use fromWire via sig-slicing:
+      const wire = b64ToBytes(partialB64);
+      // Validate wire shape before using it: [numSigs][sig0][sig1...][0x80][msg]
+      if (wire[0] !== 2) throw new Error("partial tx numSigs must be 2, got " + wire[0]);
+      const sig0 = wire.slice(1, 65);
+      const sig1 = wire.slice(65, 129);
+      const vByte = wire[129];
+      if (vByte !== 0x80) throw new Error("partial tx version byte must be 0x80 (v0), got 0x" + vByte.toString(16));
+      const pmsg = wire.slice(130);
+      // message bytes must equal frozen digest
+      const pdig = await sha256Hex(pmsg);
+      if (pdig !== pkg.unsigned_message_sha256) throw new Error("partial tx message digest mismatch — refusing: " + pdig);
+      // web3.js 1.x: VersionedMessage.deserialize takes WIRE message bytes (versioned).
+      const msgObj = solanaWeb3.VersionedMessage.deserialize(wire.slice(129));
+      partial = new solanaWeb3.VersionedTransaction(msgObj);
+      // restore the mint's partial signature at slot 1
+      partial.signatures[1] = sig1;
+      const finalRaw = partial.serialize();
+      const finalDigest = await sha256Hex(finalRaw);
+      console.log('[partial] serialized for wallet, len=' + finalRaw.length + ' digest(whole tx)=' + finalDigest);
+      // pass partial-sig tx to wallet: sigs pre-present => wallet should skip fee injection per docs
+      try {
+        const signed = await provider.signTransaction(partial);
+        partialSigs = signed.signatures ? signed.signatures.map(s => bytesToB64(s)) : null;
+        signedViaSignTransaction = true;
+        // exact message check + slot check
+        const afterWire = signed.message.serialize();
+        const digestAfterWire = await sha256Hex(afterWire);
+        const messageUnchanged = digestAfterWire === digestWireBefore;
+        const walletSlot1Unchanged = partialSigs && partialSigs[1] === bytesToB64(sig1);
+        report({
+          status: "SIGNED via partial pre-signed tx (Phantom's documented 'already signed' condition)",
+          wallet_detected: provider.isPhantom ? "Phantom" : (navigator.userAgent || "custom"),
+          sign_path_used: "signTransaction on a partially-signed tx (slot1=mint partial sig pre-attached)",
+          message_unchanged_by_signing: messageUnchanged,
+          mint_signature_preserved: walletSlot1Unchanged,
+          wallet_signature_b64_index0: partialSigs ? partialSigs[0] : null,
+          signatures_all: partialSigs,
+          wallet_response_b64: bytesToB64(signed.serialize ? signed.serialize() : signed),
+          digest_wire_before: digestWireBefore,
+          digest_wire_after: digestAfterWire,
+          next_step_operator: walletSlot1Unchanged ? "paste wallet_signature_b64_index0 (if not null) + signatures_all[i=1] into create_sign_cli.py" : "mint sig LOST — report back to operator",
+        });
+        return;
+      } catch (err) {
+        report({status: "ERROR", error: String(err && err.message || err), step: "partial-signTransaction"});
+        return;
+      }
+    }
+
+    const PAYLOAD = new Uint8Array(1 + msgBytes.length);
     PAYLOAD[0] = 0x80;
     PAYLOAD.set(msgBytes, 1);
 
-    let sigBytes = null;
-    let signedViaSignTransaction = false;
-
     if (MODE === "signMessage" || !provider.signTransaction) {
       const res = await provider.signMessage(PAYLOAD, "utf8");
-      sigBytes = res.signature; // Uint8Array(64)
+      sigBytes = res.signature;
     } else {
       const signedTx = await provider.signTransaction(tx);
       sigBytes = signedTx.signatures[0];
       signedViaSignTransaction = true;
-      // Post-signing digest check (mutation detection): wallet may inject its own
-      // ComputeBudget instructions, which our stack REJECTS.
       const afterWire = signedTx.message.serialize();
       const digestAfterWire = await sha256Hex(afterWire);
       const messageUnchanged = digestAfterWire === digestWireBefore;
@@ -214,12 +272,11 @@ $("sign").addEventListener("click", async () => {
         report({
           status: "SIGNED — BUT WALLET MUTATED THE MESSAGE (real sign-only incompatibility finding)",
           wallet_detected: provider.isPhantom ? "Phantom" : (navigator.userAgent || "custom"),
-          wallet_version_known: (provider._redirect ? "" : "") + "(run the operator script for exact version)",
           reason: "wallet injected/reordered its own instructions (typical: ComputeBudget). This signature does NOT match the frozen plan — must be REJECTED by design.",
           digest_before_signing_wire: digestWireBefore,
           digest_after_signing_wire: digestAfterWire,
           your_signature_verifies_against: "wallet's own mutated message — NOT the frozen plan",
-          operator_next_step: "re-run this page with &mode=signMessage to sign the EXACT payload",
+          operator_next_step: "re-run this page with &mode=partial (pre-attached mint sig) to test Phantom's documented no-injection condition",
         });
         return;
       }
