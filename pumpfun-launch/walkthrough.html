@@ -340,7 +340,54 @@ function renderOutcome(stoppedAfterCreate){
   b += "each line re-verifiable with any Solana block explorer, no trust in us required";
   b += "</div>";
   b += "<p class='fine'>In the real journey, this same shape is persisted durably (SQLite + JSON) and each figure is re-derived from chain state, not screenshots.</p>";
+  b += feedbackHTML();
   document.getElementById("c7body").innerHTML = b;
+}
+
+// ------- OPTIONAL ANONYMOUS FEEDBACK (no tracking, no cookies, nothing collected until YOU press send) -------
+// Opens your email app via mailto: with the feedback prefilled (no address required to
+// answer on this page; no server, no analytics). Your mail client sends it from your own
+// account — the page itself still never transmits anything.
+function feedbackHTML(){
+  var src = "";
+  try { src = localStorage.getItem("pfw_source") || ""; } catch(e) {}
+  return "<div class='card' style='margin-top:14px' id='fb'>"+
+    "<h3 style='margin:0 0 6px'>Optional: tell us how this walkthrough felt</h3>"+
+    "<p class='fine'>Anonymous and offline: your answers stay in this form until you press send, "+
+    "which opens YOUR OWN email app (nothing is sent from this page, no account required to try the demo). Answering is entirely optional and does not affect anything.</p>"+
+    "<p style='margin:6px 0'><strong>1. Did the journey make sense?</strong><br>"+
+    "<label class='fine'><input type='radio' name='fb_sense' value='yes'> yes</label> "+
+    "<label class='fine'><input type='radio' name='fb_sense' value='mostly'> mostly</label> "+
+    "<label class='fine'><input type='radio' name='fb_sense' value='no'> no</label></p>"+
+    "<p style='margin:6px 0'><strong>2. What was confusing (your words, optional)?</strong><br>"+
+    "<textarea id='fb_confusing' rows='2' style='width:100%' placeholder='e.g. two approvals…'></textarea></p>"+
+    "<p style='margin:6px 0'><strong>3. Would you pay the disclosed proposed 0.03 SOL fee for this supervised launch?</strong><br>"+
+    "<label class='fine'><input type='radio' name='fb_pay' value='yes'> would pay 0.03 SOL</label> "+
+    "<label class='fine'><input type='radio' name='fb_pay' value='maybe'> maybe</label> "+
+    "<label class='fine'><input type='radio' name='fb_pay' value='no'> no</label></p>"+
+    "<p class='fine'>This answer is a <strong>stated willingness to pay</strong> (an opinion). It is NOT a payment, and it does not obligate you to anything.</p>"+
+    "<button class='btn-primary' onclick='sendFeedback()'>Send (opens your email app)</button> "+
+    "<button class='btn-back' onclick='skipFeedback()'>No thanks</button>"+
+    "<div id='fbnote' class='fine' style='margin-top:6px'></div></div>";
+}
+function skipFeedback(){
+  var n=document.getElementById("fbnote");
+  if(n) n.textContent="Skipped — thank you for trying the walkthrough.";
+}
+function sendFeedback(){
+  var sense=(document.querySelector("input[name=fb_sense]:checked")||{}).value||"unanswered";
+  var pay=(document.querySelector("input[name=fb_pay]:checked")||{}).value||"unanswered";
+  var conf=(document.getElementById("fb_confusing")||{}).value||"";
+  var src=""; try{ src=localStorage.getItem("pfw_source")||""; }catch(e){}
+  var body="Walkthrough feedback\n"+
+    "1. Made sense: "+sense+"\n"+
+    "2. Confusing: "+(conf||"(none given)")+"\n"+
+    "3. Would pay 0.03 SOL (stated intent, not a payment): "+pay+"\n"+
+    "source_tag: "+(src||"(none)")+"\n";
+  var mail="mailto:tarabishi.abdullah@gmail.com?subject=Walkthrough%20feedback&body="+encodeURIComponent(body);
+  var n=document.getElementById("fbnote");
+  window.location.href=mail;
+  if(n) n.innerHTML="<strong>Stated WTP notice:</strong> choosing "+pay+" above is an opinion about a PROPOSED fee — not a purchase, not an invoice, nothing is collected here.";
 }
 // Kick the BUY stage into its review form when entered
 var origState = state;
