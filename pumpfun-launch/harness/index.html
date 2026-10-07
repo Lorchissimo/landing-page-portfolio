@@ -201,7 +201,13 @@ $("sign").addEventListener("click", async () => {
         mint_signature_preserved: mintSigPreserved,
         wallet_signature_b64_index0: signedSigs ? signedSigs[0] : null,
         signatures_all: signedSigs,
-        wallet_response_b64: bytesToB64(signed.serialize()),
+        wallet_response_b64: (typeof signed.serialize === "function")
+          ? bytesToB64(signed.serialize())
+          : (() => {
+              const t = new solanaWeb3.VersionedTransaction(signed.message);
+              (signed.signatures || []).forEach((sg, i) => { t.signatures[i] = sg; });
+              return bytesToB64(t.serialize());
+            })(),
         serialized_tx_digest_before_wallet: preDigest,
         serialized_tx_digest_after_wallet: afterDigest,
         next_step_operator: (walletSigLooksReal(signedSigs) && mintSigPreserved && messageUnchanged)
