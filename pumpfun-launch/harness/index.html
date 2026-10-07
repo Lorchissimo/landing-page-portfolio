@@ -89,10 +89,6 @@ function buildMessageFromPlan(pkg) {
       data: b64ToBytes(ix.data),
     })
   );
-  const messageV0 = new solanaWeb3.VersionedMessage({
-    header: null, // constructed via MessageV0.compile below
-  });
-  // MessageV0.compile needs account metas list — use compile path:
   const compiled = solanaWeb3.MessageV0.compile({
     payerKey: feePayer,
     instructions: ixes,
