@@ -74,28 +74,16 @@ async function sha256Hex(bytes) {
   return [...new Uint8Array(d)].map(b => b.toString(16).padStart(2, "0")).join("");
 }
 
-// Rebuild the v0 MessageV0 from the plan package, cleanly, with web3.js.
-function buildMessageFromPlan(pkg) {
-  const plan = pkg.plan || pkg;
-  const feePayer = new solanaWeb3.PublicKey(plan.fee_payer);
-  const ixes = plan.instructions.map(ix =>
-    new solanaWeb3.TransactionInstruction({
-      programId: new solanaWeb3.PublicKey(ix.program_id),
-      keys: ix.accounts.map(a => ({
-        pubkey: new solanaWeb3.PublicKey(a.pubkey),
-        isSigner: !!a.signer,
-        isWritable: !!a.writable,
-      })),
-      data: b64ToBytes(ix.data),
-    })
-  );
-  const compiled = solanaWeb3.MessageV0.compile({
-    payerKey: feePayer,
-    instructions: ixes,
-    addressLookupTableAccounts: [],   // plan uses none (proof-db: no ALTs)
-    recentBlockhash: plan.recent_blockhash,
-  });
-  return compiled;
+// Byte-exact reconstruction of the frozen v0 message from the package bytes.
+// NOTE (learned during testing): solana-web3.js MessageV0.compile is NOT byte-compatible
+// with the executor's Python compiler (different static-key ordering), so we NEVER
+// recompile the plan in JS — we deserialize the executor-frozen message bytes directly,
+// which guarantees byte-identity of what is signed.
+function buildMessageFromBytes(frozenMsgBytes) {
+  const wire = new Uint8Array(1 + frozenMsgBytes.length);
+  wire[0] = 0x80; // version marker for v0
+  wire.set(frozenMsgBytes, 1);
+  return solanaWeb3.VersionedMessage.deserialize(wire);
 }
 
 function report(obj) { $("result").textContent = JSON.stringify(obj, null, 2); }
